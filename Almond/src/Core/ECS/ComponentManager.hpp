@@ -16,6 +16,14 @@ private:
 	std::unordered_map<const char*, ComponentType> mComponentTypes{};
 	ComponentType mNextComponentType = 0;
 
+	template<typename T>
+	std::shared_ptr<ComponentArray<T>> GetComponentArray()
+	{
+		const char* componentName = typeid(T).name();
+		assert(mComponentTypes.find(componentName) != mComponentTypes.end() && "Component not created before use");
+		return std::static_pointer_cast<ComponentArray<T>>(mComponentArrays[componentName]);
+	}
+
 public:
 	template<typename T>
 	void CreateComponent()
@@ -56,14 +64,6 @@ public:
 		const char* componentName = typeid(T).name();
 		assert(mComponentTypes.find(componentName) != mComponentTypes.end() && "Component not created before use");
 		return mComponentTypes[componentName];
-	}
-
-	template<typename T>
-	std::shared_ptr<ComponentArray<T>> GetComponentArray()
-	{
-		const char* componentName = typeid(T).name();
-		assert(mComponentTypes.find(componentName) != mComponentTypes.end() && "Component not created before use");
-		return std::static_pointer_cast<ComponentArray<T>>(mComponentArrays[componentName]);
 	}
 
 	void EntityDestroyed(Entity entity)

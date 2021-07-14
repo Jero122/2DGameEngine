@@ -91,14 +91,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="src\Core\Renderer\Renderer.hpp" />
+    <ClCompile Include="src\Core\WindowManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Core\ComponentManager.hpp" />
-    <ClInclude Include="src\Core\ComponentArray.hpp" />
-    <ClInclude Include="src\Core\ECS.hpp" />
-    <ClInclude Include="src\Core\ECSTypes.hpp" />
-    <ClInclude Include="src\Core\EntitiyManager.hpp" />
-    <ClInclude Include="src\Core\SystemManager.hpp" />
+    <ClInclude Include="src\Core\ECS\ComponentManager.hpp" />
+    <ClInclude Include="src\Core\ECS\ComponentArray.hpp" />
+    <ClInclude Include="src\Core\ECS\ECS.hpp" />
+    <ClInclude Include="src\Core\ECS\ECSTypes.hpp" />
+    <ClInclude Include="src\Core\ECS\EntitiyManager.hpp" />
+    <ClInclude Include="src\Core\ECS\SystemManager.hpp" />
+    <ClInclude Include="src\Core\WindowManager.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
