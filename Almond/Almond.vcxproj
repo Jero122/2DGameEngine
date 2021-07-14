@@ -47,14 +47,14 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Configuration)\-$(Platform)\$(ProjectName)</OutDir>
     <IntDir>$(SolutionDir)bin\int\$(Configuration)\-$(Platform)\$(ProjectName)</IntDir>
-    <IncludePath>$(ProjectDir)dependencies\include\;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)src\;$(ProjectDir)dependencies\include\;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)dependencies\lib\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)bin\$(Configuration)\-$(Platform)\$(ProjectName)</OutDir>
     <IntDir>$(SolutionDir)bin\int\$(Configuration)\-$(Platform)\$(ProjectName)</IntDir>
-    <IncludePath>$(ProjectDir)dependencies\include\;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)src\;$(ProjectDir)dependencies\include\;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)dependencies\lib\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -90,7 +90,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="Main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Core\ComponentManager.hpp" />
+    <ClInclude Include="src\Core\ComponentArray.hpp" />
+    <ClInclude Include="src\Core\ECS.hpp" />
+    <ClInclude Include="src\Core\ECSTypes.hpp" />
+    <ClInclude Include="src\Core\EntitiyManager.hpp" />
+    <ClInclude Include="src\Core\SystemManager.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,8 +1,12 @@
 #include <Windows.h>
-
+#include <Core/ECS.hpp>
 #include <iostream>
 #include <SDL/SDL.h>
 #include <GL/glew.h>
+
+
+#include "Core/ComponentManager.hpp"
+
 
 const float SCR_WIDTH = 1920;
 const float SCR_HEIGHT = 1080;
@@ -11,8 +15,6 @@ int main(int argc, char* argv[])
 {
 	SDL_Init(SDL_INIT_EVERYTHING);
 	std::cout << "Hello World" << std::endl;
-
-
 
 	SDL_Window* window;
 	SDL_Init(SDL_INIT_EVERYTHING);
@@ -45,6 +47,23 @@ int main(int argc, char* argv[])
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_MULTISAMPLE);
+
+	//=====
+
+	struct testComponent
+	{
+        int id;
+	};
+
+    std::unique_ptr<ComponentManager> componentManager = std::make_unique<ComponentManager>();
+    componentManager->CreateComponent<testComponent>();
+    
+
+    componentManager->AddComponent(0, testComponent{1});
+
+
+	
+    //=====
 
     bool running = true;
 	while (running)
