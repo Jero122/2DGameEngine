@@ -14,7 +14,7 @@ public:
 		assert(mSystems.find(systemName) == mSystems.end() && "System already created");
 		
 		auto system = std::make_shared<T>();
-		mSystems.insert(systemName, system);
+		mSystems.insert({ systemName, system });
 		return system;
 	}
 
@@ -22,8 +22,8 @@ public:
 	void SetSystemSignature(Signature signature)
 	{
 		const char* systemName = typeid(T).name();
-		assert(mSignatures.find(systemName) != mSignatures.end() && "System used before creation");
-		mSignatures[systemName].set(signature);
+		assert(mSignatures.find(systemName) == mSignatures.end() && "System used before creation");
+		mSignatures.insert({ systemName, signature });
 	}
 	void EntitySignatureChanged(Entity entity, Signature entitySignature)
 	{
