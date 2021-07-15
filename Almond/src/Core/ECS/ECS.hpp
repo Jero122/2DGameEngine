@@ -46,7 +46,7 @@ public:
 	{
 		mComponentManager->AddComponent(entity, component);
 		
-		auto signature = mEntityManger->GetEntitySignature();
+		auto signature = mEntityManger->GetEntitySignature(entity);
 		signature.set(mComponentManager->GetComponentType<T>(), true);
 		mEntityManger->SetEntitySignature(entity, signature);
 		
@@ -78,7 +78,7 @@ public:
 	template<typename T>
 	std::shared_ptr<T> CreateSystem()
 	{
-		mSystemManager->CreateSystem<T>();
+		return mSystemManager->CreateSystem<T>();
 	}
 	template<typename T>
 	void SetSystemSignature(Signature signature)
