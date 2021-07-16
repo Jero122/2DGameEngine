@@ -13,7 +13,7 @@ using Signature = std::bitset <MAX_COMPONENTS>;
 
 class System
 {
-public:
+public:	
 	virtual void start() = 0;
 	virtual void update() = 0;
 	std::set<Entity> mEntities;

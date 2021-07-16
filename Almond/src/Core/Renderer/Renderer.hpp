@@ -1,43 +1,50 @@
 #pragma once
 #include <iostream>
+
+#include "Shader.h"
 #include "Core/ECS/ECSTypes.hpp"
 #include "GL/glew.h"
 #include "SDL/SDL.h"
+#include "stb/stb_image.h"
+
+#define ASSERT(x) if (!(x)) __debugbreak();
+#define GLCALL(x) GLClearError();\
+	x;\
+	ASSERT(GLLogCall(#x, __FILE__, __LINE__))
+
+static void GLClearError()
+{
+	while (glGetError() != GL_NO_ERROR);
+}
+static bool GLLogCall(const char * function, const char* file, int line)
+{
+	while (GLenum error = glGetError())
+	{
+		std::cout << "[OpenGL Error] (" << error << "): " << function << " " << file << ":" << line << std::endl;
+		return false;
+	}
+	return true;
+}
 
 class Renderer: public System
 {
-public:
-	explicit Renderer(SDL_Window* window)
-		: mWindow(window)
-	{
-
-		SDL_GLContext mainContext = SDL_GL_CreateContext(mWindow);
-		if (glewInit() != GLEW_OK)
-		{
-			std::cout << "GLEW DIDNT INIT";
-		}
-
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_MULTISAMPLE);
-	}
-
-	void start() override
-	{
-		
-	}
-	void update() override
-	{
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClearDepth(1.0);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		SDL_GL_SwapWindow(mWindow);
-		glFlush();
-	}
-
 
 private:
+
+	/*
+	unsigned int VAO;
+	unsigned int VBO;
+	unsigned int EBO;
+
+    unsigned int texture; */
+    Shader shader;
+   
+
+public:
+	void start() override;
+	void update() override;
 	SDL_Window* mWindow;
+	
 };
 
 

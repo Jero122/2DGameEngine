@@ -91,9 +91,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="src\Core\Renderer\Camera.cpp" />
+    <ClCompile Include="src\Core\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Core\Renderer\Renderer.hpp" />
+    <ClCompile Include="src\Core\Renderer\Shader.cpp" />
     <ClCompile Include="src\Core\WindowManager.cpp" />
     <ClCompile Include="src\vendor\glm\detail\glm.cpp" />
+    <ClCompile Include="src\vendor\stb\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Core\Components\SpriteRender.h" />
@@ -104,6 +108,8 @@
     <ClInclude Include="src\Core\ECS\ECSTypes.hpp" />
     <ClInclude Include="src\Core\ECS\EntitiyManager.hpp" />
     <ClInclude Include="src\Core\ECS\SystemManager.hpp" />
+    <ClInclude Include="src\Core\Renderer\Camera.h" />
+    <ClInclude Include="src\Core\Renderer\Shader.h" />
     <ClInclude Include="src\Core\WindowManager.hpp" />
     <ClInclude Include="src\vendor\glm\common.hpp" />
     <ClInclude Include="src\vendor\glm\detail\compute_common.hpp" />
@@ -387,8 +393,10 @@
     <ClInclude Include="src\vendor\glm\vec3.hpp" />
     <ClInclude Include="src\vendor\glm\vec4.hpp" />
     <ClInclude Include="src\vendor\glm\vector_relational.hpp" />
+    <ClInclude Include="src\vendor\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\Core\Renderer\Shaders\Basic.glsl" />
     <None Include="src\vendor\glm\detail\func_common.inl" />
     <None Include="src\vendor\glm\detail\func_common_simd.inl" />
     <None Include="src\vendor\glm\detail\func_exponential.inl" />
