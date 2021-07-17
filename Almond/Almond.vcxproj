@@ -91,15 +91,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="src\Core\Renderer\Camera.cpp" />
     <ClCompile Include="src\Core\Renderer\Renderer.cpp" />
-    <ClCompile Include="src\Core\Renderer\Renderer.hpp" />
     <ClCompile Include="src\Core\Renderer\Shader.cpp" />
     <ClCompile Include="src\Core\WindowManager.cpp" />
     <ClCompile Include="src\vendor\glm\detail\glm.cpp" />
     <ClCompile Include="src\vendor\stb\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Core\Renderer\Renderer.h" />
     <ClInclude Include="src\Core\Components\SpriteRender.h" />
     <ClInclude Include="src\Core\Components\Transform.h" />
     <ClInclude Include="src\Core\ECS\ComponentManager.hpp" />
@@ -108,7 +107,6 @@
     <ClInclude Include="src\Core\ECS\ECSTypes.hpp" />
     <ClInclude Include="src\Core\ECS\EntitiyManager.hpp" />
     <ClInclude Include="src\Core\ECS\SystemManager.hpp" />
-    <ClInclude Include="src\Core\Renderer\Camera.h" />
     <ClInclude Include="src\Core\Renderer\Shader.h" />
     <ClInclude Include="src\Core\WindowManager.hpp" />
     <ClInclude Include="src\vendor\glm\common.hpp" />
@@ -396,7 +394,7 @@
     <ClInclude Include="src\vendor\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="src\Core\Renderer\Shaders\Basic.glsl" />
+    <None Include="resources\shaders\Basic.glsl" />
     <None Include="src\vendor\glm\detail\func_common.inl" />
     <None Include="src\vendor\glm\detail\func_common_simd.inl" />
     <None Include="src\vendor\glm\detail\func_exponential.inl" />
@@ -533,6 +531,9 @@
     <None Include="src\vendor\glm\gtx\vector_angle.inl" />
     <None Include="src\vendor\glm\gtx\vector_query.inl" />
     <None Include="src\vendor\glm\gtx\wrap.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\textures\container.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

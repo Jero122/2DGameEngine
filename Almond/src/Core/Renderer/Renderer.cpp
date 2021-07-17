@@ -1,83 +1,98 @@
-#include "Renderer.hpp"
+#include "Renderer.h"
+#include "Core/WindowManager.hpp"
+#include "stb/stb_image.h"
 
-float vertices[] = {
-	// positions          // colors           // texture coords
-	 0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
-	 0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
-	-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
-	-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left 
-};
 
-float indices[]
-{
-	0, 1, 3,
-	1, 2 ,3
-};
+
 
 void Renderer::start()
 {
-	SDL_GLContext mainContext = SDL_GL_CreateContext(mWindow);
+	SDL_GLContext mainContext = SDL_GL_CreateContext(WindowManager::instance().window);
 	if (glewInit() != GLEW_OK)
 	{
 		std::cout << "GLEW DIDNT INIT";
 	}
 
-	/*GLCALL(glEnable(GL_DEPTH_TEST));
-	GLCALL(glEnable(GL_MULTISAMPLE));
+	glEnable(GL_MULTISAMPLE);
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-	GLCALL(glGenVertexArrays(1, &VAO));
-	GLCALL(glGenBuffers(1, &VBO));
-	GLCALL(glGenBuffers(1, &EBO));
-
-	GLCALL(glBindVertexArray(VAO));
-	GLCALL(glBindBuffer(GL_ARRAY_BUFFER, VBO));
-	GLCALL(glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW));
-
-	GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO));
-	GLCALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
-
-	GLCALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0));
-	GLCALL(glEnableVertexAttribArray(0));
-	GLCALL(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float))));
-	GLCALL(glEnableVertexAttribArray(1));
-	GLCALL(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float))));
-	GLCALL(glEnableVertexAttribArray(2));*/
-
-	/*//Create Shader
-	std::string shaderPath("Shaders/Basic.glsl");
-	Shader shader(shaderPath);
+	//Create Shader
+	std::string shaderPath("resources/shaders/Basic.glsl");
+	shader = Shader();
+	shader.init(shaderPath);
 	shader.use();
+
 	//Create Texture
-	texture = loadTexture("tesources/textures/container.png");*/
+	texture = loadTexture("resources/textures/container.jpg");
 	
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
+	// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+	glBindVertexArray(VAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	// position attribute
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	// color attribute
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+	// texture coord attribute
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);
+
+
+	// note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	// remember: do NOT unbind the EBO while a VAO is active as the bound element buffer object IS stored in the VAO; keep the EBO bound.
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+	// You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this rarely happens. Modifying other
+	// VAOs requires a call to glBindVertexArray anyways so we generally don't unbind VAOs (nor VBOs) when it's not directly necessary.
+	glBindVertexArray(0);
+
+
+	// uncomment this call to draw in wireframe polygons.
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	// bind Texture
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	// render container
+	shader.use();
 }
 
 void Renderer::update()
 {
 	
-	GLCALL(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
-	GLCALL(glClearDepth(1.0));
-	GLCALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-	/*
-	for(auto const& entity : mEntities)
+	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	for (auto& const entitiy: mEntities)
 	{
-		//TODO use SpriteRender's shader in the future
-		shader.use();
-		//TODO use SpriteRender's texture in the future
+		//TODO use SpriteRender's exture
+		// bind Texture
 		glBindTexture(GL_TEXTURE_2D, texture);
 
+		//TODO use SpriteRender's Shader;
+		shader.use();
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	}
-	*/
+	
 
-	SDL_GL_SwapWindow(mWindow);
-	GLCALL(glFlush());
+	SDL_GL_SwapWindow(WindowManager::instance().window);
+	glFlush();
 }
 
-
-/*unsigned Renderer::loadTexture(char const* path)
+unsigned int Renderer::loadTexture(char const* path)
 {
 	unsigned int textureID;
 	glGenTextures(1, &textureID);
@@ -112,4 +127,4 @@ void Renderer::update()
 	}
 
 	return textureID;
-}*/
+}

@@ -7,7 +7,8 @@ class Shader
 {
 public:
 	unsigned int ID;
-	Shader(std::string& sourcePath);
+	Shader() {};
+	void init(std::string& sourcePath);
 	void use();
 	void setBool(const std::string& name, bool value) const;
 	void setInt(const std::string& name, int value) const;

@@ -4,7 +4,7 @@
 #include <fstream>
 #include <GL/glew.h> // include glad to get all the required OpenGL headers
 
-Shader::Shader(std::string& sourcePath)
+void Shader::init(std::string& sourcePath)
 {
 
 	std::ifstream stream(sourcePath);
