@@ -3,5 +3,7 @@
 
 struct SpriteRender
 {
+	float width;
+	float height;
 	glm::vec3 colour;
 };

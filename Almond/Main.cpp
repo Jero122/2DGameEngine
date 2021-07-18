@@ -14,57 +14,7 @@
 const float SCR_WIDTH = 1920;
 const float SCR_HEIGHT = 1080;
 
-const char* vertexShaderSource = "#version 330 core\n"
-"layout (location = 0) in vec3 aPos;\n"
-"void main()\n"
-"{\n"
-"   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-"}\0";
-const char* fragmentShaderSource = "#version 330 core\n"
-"out vec4 FragColor;\n"
-"void main()\n"
-"{\n"
-"   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-"}\n\0";
-
 ECS ecs;
-
-unsigned int loadTexture(char const* path)
-{
-	unsigned int textureID;
-	glGenTextures(1, &textureID);
-
-	int width, height, nrComponents;
-	unsigned char* data = stbi_load(path, &width, &height, &nrComponents, 0);
-	if (data)
-	{
-		GLenum format;
-		if (nrComponents == 1)
-			format = GL_RED;
-		else if (nrComponents == 3)
-			format = GL_RGB;
-		else if (nrComponents == 4)
-			format = GL_RGBA;
-
-		glBindTexture(GL_TEXTURE_2D, textureID);
-		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-		stbi_image_free(data);
-	}
-	else
-	{
-		std::cout << "Texture failed to load at path: " << path << std::endl;
-		stbi_image_free(data);
-	}
-
-	return textureID;
-}
 
 int main(int argc, char* argv[])
 {
@@ -82,15 +32,13 @@ int main(int argc, char* argv[])
         ecs.SetSystemSignature<Renderer>(signature);
     }
 
-    
-
     auto entity = ecs.CreateEntity();
     {
-        auto pos = glm::vec3{ 0.0f,0.0f,0.0f };
+        auto pos = glm::vec3{ 1.0f,0.0f,0.0f };
         auto rot = glm::vec3{ 0.0f,0.0f,0.0f };
         auto scale = glm::vec3{ 0.0f,0.0f,0.0f };
         ecs.AddComponent(entity, Transform{ pos,rot,scale });
-        ecs.AddComponent(entity, SpriteRender{ glm::vec3{255,255,255} });
+        ecs.AddComponent(entity, SpriteRender{100.0f, 100.0f, glm::vec3{255,255,255} });
     }
     renderer->start();
 

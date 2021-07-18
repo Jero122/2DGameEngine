@@ -1,9 +1,16 @@
 #include "Renderer.h"
+
+#include "Camera.h"
 #include "Core/WindowManager.hpp"
+#include "Core/Components/SpriteRender.h"
+#include "Core/Components/Transform.h"
+#include "Core/ECS/ECS.hpp"
 #include "stb/stb_image.h"
 
 
+Camera camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
+extern ECS ecs;
 
 void Renderer::start()
 {
@@ -14,6 +21,7 @@ void Renderer::start()
 	}
 
 	glEnable(GL_MULTISAMPLE);
+	
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
 	//Create Shader
@@ -68,21 +76,46 @@ void Renderer::start()
 	shader.use();
 }
 
+
 void Renderer::update()
 {
-	
-
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	for (auto& const entitiy: mEntities)
+	
+
+
+	glm::mat4 view = glm::mat4(1.0f);
+	view = camera.GetViewMatrix();
+	glm::mat4 projection = glm::ortho(0.0f, 1920.0f, 1080.0f, 0.0f, -1.0f, 1.0f);
+
+	
+	for (auto& const entity: mEntities)
 	{
+		auto& transform = ecs.GetComponent<Transform>(entity);
+		auto& spriteRender = ecs.GetComponent<SpriteRender>(entity);
+		
+		
 		//TODO use SpriteRender's exture
 		// bind Texture
 		glBindTexture(GL_TEXTURE_2D, texture);
 
-		//TODO use SpriteRender's Shader;
-		shader.use();
+		//SPRITE SIZE
+		glm::vec2 size = glm::vec2(spriteRender.width, spriteRender.height);
+		
+		//VIEWSPACE ORIGIN
+		glm::vec3 viewSpaceTransform = glm::vec3(transform.position.x + (1920/2), transform.position.y + (1080/2), transform.position.z);
+		glm::mat4 model = glm::mat4(1.0f);
+		//SPRITE ORIGIN
+		model = glm::translate(model, viewSpaceTransform);
+		model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f));
+		model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f));
+		model = glm::scale(model, glm::vec3(size, 1.0f));
+		
+		shader.setMat4("model", model);
+		shader.setMat4("view", view);
+		//shader.setMat4("view", view);
+		shader.setMat4("projection", projection);
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	}
