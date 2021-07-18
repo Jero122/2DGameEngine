@@ -1,3 +1,4 @@
+#include <random>
 #include <Windows.h>
 #include <Core/ECS/ECS.hpp>
 #include "Core/WindowManager.hpp"
@@ -32,19 +33,33 @@ int main(int argc, char* argv[])
         ecs.SetSystemSignature<Renderer>(signature);
     }
 
-    auto entity = ecs.CreateEntity();
+    std::default_random_engine generator;
+    std::uniform_real_distribution<float> randPosition(-800.0f, 800.0f);
+    std::uniform_real_distribution<float> randRotation(0.0f, 3.0f);
+    std::uniform_real_distribution<float> randScale(3.0f, 5.0f);
+    std::uniform_real_distribution<float> randGravity(-10.0f, -1.0f);
+	
+    for (int i = 0; i < 300; ++i)
     {
-        auto pos = glm::vec3{ 1.0f,0.0f,0.0f };
-        auto rot = glm::vec3{ 0.0f,0.0f,0.0f };
-        auto scale = glm::vec3{ 0.0f,0.0f,0.0f };
-        ecs.AddComponent(entity, Transform{ pos,rot,scale });
-        ecs.AddComponent(entity, SpriteRender{100.0f, 100.0f, glm::vec3{255,255,255} });
+        auto entity = ecs.CreateEntity();
+        {
+            auto pos = glm::vec3{ 1.0f,0.0f,0.0f };
+            auto rot = glm::vec3{ 0.0f,0.0f,0.0f };
+            auto scale = glm::vec3{ 0.0f,0.0f,0.0f };
+            ecs.AddComponent(entity, Transform{ glm::vec3(randPosition(generator),randPosition(generator), 0),rot,scale});
+            ecs.AddComponent(entity, SpriteRender{ 50.0f, 50.0f, glm::vec3{255,255,255} });
+        }
     }
+   
     renderer->start();
-
+	
     bool running = true;
 	while (running)
 	{
+        Uint32 start_time, frame_time;
+        start_time = SDL_GetTicks();
+        float fps;
+		
         SDL_Event e;
         while (SDL_PollEvent(&e))
         {
@@ -55,6 +70,11 @@ int main(int argc, char* argv[])
             }
         }
         renderer->update();
+        frame_time = SDL_GetTicks() - start_time;
+        fps = (frame_time > 0) ? 1000.0f / frame_time : 0.0f;
+        std::cout << fps << std::endl;
+
+
 	}
     SDL_Quit();
     return 0;

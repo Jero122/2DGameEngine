@@ -45,8 +45,8 @@ private:
 		-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left 
 	};
 	unsigned int indices[6] = {  // note that we start from 0!
-		0, 1, 3,  // first Triangle
-		1, 2, 3   // second Triangle
+		3, 2, 0,  // first Triangle
+		0, 2, 1   // second Triangle
 	};
 
 	unsigned loadTexture(const char* path);

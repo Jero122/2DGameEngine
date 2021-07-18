@@ -104,8 +104,9 @@ void Renderer::update()
 		glm::vec2 size = glm::vec2(spriteRender.width, spriteRender.height);
 		
 		//VIEWSPACE ORIGIN
-		glm::vec3 viewSpaceTransform = glm::vec3(transform.position.x + (1920/2), transform.position.y + (1080/2), transform.position.z);
+		glm::vec3 viewSpaceTransform = glm::vec3(transform.position.x + (1920/2), transform.position.y + (1080/2), 0);
 		glm::mat4 model = glm::mat4(1.0f);
+
 		//SPRITE ORIGIN
 		model = glm::translate(model, viewSpaceTransform);
 		model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f));
