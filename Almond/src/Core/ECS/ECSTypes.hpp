@@ -4,7 +4,7 @@
 #include <set>
 
 using Entity = std::uint32_t;
-const Entity MAX_ENTITIES = 10000;
+const Entity MAX_ENTITIES = 20000;
 
 using ComponentType = std::uint8_t;
 const ComponentType MAX_COMPONENTS = 32;
@@ -16,5 +16,7 @@ class System
 public:
 	virtual void start(){};
 	virtual void update(){};
+	virtual void entityAdded(Entity entity) {};
+	virtual void entityRemoved(Entity entity) {};
 	std::set<Entity> mEntities;
 };

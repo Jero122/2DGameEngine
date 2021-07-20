@@ -1,9 +1,9 @@
 #pragma once
-#include "glm/vec3.hpp"
+#include "glm/vec4.hpp"
 
 struct SpriteRender
 {
 	float width;
 	float height;
-	glm::vec3 colour;
+	glm::vec4 colour;
 };

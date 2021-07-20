@@ -8,22 +8,34 @@
 #include "stb/stb_image.h"
 
 
-Camera camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+Camera camera = Camera();
 
 extern ECS ecs;
+Renderbatch renderBatch = Renderbatch();
 
-void Renderer::start()
+
+void Renderer::entityAdded(Entity entity)
 {
-	SDL_GLContext mainContext = SDL_GL_CreateContext(WindowManager::instance().window);
-	if (glewInit() != GLEW_OK)
-	{
-		std::cout << "GLEW DIDNT INIT";
-	}
-
-	glEnable(GL_MULTISAMPLE);
 	
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+}
 
+void Renderer::entityRemoved(Entity entity)
+{
+	
+}
+
+void Renderer::renderBatchInit()
+{
+	renderBatch.init();
+	renderBatch.beginBatch();
+	for (auto entity : mEntities)
+	{
+		renderBatch.addSprite(ecs.GetComponent<Transform>(entity), ecs.GetComponent<SpriteRender>(entity));
+	}
+}
+
+void Renderer::nonRenderBatchInit()
+{
 	//Create Shader
 	std::string shaderPath("resources/shaders/Basic.glsl");
 	shader = Shader();
@@ -76,16 +88,36 @@ void Renderer::start()
 	shader.use();
 }
 
+void Renderer::start()
+{
+	SDL_GLContext mainContext = SDL_GL_CreateContext(WindowManager::instance().window);
+	if (glewInit() != GLEW_OK)
+	{
+		std::cout << "GLEW DIDNT INIT";
+	}
+
+	glEnable(GL_MULTISAMPLE);
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	
+	camera.init(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	renderBatchInit();
+
+	/*nonRenderBatchInit();*/
+}
+
 
 void Renderer::update()
 {
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
+
+	renderBatch.endBatch();
+	renderBatch.flush();
+
 	
 
-
-	glm::mat4 view = glm::mat4(1.0f);
+	/*glm::mat4 view = glm::mat4(1.0f);
 	view = camera.GetViewMatrix();
 	glm::mat4 projection = glm::ortho(0.0f, 1920.0f, 1080.0f, 0.0f, -1.0f, 1.0f);
 
@@ -114,17 +146,19 @@ void Renderer::update()
 		model = glm::scale(model, glm::vec3(size, 1.0f));
 		
 		shader.setMat4("model", model);
-		shader.setMat4("view", view);
+		/*shader.setMat4("view", view);#1#
 		//shader.setMat4("view", view);
 		shader.setMat4("projection", projection);
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-	}
+	}*/
 	
 
 	SDL_GL_SwapWindow(WindowManager::instance().window);
 	glFlush();
 }
+
+
 
 unsigned int Renderer::loadTexture(char const* path)
 {
@@ -162,3 +196,4 @@ unsigned int Renderer::loadTexture(char const* path)
 
 	return textureID;
 }
+

@@ -4,6 +4,8 @@
 #include <queue>
 #include <array>
 #include <cassert>
+#include <iostream>
+
 #include "ECSTypes.hpp"
 
 
@@ -16,6 +18,7 @@ public:
 		{
 			mFreeEntities.push(entity);
 		}
+		std::cout << "\n size if entities:" << sizeof(mFreeEntities) << std::endl;
 	}
 
 	Entity CreateEntity()

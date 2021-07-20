@@ -26,7 +26,7 @@ public:
 private:
 	WindowManager()
 	{
-		std::cout << "This should be called once";
+		std::cout << "Window manager initialised" << std::endl;
 	}
 };
 

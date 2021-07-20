@@ -21,7 +21,7 @@ public:
     float speed = 2.5f;
     float lookSensitivity = 0.1f;
 
-    Camera(glm::vec3 position, glm::vec3 front, glm::vec3 up);
+    void init(glm::vec3 position, glm::vec3 front, glm::vec3 up);
     void Move(CAMERA_MOVEMENT movement, float deltaTime);
     void MouseMovement(float deltaX, float deltaY);
     void Zoom(float value);

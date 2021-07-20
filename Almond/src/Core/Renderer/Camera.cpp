@@ -1,10 +1,13 @@
 #include "Camera.h"
 
 
-Camera::Camera(glm::vec3 position, glm::vec3 front, glm::vec3 up)
-	:position(position),front(front),up(up)
+
+void Camera::init(glm::vec3 position, glm::vec3 front, glm::vec3 up)
 {
-	right = glm::normalize(glm::cross(front, up));
+	this->position = position;
+	this->front = front;
+	this->up = up;
+	this->right = glm::normalize(glm::cross(front, up));
 }
 
 void Camera::Move(CAMERA_MOVEMENT movement, float deltaTime)

@@ -34,12 +34,12 @@ int main(int argc, char* argv[])
     }
 
     std::default_random_engine generator;
-    std::uniform_real_distribution<float> randPosition(-800.0f, 800.0f);
+    std::uniform_real_distribution<float> randPosition(0.0f, 1920.0f);
     std::uniform_real_distribution<float> randRotation(0.0f, 3.0f);
-    std::uniform_real_distribution<float> randScale(3.0f, 5.0f);
+    std::uniform_real_distribution<float> randScale(0.8f, 1.5f);
     std::uniform_real_distribution<float> randGravity(-10.0f, -1.0f);
 	
-    for (int i = 0; i < 300; ++i)
+    for (int i = 0; i < 20000; ++i)
     {
         auto entity = ecs.CreateEntity();
         {
@@ -47,11 +47,29 @@ int main(int argc, char* argv[])
             auto rot = glm::vec3{ 0.0f,0.0f,0.0f };
             auto scale = glm::vec3{ 0.0f,0.0f,0.0f };
             ecs.AddComponent(entity, Transform{ glm::vec3(randPosition(generator),randPosition(generator), 0),rot,scale});
-            ecs.AddComponent(entity, SpriteRender{ 50.0f, 50.0f, glm::vec3{255,255,255} });
+            ecs.AddComponent(entity, SpriteRender{ 10.0f * randScale(generator), 10.0f * randScale(generator), glm::vec4{255,255,255, 1} });
         }
     }
-   
+    /*auto entity = ecs.CreateEntity();
+    {
+        auto pos = glm::vec3{ 100.0f,100.0f,0.0f };
+        auto rot = glm::vec3{ 0.0f,0.0f,0.0f };
+        auto scale = glm::vec3{ 0.0f,0.0f,0.0f };
+    	
+        ecs.AddComponent(entity, Transform{ pos,rot,scale });
+        ecs.AddComponent(entity, SpriteRender{ 50.0f, 50.0f, glm::vec4{255,255,255, 1} });
+    }
+    auto entity2 = ecs.CreateEntity();
+    {
+        auto pos = glm::vec3{ 300.0f,300.0f,0.0f };
+        auto rot = glm::vec3{ 0.0f,0.0f,0.0f };
+        auto scale = glm::vec3{ 0.0f,0.0f,0.0f };
+        ecs.AddComponent(entity2, Transform{ pos,rot,scale });
+        ecs.AddComponent(entity2, SpriteRender{ 50.0f, 50.0f, glm::vec4{155,25,75, 1} });
+    }*/
     renderer->start();
+
+    float lastFFPSPrintTime = 0;
 	
     bool running = true;
 	while (running)
