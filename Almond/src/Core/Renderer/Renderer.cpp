@@ -11,7 +11,9 @@
 Camera camera = Camera();
 
 extern ECS ecs;
-Renderbatch renderBatch = Renderbatch();
+std::vector<Renderbatch> renderBatches;
+
+/*Renderbatch renderBatch = Renderbatch();*/
 
 
 void Renderer::entityAdded(Entity entity)
@@ -24,13 +26,24 @@ void Renderer::entityRemoved(Entity entity)
 	
 }
 
-void Renderer::renderBatchInit()
+void Renderer::add(Entity entity)
 {
-	renderBatch.init();
-	renderBatch.beginBatch();
-	for (auto entity : mEntities)
+	boolean added = false;
+	for (auto &render_batch : renderBatches)
 	{
-		renderBatch.addSprite(ecs.GetComponent<Transform>(entity), ecs.GetComponent<SpriteRender>(entity));
+		if (!(render_batch.indexCount >= Renderbatch::MAX_INDEX_COUNT))
+		{
+			render_batch.addSprite(ecs.GetComponent<Transform>(entity), ecs.GetComponent<SpriteRender>(entity));
+			added = true;
+		}
+	}
+	if (!added)
+	{
+		Renderbatch *newRenderBatch = new Renderbatch();
+		newRenderBatch->init();
+		newRenderBatch->beginBatch();
+		newRenderBatch->addSprite(ecs.GetComponent<Transform>(entity), ecs.GetComponent<SpriteRender>(entity));
+		renderBatches.push_back(*newRenderBatch);
 	}
 }
 
@@ -100,8 +113,12 @@ void Renderer::start()
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	
 	camera.init(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	renderBatchInit();
 
+	for (auto &entity : mEntities)
+	{
+		add(entity);
+	}
+	
 	/*nonRenderBatchInit();*/
 }
 
@@ -111,9 +128,20 @@ void Renderer::update()
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-
+	for (auto &render_batch : renderBatches)
+	{
+		if (render_batch.batchEnded == false)
+		{
+			render_batch.endBatch();
+			render_batch.batchEnded = true;
+		}
+		render_batch.flush();
+	}
+	
+	/*renderBatch.beginBatch();
+	
 	renderBatch.endBatch();
-	renderBatch.flush();
+	renderBatch.flush();*/
 
 	
 

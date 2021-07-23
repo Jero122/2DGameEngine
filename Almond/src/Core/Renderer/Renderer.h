@@ -33,9 +33,7 @@ static bool GLLogCall(const char* function, const char* file, int line)
 
 
 
-static const int MAX_BATCH_COUNT = 20000;
-static const int MAX_VERTEX_COUNT = MAX_BATCH_COUNT * 4;
-static const int MAX_INDEX_COUNT = MAX_BATCH_COUNT * 6;
+
 
 typedef struct Vertex
 {
@@ -60,7 +58,7 @@ private:
 
 	int numSprite = 0;
 
-	int indexCount = 0;
+	
 	Vertex* vertexBuffer = nullptr;
 	Vertex* vertexBufferPtr = nullptr;
 	
@@ -73,6 +71,11 @@ private:
 
 
 public:
+	int indexCount = 0;
+	bool batchEnded = false;
+	static const int MAX_BATCH_COUNT = 20000;
+	static const int MAX_VERTEX_COUNT = MAX_BATCH_COUNT * 4;
+	static const int MAX_INDEX_COUNT = MAX_BATCH_COUNT * 6;
 	Renderbatch()
 	{
 		
@@ -80,7 +83,6 @@ public:
 
 	void init()
 	{
-		std::cout << sizeof(Vertex) << std::endl;
 		std::string shaderPath("resources/shaders/Basic.glsl");
 		shader = Shader();
 		shader.init(shaderPath);
@@ -88,18 +90,12 @@ public:
 		vertexBuffer = new Vertex[MAX_VERTEX_COUNT];
 
 		GLCALL(glGenVertexArrays(1, &VAO));
-		GLCALL(glGenBuffers(1, &VBO));
-
 		GLCALL(glBindVertexArray(VAO));
+
+		GLCALL(glGenBuffers(1, &VBO));
 		GLCALL(glBindBuffer(GL_ARRAY_BUFFER, VBO));
-
-		GLCALL(glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * 4, vertexBuffer, GL_DYNAMIC_DRAW));
-
-		/*GLCALL(glVertexAttribPointer(0, POS_COUNT, GL_FLOAT, GL_FALSE, VERTEX_ELEMENT_COUNT * sizeof(float), (void*)(POS_OFFSET * sizeof(float))));
-		GLCALL(glEnableVertexAttribArray(0));
-		GLCALL(glVertexAttribPointer(1, COLOR_COUNT, GL_FLOAT, GL_FALSE, VERTEX_ELEMENT_COUNT * sizeof(float), (void*)(COLOR_OFFSET * sizeof(float))));
-		GLCALL(glEnableVertexAttribArray(1));*/
-
+		GLCALL(glBufferData(GL_ARRAY_BUFFER, MAX_VERTEX_COUNT * sizeof(Vertex), nullptr, GL_DYNAMIC_DRAW));
+		
 		GLCALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, VERTEX_ELEMENT_COUNT * sizeof(float), (void*)0));
 		GLCALL(glEnableVertexAttribArray(0));
 		// color attribute
@@ -124,6 +120,7 @@ public:
 		}
 
 
+
 		vertexBufferPtr = vertexBuffer;
 
 		GLCALL(glGenBuffers(1, &EBO));
@@ -136,6 +133,7 @@ public:
 	void beginBatch()
 	{
 		vertexBufferPtr = vertexBuffer;
+		indexCount = 0;
 	}
 
 	void endBatch()
@@ -143,7 +141,7 @@ public:
 		GLsizeiptr size = vertexBufferPtr - vertexBuffer;
 		size = size * sizeof(Vertex);
 		GLCALL(glBindBuffer(GL_ARRAY_BUFFER, VBO));
-		GLCALL(glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * 4 * MAX_BATCH_COUNT, vertexBuffer, GL_DYNAMIC_DRAW));
+		/*GLCALL(glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * 4 * MAX_BATCH_COUNT, vertexBuffer, GL_DYNAMIC_DRAW));*/
 		GLCALL(glBufferSubData(GL_ARRAY_BUFFER, 0, size, vertexBuffer));
 	}
 
@@ -201,6 +199,12 @@ public:
 	void addSprite(const Transform &transform, const SpriteRender &sprite)
 	{
 		/*sprites.push_back(sprite);*/
+		/*if (indexCount >= MAX_INDEX_COUNT)
+		{
+			endBatch();
+			flush();
+			beginBatch();
+		}*/
 		generateVertices(transform, sprite);
 	}
 
@@ -241,7 +245,7 @@ public:
 	void update() override;
 	void entityAdded(Entity entity) override;
 	void entityRemoved(Entity entity) override;
-	void renderBatchInit();
+	void add(Entity entity);
 	void nonRenderBatchInit();
 };
 

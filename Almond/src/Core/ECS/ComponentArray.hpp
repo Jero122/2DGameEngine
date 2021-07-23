@@ -16,12 +16,22 @@ template<typename T>
 class ComponentArray : public IComponentArray
 {
 private:
-	std::array<T, MAX_ENTITIES> mComponentArray{};
+	//std::array<T, MAX_ENTITIES> mComponentArray{};
+	std::vector<T> mComponentArray = std::vector<T>(MAX_ENTITIES);
+	
 	std::unordered_map<Entity, size_t> mEntityToIndexMap{};
 	std::unordered_map<size_t, Entity> mIndexToEntityMap{};
+
 	
 	int mCurrentEntityIndex = -1;
 public:
+	ComponentArray()
+	{
+		auto size = sizeof(this);
+		auto size1 = sizeof(mComponentArray) + sizeof(T) * MAX_ENTITIES;
+		auto size2 = sizeof(mEntityToIndexMap) + mEntityToIndexMap.size() * sizeof(size_t);
+		auto size3 = sizeof(mIndexToEntityMap) + mIndexToEntityMap.size() * sizeof(Entity);
+	}
 	void insertData(Entity entity, T component)
 	{
 		assert(mEntityToIndexMap.find(entity) == mEntityToIndexMap.end() && "Component added to same entity more than once.");

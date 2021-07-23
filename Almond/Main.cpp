@@ -38,8 +38,9 @@ int main(int argc, char* argv[])
     std::uniform_real_distribution<float> randRotation(0.0f, 3.0f);
     std::uniform_real_distribution<float> randScale(0.8f, 1.5f);
     std::uniform_real_distribution<float> randGravity(-10.0f, -1.0f);
-	
-    for (int i = 0; i < 20000; ++i)
+
+
+    for (int i = 0; i < 10000; ++i)
     {
         auto entity = ecs.CreateEntity();
         {
@@ -50,6 +51,8 @@ int main(int argc, char* argv[])
             ecs.AddComponent(entity, SpriteRender{ 10.0f * randScale(generator), 10.0f * randScale(generator), glm::vec4{255,255,255, 1} });
         }
     }
+
+	
     /*auto entity = ecs.CreateEntity();
     {
         auto pos = glm::vec3{ 100.0f,100.0f,0.0f };
