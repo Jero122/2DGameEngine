@@ -94,7 +94,8 @@
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="src\Core\Renderer\Camera.cpp" />
-    <ClCompile Include="src\Core\Renderer\Renderer.cpp" />
+    <ClCompile Include="src\Core\Renderer\RenderBatch.cpp" />
+    <ClCompile Include="src\Core\Renderer\Renderer2D.cpp" />
     <ClCompile Include="src\Core\Renderer\Shader.cpp" />
     <ClCompile Include="src\Core\WindowManager.cpp" />
     <ClCompile Include="src\vendor\glm\detail\glm.cpp" />
@@ -111,7 +112,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Core\Renderer\Camera.h" />
-    <ClInclude Include="src\Core\Renderer\Renderer.h" />
+    <ClInclude Include="src\Core\Renderer\GLCall.h" />
+    <ClInclude Include="src\Core\Renderer\RenderBatch.h" />
+    <ClInclude Include="src\Core\Renderer\Renderer2D.h" />
     <ClInclude Include="src\Core\Components\SpriteRender.h" />
     <ClInclude Include="src\Core\Components\Transform.h" />
     <ClInclude Include="src\Core\ECS\ComponentManager.hpp" />

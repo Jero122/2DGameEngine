@@ -1,53 +1,52 @@
-#include "Renderer.h"
+#include "Renderer2D.h"
+#include "RenderBatch.h"
 
-#include "Camera.h"
+#include <vector>
+#include "GLCall.h"
+#include <SDL/SDL.h>
+
 #include "Core/WindowManager.hpp"
-#include "Core/Components/SpriteRender.h"
-#include "Core/Components/Transform.h"
 #include "Core/ECS/ECS.hpp"
 #include "stb/stb_image.h"
 
 
-Camera camera = Camera();
-
 extern ECS ecs;
-std::vector<Renderbatch> renderBatches;
-
-/*Renderbatch renderBatch = Renderbatch();*/
+std::vector<RenderBatch> renderBatches;
 
 
-void Renderer::entityAdded(Entity entity)
+
+void Renderer2D::entityAdded(Entity entity)
 {
 	
 }
 
-void Renderer::entityRemoved(Entity entity)
+void Renderer2D::entityRemoved(Entity entity)
 {
 	
 }
 
-void Renderer::add(Entity entity)
+void Renderer2D::add(Entity entity)
 {
-	boolean added = false;
+	bool added = false;
 	for (auto &render_batch : renderBatches)
 	{
-		if (!(render_batch.indexCount >= Renderbatch::MAX_INDEX_COUNT))
+		if (!(render_batch.indexCount >= RenderBatch::MAX_INDEX_COUNT))
 		{
-			render_batch.addSprite(ecs.GetComponent<Transform>(entity), ecs.GetComponent<SpriteRender>(entity));
+			render_batch.drawQuad(ecs.GetComponent<Transform>(entity), ecs.GetComponent<SpriteRender>(entity));
 			added = true;
 		}
 	}
 	if (!added)
 	{
-		Renderbatch *newRenderBatch = new Renderbatch();
+		RenderBatch*newRenderBatch = new RenderBatch();
 		newRenderBatch->init();
 		newRenderBatch->beginBatch();
-		newRenderBatch->addSprite(ecs.GetComponent<Transform>(entity), ecs.GetComponent<SpriteRender>(entity));
+		newRenderBatch->drawQuad(ecs.GetComponent<Transform>(entity), ecs.GetComponent<SpriteRender>(entity));
 		renderBatches.push_back(*newRenderBatch);
 	}
 }
 
-void Renderer::nonRenderBatchInit()
+void Renderer2D::nonRenderBatchInit()
 {
 	//Create Shader
 	std::string shaderPath("resources/shaders/Basic.glsl");
@@ -55,8 +54,6 @@ void Renderer::nonRenderBatchInit()
 	shader.init(shaderPath);
 	shader.use();
 
-	//Create Texture
-	texture = loadTexture("resources/textures/container.jpg");
 	
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -94,45 +91,81 @@ void Renderer::nonRenderBatchInit()
 
 	// uncomment this call to draw in wireframe polygons.
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	// bind Texture
-	glBindTexture(GL_TEXTURE_2D, texture);
 
 	// render container
 	shader.use();
 }
 
-void Renderer::start()
+void Renderer2D::start()
 {
-
-	
-	camera.init(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-
-	for (auto &entity : mEntities)
+	if (useBatching)
 	{
-		add(entity);
-	}
-	
-	/*nonRenderBatchInit();*/
-}
-
-
-void Renderer::update()
-{
-
-	for (auto &render_batch : renderBatches)
-	{
-		if (render_batch.batchEnded == false)
+		for (auto& entity : mEntities)
 		{
-			render_batch.endBatch();
-			render_batch.batchEnded = true;
+			add(entity);
 		}
-		render_batch.flush();
+	}
+	else
+	{
+		nonRenderBatchInit();
 	}
 }
 
 
+void Renderer2D::update()
+{
+	if (useBatching)
+	{
+		for (auto& render_batch : renderBatches)
+		{
+			if (render_batch.batchEnded == false)
+			{
+				render_batch.endBatch();
+				render_batch.batchEnded = true;
+			}
+			render_batch.flush();
+		}
+	}
+	else
+	{
+		glm::mat4 view = WindowManager::instance().camera.GetViewMatrix();
+		glm::mat4 projection = glm::ortho(0.0f, 1920.0f, 1080.0f, 0.0f, -1.0f, 1.0f);
 
-unsigned int Renderer::loadTexture(char const* path)
+
+		for (auto& const entity : mEntities)
+		{
+			auto& transform = ecs.GetComponent<Transform>(entity);
+			auto& spriteRender = ecs.GetComponent<SpriteRender>(entity);
+
+			shader.use();
+			//SPRITE SIZE
+			glm::vec2 size = glm::vec2(spriteRender.width, spriteRender.height);
+
+			//VIEWSPACE ORIGIN
+			glm::vec3 viewSpaceTransform = glm::vec3(transform.position.x , transform.position.y , transform.position.z);
+			glm::mat4 model = glm::mat4(1.0f);
+			//SPRITE ORIGIN
+			model = glm::translate(model, viewSpaceTransform);
+			model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f));
+			model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f));
+			model = glm::scale(model, glm::vec3(size, 1.0f));
+
+			shader.setMat4("model", model);
+			shader.setMat4("view", view);
+			//shader.setMat4("view", view);
+			shader.setMat4("projection", projection);
+			glBindVertexArray(VAO);
+			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		}
+	}
+
+
+	
+}
+
+
+
+unsigned int Renderer2D::loadTexture(char const* path)
 {
 	unsigned int textureID;
 	glGenTextures(1, &textureID);

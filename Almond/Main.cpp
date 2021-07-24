@@ -7,7 +7,7 @@
 #include <GL/glew.h>
 #include <SDL/SDL.h>
 
-#include "Core/Renderer/Renderer.h"
+#include "Core/Renderer/Renderer2D.h"
 #include "Core/Renderer/Shader.h"
 #include "stb/stb_image.h"
 #include "imgui/imgui.h"
@@ -36,12 +36,12 @@ int main(int argc, char* argv[])
 	
     ecs.CreateComponent<SpriteRender>();
     ecs.CreateComponent<Transform>();
-    auto renderer = ecs.CreateSystem<Renderer>();
+    auto renderer = ecs.CreateSystem<Renderer2D>();
     {
         Signature signature;
         signature.set(ecs.GetComponentType<SpriteRender>());
         signature.set(ecs.GetComponentType<Transform>());
-        ecs.SetSystemSignature<Renderer>(signature);
+        ecs.SetSystemSignature<Renderer2D>(signature);
     }
 
     std::default_random_engine generator;
