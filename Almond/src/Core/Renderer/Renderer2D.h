@@ -30,7 +30,9 @@ private:
 public:
 
 	Renderer2D() {};
-	void start() override;
+	void init() override;
+	void shutdown() override;
+	
 	void update() override;
 	void entityAdded(Entity entity) override;
 	void entityRemoved(Entity entity) override;

@@ -71,8 +71,6 @@ int main(int argc, char* argv[])
     ImGui_ImplSDL2_InitForOpenGL(WindowManager::instance().window, gl_context);
     ImGui_ImplOpenGL3_Init("#version 130");
 
-
-
     /*auto entity = ecs.CreateEntity();
     {
         auto pos = glm::vec3{ 100.0f,100.0f,0.0f };
@@ -90,16 +88,13 @@ int main(int argc, char* argv[])
         ecs.AddComponent(entity2, Transform{ pos,rot,scale });
         ecs.AddComponent(entity2, SpriteRender{ 50.0f, 50.0f, glm::vec4{155,25,75, 1} });
     }*/
-    renderer->start();
+    renderer->init();
 
 
 	
     bool running = true;
 	while (running)
 	{
-        Uint32 start_time, frame_time;
-        start_time = SDL_GetTicks();
-        float fps;
 		
         SDL_Event e;
         while (SDL_PollEvent(&e))
@@ -108,7 +103,6 @@ int main(int argc, char* argv[])
             if (e.type == SDL_QUIT)
             {
                 running = false;
-                return -1;
             }
         }
 
@@ -119,20 +113,21 @@ int main(int argc, char* argv[])
         glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        {
+            ImGui::Begin("FPS");
+            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+            ImGui::End();
+        }
 		
         renderer->update();
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         SDL_GL_SwapWindow(WindowManager::instance().window);
-       
-       
-		
-        frame_time = SDL_GetTicks() - start_time;
-        fps = (frame_time > 0) ? 1000.0f / frame_time : 0.0f;
-        std::cout << fps << std::endl;
 
-       
 	}
+
+    renderer->shutdown();
 	
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();

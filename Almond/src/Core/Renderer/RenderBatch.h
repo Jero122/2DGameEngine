@@ -15,10 +15,14 @@ public:
 	RenderBatch(){}
 
 	void init();
+	void shutdown();
+	
 	void beginBatch();
 	void endBatch();
 	void flush();
+	
 	void drawQuad(const Transform& transform, const SpriteRender& sprite);
+	
 private:
 	typedef struct Vertex
 	{

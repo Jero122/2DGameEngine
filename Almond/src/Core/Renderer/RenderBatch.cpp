@@ -117,3 +117,7 @@ void RenderBatch::drawQuad(const Transform& transform, const SpriteRender& sprit
 }
 
 
+void RenderBatch::shutdown()
+{
+	delete[] vertexBuffer;
+}

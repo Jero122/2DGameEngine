@@ -14,8 +14,9 @@ using Signature = std::bitset <MAX_COMPONENTS>;
 class System
 {
 public:
-	virtual void start(){};
+	virtual void init(){};
 	virtual void update(){};
+	virtual void shutdown() {};
 	virtual void entityAdded(Entity entity) {};
 	virtual void entityRemoved(Entity entity) {};
 	std::set<Entity> mEntities;

@@ -96,7 +96,7 @@ void Renderer2D::nonRenderBatchInit()
 	shader.use();
 }
 
-void Renderer2D::start()
+void Renderer2D::init()
 {
 	if (useBatching)
 	{
@@ -164,6 +164,13 @@ void Renderer2D::update()
 }
 
 
+void Renderer2D::shutdown()
+{
+	for (auto render_batch : renderBatches)
+	{
+		render_batch.shutdown();
+	}
+}
 
 unsigned int Renderer2D::loadTexture(char const* path)
 {
