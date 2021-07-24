@@ -103,14 +103,7 @@ void Renderer::nonRenderBatchInit()
 
 void Renderer::start()
 {
-	SDL_GLContext mainContext = SDL_GL_CreateContext(WindowManager::instance().window);
-	if (glewInit() != GLEW_OK)
-	{
-		std::cout << "GLEW DIDNT INIT";
-	}
 
-	glEnable(GL_MULTISAMPLE);
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	
 	camera.init(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
@@ -125,8 +118,6 @@ void Renderer::start()
 
 void Renderer::update()
 {
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
 
 	for (auto &render_batch : renderBatches)
 	{
@@ -137,53 +128,6 @@ void Renderer::update()
 		}
 		render_batch.flush();
 	}
-	
-	/*renderBatch.beginBatch();
-	
-	renderBatch.endBatch();
-	renderBatch.flush();*/
-
-	
-
-	/*glm::mat4 view = glm::mat4(1.0f);
-	view = camera.GetViewMatrix();
-	glm::mat4 projection = glm::ortho(0.0f, 1920.0f, 1080.0f, 0.0f, -1.0f, 1.0f);
-
-	
-	for (auto& const entity: mEntities)
-	{
-		auto& transform = ecs.GetComponent<Transform>(entity);
-		auto& spriteRender = ecs.GetComponent<SpriteRender>(entity);
-		
-		
-		//TODO use SpriteRender's exture
-		// bind Texture
-		glBindTexture(GL_TEXTURE_2D, texture);
-
-		//SPRITE SIZE
-		glm::vec2 size = glm::vec2(spriteRender.width, spriteRender.height);
-		
-		//VIEWSPACE ORIGIN
-		glm::vec3 viewSpaceTransform = glm::vec3(transform.position.x + (1920/2), transform.position.y + (1080/2), 0);
-		glm::mat4 model = glm::mat4(1.0f);
-
-		//SPRITE ORIGIN
-		model = glm::translate(model, viewSpaceTransform);
-		model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f));
-		model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f));
-		model = glm::scale(model, glm::vec3(size, 1.0f));
-		
-		shader.setMat4("model", model);
-		/*shader.setMat4("view", view);#1#
-		//shader.setMat4("view", view);
-		shader.setMat4("projection", projection);
-		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-	}*/
-	
-
-	SDL_GL_SwapWindow(WindowManager::instance().window);
-	glFlush();
 }
 
 

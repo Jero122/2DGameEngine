@@ -10,7 +10,9 @@
 #include "Core/Renderer/Renderer.h"
 #include "Core/Renderer/Shader.h"
 #include "stb/stb_image.h"
-
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_opengl3.h"
+#include "imgui/imgui_impl_sdl.h"
 
 const float SCR_WIDTH = 1920;
 const float SCR_HEIGHT = 1080;
@@ -23,6 +25,15 @@ int main(int argc, char* argv[])
     WindowManager window_manager = WindowManager::instance();
     window_manager.Init("OUR OpenGL Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCR_WIDTH, SCR_HEIGHT, SDL_WINDOW_OPENGL);
 
+    SDL_GLContext gl_context = SDL_GL_CreateContext(WindowManager::instance().window);
+    if (glewInit() != GLEW_OK)
+    {
+        std::cout << "GLEW DIDNT INIT";
+    }
+
+    glEnable(GL_MULTISAMPLE);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	
     ecs.CreateComponent<SpriteRender>();
     ecs.CreateComponent<Transform>();
     auto renderer = ecs.CreateSystem<Renderer>();
@@ -52,7 +63,16 @@ int main(int argc, char* argv[])
         }
     }
 
-	
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGui::StyleColorsDark();
+
+    ImGui_ImplSDL2_InitForOpenGL(WindowManager::instance().window, gl_context);
+    ImGui_ImplOpenGL3_Init("#version 130");
+
+
+
     /*auto entity = ecs.CreateEntity();
     {
         auto pos = glm::vec3{ 100.0f,100.0f,0.0f };
@@ -72,7 +92,7 @@ int main(int argc, char* argv[])
     }*/
     renderer->start();
 
-    float lastFFPSPrintTime = 0;
+
 	
     bool running = true;
 	while (running)
@@ -84,19 +104,42 @@ int main(int argc, char* argv[])
         SDL_Event e;
         while (SDL_PollEvent(&e))
         {
+            ImGui_ImplSDL2_ProcessEvent(&e);
             if (e.type == SDL_QUIT)
             {
                 running = false;
                 return -1;
             }
         }
+
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplSDL2_NewFrame(WindowManager::instance().window);
+        ImGui::NewFrame();
+
+        glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+		
         renderer->update();
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        SDL_GL_SwapWindow(WindowManager::instance().window);
+       
+       
+		
         frame_time = SDL_GetTicks() - start_time;
         fps = (frame_time > 0) ? 1000.0f / frame_time : 0.0f;
         std::cout << fps << std::endl;
 
-
+       
 	}
-    SDL_Quit();
-    return 0;
+	
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplSDL2_Shutdown();
+	ImGui::DestroyContext();
+
+	SDL_GL_DeleteContext(gl_context);
+	SDL_DestroyWindow(WindowManager::instance().window);
+	SDL_Quit();
+	return 0;
 }
