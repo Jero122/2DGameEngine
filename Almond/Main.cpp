@@ -49,9 +49,10 @@ int main(int argc, char* argv[])
     std::uniform_real_distribution<float> randRotation(0.0f, 3.0f);
     std::uniform_real_distribution<float> randScale(0.8f, 1.5f);
     std::uniform_real_distribution<float> randGravity(-10.0f, -1.0f);
+	
+    std::stack<Entity> entities;
 
-
-    for (int i = 0; i < 100; ++i)
+    for (int i = 0; i < 10000; ++i)
     {
         auto entity = ecs.CreateEntity();
         {
@@ -59,7 +60,8 @@ int main(int argc, char* argv[])
             auto rot = glm::vec3{ 0.0f,0.0f,0.0f };
             auto scale = glm::vec3{ 0.0f,0.0f,0.0f };
             ecs.AddComponent(entity, Transform{ glm::vec3(randPositionX(generator),randPositionY(generator), 0),rot,scale});
-            ecs.AddComponent(entity, SpriteRender{ 50.0f * randScale(generator), 50.0f * randScale(generator), glm::vec4{255,255,255, 1} });
+            ecs.AddComponent(entity, SpriteRender{ 10.0f * randScale(generator), 10.0f * randScale(generator), glm::vec4{255,255,255, 1} });
+            entities.push(entity);
         }
     }
 
@@ -97,7 +99,7 @@ int main(int argc, char* argv[])
 
     int i = -1;
 
-    std::stack<Entity> entities;
+    
 	
     bool running = true;
     bool destoryed = false;
@@ -124,17 +126,21 @@ int main(int argc, char* argv[])
 
         {
             RenderStats stats = renderer->getRenderStats();
+            bool batching = renderer->isBatching();
         	
-            ImGui::Begin("Stats");
+            ImGui::Begin("Renderer Stats");
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-
-            ImGui::Text("Renderer2D Stats:");
             ImGui::Text("Draw Calls: %d", stats.DrawCalls);
             ImGui::Text("Quads: %d", stats.QuadCount);
             ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
             ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
-
-            ImGui::Text("ECS Stats:");
+            if (ImGui::Checkbox("use Batching", &batching))
+            {
+                renderer->setBatching(batching);
+            }
+            ImGui::End();
+        	
+            ImGui::Begin("ECS");
             ImGui::Text("Living Entities: %d", ecs.getEntityManager()->mLivingEntityCount);
 
 
@@ -146,7 +152,7 @@ int main(int argc, char* argv[])
                     auto rot = glm::vec3{ 0.0f,0.0f,0.0f };
                     auto scale = glm::vec3{ 0.0f,0.0f,0.0f };
                     ecs.AddComponent(entity, Transform{ glm::vec3(randPositionX(generator),randPositionY(generator), 0),rot,scale });
-                    ecs.AddComponent(entity, SpriteRender{ 50.0f * randScale(generator), 50.0f * randScale(generator), glm::vec4{255,255,255, 1} });
+                    ecs.AddComponent(entity, SpriteRender{ 10.0f * randScale(generator), 10.0f * randScale(generator), glm::vec4{255,255,255, 1} });
                 }
                 entities.push(entity);
             }
@@ -158,11 +164,8 @@ int main(int argc, char* argv[])
                 ecs.DestroyEntity(id);
             }
 
-            bool batching = renderer->isBatching();
-            if (ImGui::Checkbox("use Batching", &batching))
-            {
-                renderer->setBatching(batching);
-            }
+         
+
             
 
         	ImGui::End();
