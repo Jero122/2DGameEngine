@@ -6,4 +6,5 @@ struct SpriteRender
 	float width;
 	float height;
 	glm::vec4 colour;
+	uint32_t batchID;
 };

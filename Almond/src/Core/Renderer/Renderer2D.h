@@ -2,6 +2,15 @@
 #include "Shader.h"
 #include "Core/ECS/ECSTypes.hpp"
 
+typedef struct RenderStats
+{
+	uint32_t DrawCalls = 0;
+	uint32_t QuadCount = 0;
+
+	uint32_t GetTotalVertexCount() { return  QuadCount * 4; }
+	uint32_t GetTotalIndexCount() { return  QuadCount * 6; }
+};
+
 class Renderer2D :public System
 {
 private:
@@ -12,6 +21,8 @@ private:
 
 	unsigned int texture;
 	Shader shader;
+
+	RenderStats stats;
 
 	unsigned int indices[6] = {  // note that we start from 0!
 		3, 2, 0,  // first Triangle
@@ -25,6 +36,7 @@ private:
 		-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 1.0f,   0.0f, 1.0f  // top left 
 	};
 
+	bool useBatching = true;
 	unsigned loadTexture(const char* path);
 
 public:
@@ -38,7 +50,17 @@ public:
 	void entityRemoved(Entity entity) override;
 	void add(Entity entity);
 	void nonRenderBatchInit();
+	
+	RenderStats getRenderStats();
+	void resetRenderStats();
+	
+	bool isBatching() { return useBatching; }
+	void setBatching(bool value)
+	{
+		useBatching = value;
+		resetRenderStats();
+	}
+	
 
-	bool useBatching = true;
 };
 

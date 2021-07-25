@@ -4,15 +4,23 @@
 #include "Core/Components/SpriteRender.h"
 #include "Core/Components/Transform.h"
 
+static int currentID = 0;
+
 class RenderBatch
 {
 public:
+
 	int indexCount = 0;
+	int id;
 	bool batchEnded = false;
-	static const int MAX_BATCH_COUNT = 20000;
+	static const int MAX_BATCH_COUNT = 32;
 	static const int MAX_VERTEX_COUNT = MAX_BATCH_COUNT * 4;
 	static const int MAX_INDEX_COUNT = MAX_BATCH_COUNT * 6;
-	RenderBatch(){}
+	RenderBatch()
+	{
+		id = currentID;
+		currentID++;
+	}
 
 	void init();
 	void shutdown();
@@ -24,11 +32,22 @@ public:
 	void drawQuad(const Transform& transform, const SpriteRender& sprite);
 	
 private:
-	typedef struct Vertex
+	
+	
+	
+	typedef struct Quad
 	{
-		glm::vec3 Position;
-		glm::vec4 Color;
+		typedef struct Vertex
+		{
+			glm::vec3 Position;
+			glm::vec4 Color;
+		};
+		Vertex topRight;
+		Vertex bottomRight;
+		Vertex bottomLeft;
+		Vertex topLeft;
 	};
+	
 	
 	const int POS_COUNT = 3;	//XYZ
 	const int COLOR_COUNT = 4;	//RGBA
@@ -40,8 +59,8 @@ private:
 	unsigned int VAO, VBO, EBO;
 	Shader shader;
 
-	Vertex* vertexBuffer = nullptr;
-	Vertex* vertexBufferPtr = nullptr;
+	Quad* quadBuffer = nullptr;
+	Quad* quadBufferPtr = nullptr;
 
 	
 	glm::mat4 projection = glm::ortho(0.0f, 1920.0f, 1080.0f, 0.0f, -1.0f, 1.0f);

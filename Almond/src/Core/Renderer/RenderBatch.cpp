@@ -8,14 +8,14 @@ void RenderBatch::init()
 	shader = Shader();
 	shader.init(shaderPath);
 
-	vertexBuffer = new Vertex[MAX_VERTEX_COUNT];
+	vertexBuffer = new Quad[MAX_BATCH_COUNT];
 
 	GLCALL(glGenVertexArrays(1, &VAO));
 	GLCALL(glBindVertexArray(VAO));
 
 	GLCALL(glGenBuffers(1, &VBO));
 	GLCALL(glBindBuffer(GL_ARRAY_BUFFER, VBO));
-	GLCALL(glBufferData(GL_ARRAY_BUFFER, MAX_VERTEX_COUNT * sizeof(Vertex), nullptr, GL_DYNAMIC_DRAW));
+	GLCALL(glBufferData(GL_ARRAY_BUFFER, MAX_VERTEX_COUNT * sizeof(Quad::Vertex), nullptr, GL_DYNAMIC_DRAW));
 
 	GLCALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, VERTEX_ELEMENT_COUNT * sizeof(float), (void*)0));
 	GLCALL(glEnableVertexAttribArray(0));
@@ -56,7 +56,7 @@ void RenderBatch::beginBatch()
 void RenderBatch::endBatch()
 {
 	GLsizeiptr size = vertexBufferPtr - vertexBuffer;
-	size = size * sizeof(Vertex);
+	size = size * sizeof(Quad);
 	GLCALL(glBindBuffer(GL_ARRAY_BUFFER, VBO));
 	/*GLCALL(glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * 4 * MAX_BATCH_COUNT, vertexBuffer, GL_DYNAMIC_DRAW));*/
 	GLCALL(glBufferSubData(GL_ARRAY_BUFFER, 0, size, vertexBuffer));
@@ -87,32 +87,19 @@ void RenderBatch::drawQuad(const Transform& transform, const SpriteRender& sprit
 	float height = sprite.height;
 	glm::vec4 col = sprite.colour;
 
-	//top right
-	Vertex v1 = Vertex{ glm::vec3(pos.x + width / 2,pos.y + height / 2,0), glm::vec4(col.r / 255,col.g / 255,col.b / 255, 1) };
-	//bottom right
-	Vertex v2 = Vertex{ glm::vec3(pos.x + width / 2,pos.y - height / 2,0), glm::vec4(col.r / 255,col.g / 255,col.b / 255, 1) };
-	//bottom left
-	Vertex v3 = Vertex{ glm::vec3(pos.x - width / 2,pos.y - height / 2,0), glm::vec4(col.r / 255,col.g / 255,col.b / 255, 1) };
-	//top left
-	Vertex v4 = Vertex{ glm::vec3(pos.x - width / 2,pos.y + height / 2,0), glm::vec4(col.r / 255,col.g / 255,col.b, 1) };
+	vertexBufferPtr->topRight.Position = { pos.x , pos.y, 0 };
+	vertexBufferPtr->topRight.Color = sprite.colour;
+	
+	vertexBufferPtr->bottomRight.Position = { pos.x , pos.y - height, 0 };
+	vertexBufferPtr->bottomRight.Color = sprite.colour;
 
+	vertexBufferPtr->bottomLeft.Position = { pos.x - width , pos.y - height, 0 };
+	vertexBufferPtr->bottomLeft.Color = sprite.colour;
 
-	vertexBufferPtr->Position = { pos.x , pos.y, 0 };
-	vertexBufferPtr->Color = sprite.colour;
+	vertexBufferPtr->topLeft.Position = { pos.x - width, pos.y, 0 };
+	vertexBufferPtr->topLeft.Color = sprite.colour;
+	
 	vertexBufferPtr++;
-
-	vertexBufferPtr->Position = { pos.x , pos.y - height, 0 };
-	vertexBufferPtr->Color = sprite.colour;
-	vertexBufferPtr++;
-
-	vertexBufferPtr->Position = { pos.x - width , pos.y - height, 0 };
-	vertexBufferPtr->Color = sprite.colour;
-	vertexBufferPtr++;
-
-	vertexBufferPtr->Position = { pos.x - width, pos.y, 0 };
-	vertexBufferPtr->Color = sprite.colour;
-	vertexBufferPtr++;
-
 	indexCount += 6;
 }
 
@@ -121,3 +108,4 @@ void RenderBatch::shutdown()
 {
 	delete[] vertexBuffer;
 }
+

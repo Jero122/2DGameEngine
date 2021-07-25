@@ -10,9 +10,11 @@
 #include "stb/stb_image.h"
 
 
-extern ECS ecs;
-std::vector<RenderBatch> renderBatches;
 
+extern ECS ecs;
+
+
+std::vector<RenderBatch> renderBatches;
 
 
 void Renderer2D::entityAdded(Entity entity)
@@ -27,12 +29,16 @@ void Renderer2D::entityRemoved(Entity entity)
 
 void Renderer2D::add(Entity entity)
 {
+	auto &transform = ecs.GetComponent<Transform>(entity);
+	auto &spriteRender = ecs.GetComponent<SpriteRender>(entity);
+	
 	bool added = false;
 	for (auto &render_batch : renderBatches)
 	{
 		if (!(render_batch.indexCount >= RenderBatch::MAX_INDEX_COUNT))
 		{
-			render_batch.drawQuad(ecs.GetComponent<Transform>(entity), ecs.GetComponent<SpriteRender>(entity));
+			render_batch.drawQuad(transform, spriteRender);
+			spriteRender.batchID = render_batch.id;
 			added = true;
 		}
 	}
@@ -41,9 +47,15 @@ void Renderer2D::add(Entity entity)
 		RenderBatch*newRenderBatch = new RenderBatch();
 		newRenderBatch->init();
 		newRenderBatch->beginBatch();
-		newRenderBatch->drawQuad(ecs.GetComponent<Transform>(entity), ecs.GetComponent<SpriteRender>(entity));
+		
+		newRenderBatch->drawQuad(transform, spriteRender);
+		spriteRender.batchID = newRenderBatch->id;
+		
 		renderBatches.push_back(*newRenderBatch);
+
+		stats.DrawCalls++;
 	}
+	stats.QuadCount++;
 }
 
 void Renderer2D::nonRenderBatchInit()
@@ -98,22 +110,20 @@ void Renderer2D::nonRenderBatchInit()
 
 void Renderer2D::init()
 {
-	if (useBatching)
+
+	for (auto& entity : mEntities)
 	{
-		for (auto& entity : mEntities)
-		{
-			add(entity);
-		}
+		add(entity);
 	}
-	else
-	{
-		nonRenderBatchInit();
-	}
+
+	nonRenderBatchInit();
 }
 
 
 void Renderer2D::update()
 {
+	resetRenderStats();
+	stats.QuadCount = mEntities.size();
 	if (useBatching)
 	{
 		for (auto& render_batch : renderBatches)
@@ -124,13 +134,14 @@ void Renderer2D::update()
 				render_batch.batchEnded = true;
 			}
 			render_batch.flush();
+			stats.DrawCalls++;
 		}
 	}
 	else
 	{
 		glm::mat4 view = WindowManager::instance().camera.GetViewMatrix();
 		glm::mat4 projection = glm::ortho(0.0f, 1920.0f, 1080.0f, 0.0f, -1.0f, 1.0f);
-
+		
 
 		for (auto& const entity : mEntities)
 		{
@@ -155,6 +166,8 @@ void Renderer2D::update()
 			//shader.setMat4("view", view);
 			shader.setMat4("projection", projection);
 			glBindVertexArray(VAO);
+			
+			stats.DrawCalls++;
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		}
 	}
@@ -163,13 +176,23 @@ void Renderer2D::update()
 	
 }
 
-
 void Renderer2D::shutdown()
 {
 	for (auto render_batch : renderBatches)
 	{
 		render_batch.shutdown();
 	}
+}
+
+
+void Renderer2D::resetRenderStats()
+{
+	memset(&stats, 0, sizeof(RenderStats));
+}
+
+RenderStats Renderer2D::getRenderStats()
+{
+	return stats;
 }
 
 unsigned int Renderer2D::loadTexture(char const* path)

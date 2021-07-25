@@ -1,5 +1,4 @@
 #include <random>
-#include <Windows.h>
 #include <Core/ECS/ECS.hpp>
 #include "Core/WindowManager.hpp"
 #include "Core/Components/SpriteRender.h"
@@ -8,8 +7,7 @@
 #include <SDL/SDL.h>
 
 #include "Core/Renderer/Renderer2D.h"
-#include "Core/Renderer/Shader.h"
-#include "stb/stb_image.h"
+
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_opengl3.h"
 #include "imgui/imgui_impl_sdl.h"
@@ -115,9 +113,25 @@ int main(int argc, char* argv[])
         glClear(GL_COLOR_BUFFER_BIT);
 
         {
-            ImGui::Begin("FPS");
+            RenderStats stats = renderer->getRenderStats();
+        	
+            ImGui::Begin("Stats");
             ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-            ImGui::End();
+
+            ImGui::Text("Renderer2D Stats:");
+            ImGui::Text("Draw Calls: %d", stats.DrawCalls);
+            ImGui::Text("Quads: %d", stats.QuadCount);
+            ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
+            ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
+
+            bool batching = renderer->isBatching();
+            if (ImGui::Checkbox("use Batching", &batching))
+            {
+                renderer->setBatching(batching);
+            }
+            
+
+        	ImGui::End();
         }
 		
         renderer->update();
