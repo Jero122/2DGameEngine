@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ComponentArray.hpp"
+#include "PackedArray.hpp"
 #include "ECSTypes.hpp"
 
 #include <unordered_map>
@@ -17,11 +17,11 @@ private:
 	ComponentType mNextComponentType = 0;
 
 	template<typename T>
-	std::shared_ptr<ComponentArray<T>> GetComponentArray()
+	std::shared_ptr<PackedArray<T>> GetComponentArray()
 	{
 		const char* componentName = typeid(T).name();
 		assert(mComponentTypes.find(componentName) != mComponentTypes.end() && "Component not created before use");
-		return std::static_pointer_cast<ComponentArray<T>>(mComponentArrays[componentName]);
+		return std::static_pointer_cast<PackedArray<T>>(mComponentArrays[componentName]);
 	}
 
 public:
@@ -32,7 +32,7 @@ public:
 		assert(mComponentTypes.find(componentName) == mComponentTypes.end() && "Creating component type more than once");
 		
 		
-		mComponentArrays.insert(std::make_pair(std::string(componentName), std::make_shared<ComponentArray<T>>()));
+		mComponentArrays.insert(std::make_pair(std::string(componentName), std::make_shared<PackedArray<T>>()));
 		
 		mComponentTypes.insert({ componentName, mNextComponentType });
 		

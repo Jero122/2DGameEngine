@@ -118,7 +118,7 @@
     <ClInclude Include="src\Core\Components\SpriteRender.h" />
     <ClInclude Include="src\Core\Components\Transform.h" />
     <ClInclude Include="src\Core\ECS\ComponentManager.hpp" />
-    <ClInclude Include="src\Core\ECS\ComponentArray.hpp" />
+    <ClInclude Include="src\Core\ECS\PackedArray.hpp" />
     <ClInclude Include="src\Core\ECS\ECS.hpp" />
     <ClInclude Include="src\Core\ECS\ECSTypes.hpp" />
     <ClInclude Include="src\Core\ECS\EntitiyManager.hpp" />

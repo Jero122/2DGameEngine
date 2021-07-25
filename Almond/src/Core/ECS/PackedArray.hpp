@@ -3,6 +3,7 @@
 #include "cassert"
 #include <unordered_map>
 #include <array>
+#include <iostream>
 
 class IComponentArray
 {
@@ -13,7 +14,7 @@ public:
 
 
 template<typename T>
-class ComponentArray : public IComponentArray
+class PackedArray : public IComponentArray
 {
 private:
 	//std::array<T, MAX_ENTITIES> mComponentArray{};
@@ -22,16 +23,20 @@ private:
 	std::unordered_map<Entity, size_t> mEntityToIndexMap{};
 	std::unordered_map<size_t, Entity> mIndexToEntityMap{};
 
-	
-	int mCurrentEntityIndex = -1;
+
 public:
-	ComponentArray()
+	int mCurrentEntityIndex = -1;
+
+	PackedArray()
 	{
-		auto size = sizeof(this);
-		auto size1 = sizeof(mComponentArray) + sizeof(T) * MAX_ENTITIES;
-		auto size2 = sizeof(mEntityToIndexMap) + mEntityToIndexMap.size() * sizeof(size_t);
-		auto size3 = sizeof(mIndexToEntityMap) + mIndexToEntityMap.size() * sizeof(Entity);
+		mComponentArray = std::vector<T>(MAX_ENTITIES);
 	}
+
+	PackedArray(size_t size)
+	{
+		mComponentArray = std::vector<T>(size);
+	}
+	
 	void insertData(Entity entity, T component)
 	{
 		assert(mEntityToIndexMap.find(entity) == mEntityToIndexMap.end() && "Component added to same entity more than once.");
@@ -71,5 +76,10 @@ public:
 		{
 			removeData(entity);
 		}
+	}
+
+	std::vector<T>& getComponentArray()
+	{
+		return mComponentArray;
 	}
 };

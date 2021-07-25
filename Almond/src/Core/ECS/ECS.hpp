@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "ComponentArray.hpp"
+#include "PackedArray.hpp"
 
 #include "EntitiyManager.hpp"
 #include "ComponentManager.hpp"

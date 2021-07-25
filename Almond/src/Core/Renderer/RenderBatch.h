@@ -3,6 +3,7 @@
 #include "Shader.h"
 #include "Core/Components/SpriteRender.h"
 #include "Core/Components/Transform.h"
+#include "Core/ECS/PackedArray.hpp"
 
 static int currentID = 0;
 
@@ -13,7 +14,7 @@ public:
 	int indexCount = 0;
 	int id;
 	bool batchEnded = false;
-	static const int MAX_BATCH_COUNT = 32;
+	static const int MAX_BATCH_COUNT = 20000;
 	static const int MAX_VERTEX_COUNT = MAX_BATCH_COUNT * 4;
 	static const int MAX_INDEX_COUNT = MAX_BATCH_COUNT * 6;
 	RenderBatch()
@@ -29,7 +30,7 @@ public:
 	void endBatch();
 	void flush();
 	
-	void drawQuad(const Transform& transform, const SpriteRender& sprite);
+	void drawQuad(const Entity& entity, const Transform& transform, const SpriteRender& sprite);
 	
 private:
 	
@@ -59,10 +60,14 @@ private:
 	unsigned int VAO, VBO, EBO;
 	Shader shader;
 
+	/*
 	Quad* quadBuffer = nullptr;
 	Quad* quadBufferPtr = nullptr;
-	
+	*/
+
+	PackedArray<Quad> quadArray = PackedArray<Quad>(MAX_BATCH_COUNT);
+
 
 	
-	glm::mat4 projection = glm::ortho(0.0f, 1920.0f, 1080.0f, 0.0f, -1.0f, 1.0f);
+		glm::mat4 projection = glm::ortho(0.0f, 1920.0f, 1080.0f, 0.0f, -1.0f, 1.0f);
 };

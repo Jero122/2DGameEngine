@@ -37,7 +37,7 @@ void Renderer2D::add(Entity entity)
 	{
 		if (!(render_batch.indexCount >= RenderBatch::MAX_INDEX_COUNT))
 		{
-			render_batch.drawQuad(transform, spriteRender);
+			render_batch.drawQuad(entity, transform, spriteRender);
 			spriteRender.batchID = render_batch.id;
 			added = true;
 		}
@@ -48,7 +48,7 @@ void Renderer2D::add(Entity entity)
 		newRenderBatch->init();
 		newRenderBatch->beginBatch();
 		
-		newRenderBatch->drawQuad(transform, spriteRender);
+		newRenderBatch->drawQuad(entity, transform, spriteRender);
 		spriteRender.batchID = newRenderBatch->id;
 		
 		renderBatches.push_back(*newRenderBatch);

@@ -8,7 +8,7 @@ void RenderBatch::init()
 	shader = Shader();
 	shader.init(shaderPath);
 
-	quadBuffer = new Quad[MAX_BATCH_COUNT];
+	//quadBuffer = new Quad[MAX_BATCH_COUNT];
 
 	GLCALL(glGenVertexArrays(1, &VAO));
 	GLCALL(glBindVertexArray(VAO));
@@ -40,7 +40,7 @@ void RenderBatch::init()
 		offset += 4;
 	}
 
-	quadBufferPtr = quadBuffer;
+	/*quadBufferPtr = quadBuffer;*/
 	
 	GLCALL(glGenBuffers(1, &EBO));
 	GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO));
@@ -49,17 +49,23 @@ void RenderBatch::init()
 
 void RenderBatch::beginBatch()
 {
-	quadBufferPtr = quadBuffer;
+	/*quadBufferPtr = quadBuffer;*/
 	indexCount = 0;
 }
 
 void RenderBatch::endBatch()
 {
-	GLsizeiptr size = quadBufferPtr - quadBuffer;
-	size = size * sizeof(Quad);
+	auto& array = quadArray.getComponentArray();
+	
+	/*GLsizeiptr size = (quadBufferPtr - quadBuffer) * sizeof(Quad);*/
+	
+	GLsizeiptr quadArrSize = (quadArray.mCurrentEntityIndex + 1) * sizeof(Quad);
+	
 	GLCALL(glBindBuffer(GL_ARRAY_BUFFER, VBO));
+	GLCALL(glBufferSubData(GL_ARRAY_BUFFER, 0, quadArrSize, &array[0]));
+	
 	/*GLCALL(glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * 4 * MAX_BATCH_COUNT, vertexBuffer, GL_DYNAMIC_DRAW));*/
-	GLCALL(glBufferSubData(GL_ARRAY_BUFFER, 0, size, quadBuffer));
+	//GLCALL(glBufferSubData(GL_ARRAY_BUFFER, 0, size, quadBuffer));
 }
 
 void RenderBatch::flush()
@@ -80,14 +86,25 @@ void RenderBatch::flush()
 	//indexCount = 0;
 }
 
-void RenderBatch::drawQuad(const Transform& transform, const SpriteRender& sprite)
+void RenderBatch::drawQuad(const Entity& entity,const Transform& transform, const SpriteRender& sprite)
 {
 	glm::vec3 pos = transform.position;
 	float width = sprite.width;
 	float height = sprite.height;
 	glm::vec4 col = sprite.colour;
 
-	quadBufferPtr->topRight.Position = { pos.x , pos.y, 0 };
+	//top right
+	Quad::Vertex v1 = Quad::Vertex{ glm::vec3(pos.x + width / 2,pos.y + height / 2,0), glm::vec4(col.r / 255,col.g / 255,col.b / 255, 1) };
+	//bottom right
+	Quad::Vertex v2 = Quad::Vertex{ glm::vec3(pos.x + width / 2,pos.y - height / 2,0), glm::vec4(col.r / 255,col.g / 255,col.b / 255, 1) };
+	//bottom left
+	Quad::Vertex v3 = Quad::Vertex{ glm::vec3(pos.x - width / 2,pos.y - height / 2,0), glm::vec4(col.r / 255,col.g / 255,col.b / 255, 1) };
+	//top left
+	Quad::Vertex v4 = Quad::Vertex{ glm::vec3(pos.x - width / 2,pos.y + height / 2,0), glm::vec4(col.r / 255,col.g / 255,col.b, 1) };
+
+	Quad quad = Quad{ v1,v2,v3,v4 };
+	
+	/*quadBufferPtr->topRight.Position = { pos.x , pos.y, 0 };
 	quadBufferPtr->topRight.Color = sprite.colour;
 	
 	quadBufferPtr->bottomRight.Position = { pos.x , pos.y - height, 0 };
@@ -99,13 +116,15 @@ void RenderBatch::drawQuad(const Transform& transform, const SpriteRender& sprit
 	quadBufferPtr->topLeft.Position = { pos.x - width, pos.y, 0 };
 	quadBufferPtr->topLeft.Color = sprite.colour;
 	
-	quadBufferPtr++;
+	quadBufferPtr++*/;
+
+	quadArray.insertData(entity,quad);
 	indexCount += 6;
 }
 
 
 void RenderBatch::shutdown()
 {
-	delete[] quadBuffer;
+	/*delete[] quadBuffer;*/
 }
 

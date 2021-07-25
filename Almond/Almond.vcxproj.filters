@@ -74,7 +74,7 @@
     <ClInclude Include="src\Core\ECS\ECSTypes.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\ECS\ComponentArray.hpp">
+    <ClInclude Include="src\Core\ECS\PackedArray.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\ECS\ComponentManager.hpp">
