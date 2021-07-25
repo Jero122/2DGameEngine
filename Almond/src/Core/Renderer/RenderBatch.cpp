@@ -8,7 +8,7 @@ void RenderBatch::init()
 	shader = Shader();
 	shader.init(shaderPath);
 
-	vertexBuffer = new Quad[MAX_BATCH_COUNT];
+	quadBuffer = new Quad[MAX_BATCH_COUNT];
 
 	GLCALL(glGenVertexArrays(1, &VAO));
 	GLCALL(glBindVertexArray(VAO));
@@ -40,7 +40,7 @@ void RenderBatch::init()
 		offset += 4;
 	}
 
-	vertexBufferPtr = vertexBuffer;
+	quadBufferPtr = quadBuffer;
 	
 	GLCALL(glGenBuffers(1, &EBO));
 	GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO));
@@ -49,17 +49,17 @@ void RenderBatch::init()
 
 void RenderBatch::beginBatch()
 {
-	vertexBufferPtr = vertexBuffer;
+	quadBufferPtr = quadBuffer;
 	indexCount = 0;
 }
 
 void RenderBatch::endBatch()
 {
-	GLsizeiptr size = vertexBufferPtr - vertexBuffer;
+	GLsizeiptr size = quadBufferPtr - quadBuffer;
 	size = size * sizeof(Quad);
 	GLCALL(glBindBuffer(GL_ARRAY_BUFFER, VBO));
 	/*GLCALL(glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * 4 * MAX_BATCH_COUNT, vertexBuffer, GL_DYNAMIC_DRAW));*/
-	GLCALL(glBufferSubData(GL_ARRAY_BUFFER, 0, size, vertexBuffer));
+	GLCALL(glBufferSubData(GL_ARRAY_BUFFER, 0, size, quadBuffer));
 }
 
 void RenderBatch::flush()
@@ -87,25 +87,25 @@ void RenderBatch::drawQuad(const Transform& transform, const SpriteRender& sprit
 	float height = sprite.height;
 	glm::vec4 col = sprite.colour;
 
-	vertexBufferPtr->topRight.Position = { pos.x , pos.y, 0 };
-	vertexBufferPtr->topRight.Color = sprite.colour;
+	quadBufferPtr->topRight.Position = { pos.x , pos.y, 0 };
+	quadBufferPtr->topRight.Color = sprite.colour;
 	
-	vertexBufferPtr->bottomRight.Position = { pos.x , pos.y - height, 0 };
-	vertexBufferPtr->bottomRight.Color = sprite.colour;
+	quadBufferPtr->bottomRight.Position = { pos.x , pos.y - height, 0 };
+	quadBufferPtr->bottomRight.Color = sprite.colour;
 
-	vertexBufferPtr->bottomLeft.Position = { pos.x - width , pos.y - height, 0 };
-	vertexBufferPtr->bottomLeft.Color = sprite.colour;
+	quadBufferPtr->bottomLeft.Position = { pos.x - width , pos.y - height, 0 };
+	quadBufferPtr->bottomLeft.Color = sprite.colour;
 
-	vertexBufferPtr->topLeft.Position = { pos.x - width, pos.y, 0 };
-	vertexBufferPtr->topLeft.Color = sprite.colour;
+	quadBufferPtr->topLeft.Position = { pos.x - width, pos.y, 0 };
+	quadBufferPtr->topLeft.Color = sprite.colour;
 	
-	vertexBufferPtr++;
+	quadBufferPtr++;
 	indexCount += 6;
 }
 
 
 void RenderBatch::shutdown()
 {
-	delete[] vertexBuffer;
+	delete[] quadBuffer;
 }
 

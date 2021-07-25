@@ -61,6 +61,7 @@ private:
 
 	Quad* quadBuffer = nullptr;
 	Quad* quadBufferPtr = nullptr;
+	
 
 	
 	glm::mat4 projection = glm::ortho(0.0f, 1920.0f, 1080.0f, 0.0f, -1.0f, 1.0f);
