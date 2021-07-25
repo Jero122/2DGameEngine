@@ -14,17 +14,27 @@
 extern ECS ecs;
 
 
-std::vector<RenderBatch> renderBatches;
+std::unordered_map<uint32_t, RenderBatch> renderBatches;
 
 
 void Renderer2D::entityAdded(Entity entity)
 {
-	
+	add(entity);
 }
 
 void Renderer2D::entityRemoved(Entity entity)
 {
-	
+	if (ecs.isAlive(entity))
+	{
+		//need to check if entity is valid
+		auto spriteRender = ecs.GetComponent<SpriteRender>(entity);
+		auto& batch = renderBatches.at(spriteRender.batchID);
+
+		batch.quadArray.removeData(entity);
+		batch.indexCount -= 6;
+		batch.endBatch();
+	}
+
 }
 
 void Renderer2D::add(Entity entity)
@@ -33,8 +43,9 @@ void Renderer2D::add(Entity entity)
 	auto &spriteRender = ecs.GetComponent<SpriteRender>(entity);
 	
 	bool added = false;
-	for (auto &render_batch : renderBatches)
+	for (auto &pair : renderBatches)
 	{
+		auto& render_batch = pair.second;
 		if (!(render_batch.indexCount >= RenderBatch::MAX_INDEX_COUNT))
 		{
 			render_batch.drawQuad(entity, transform, spriteRender);
@@ -51,7 +62,7 @@ void Renderer2D::add(Entity entity)
 		newRenderBatch->drawQuad(entity, transform, spriteRender);
 		spriteRender.batchID = newRenderBatch->id;
 		
-		renderBatches.push_back(*newRenderBatch);
+		renderBatches.insert(std::make_pair(newRenderBatch->id, *newRenderBatch));
 
 		stats.DrawCalls++;
 	}
@@ -111,10 +122,10 @@ void Renderer2D::nonRenderBatchInit()
 void Renderer2D::init()
 {
 
-	for (auto& entity : mEntities)
+	/*for (auto& entity : mEntities)
 	{
 		add(entity);
-	}
+	}*/
 
 	nonRenderBatchInit();
 }
@@ -126,13 +137,15 @@ void Renderer2D::update()
 	stats.QuadCount = mEntities.size();
 	if (useBatching)
 	{
-		for (auto& render_batch : renderBatches)
+		for (auto& pair : renderBatches)
 		{
-			if (render_batch.batchEnded == false)
+			auto& render_batch = pair.second;
+			/*if (render_batch.batchEnded == false)
 			{
 				render_batch.endBatch();
 				render_batch.batchEnded = true;
-			}
+			}*/
+			render_batch.endBatch();
 			render_batch.flush();
 			stats.DrawCalls++;
 		}
@@ -178,8 +191,9 @@ void Renderer2D::update()
 
 void Renderer2D::shutdown()
 {
-	for (auto render_batch : renderBatches)
+	for (auto &pair : renderBatches)
 	{
+		auto render_batch = pair.second;
 		render_batch.shutdown();
 	}
 }

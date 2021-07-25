@@ -30,9 +30,20 @@ public:
 
 	void DestroyEntity(Entity entity)
 	{
+		mSystemManager->EntityDestroyed(entity);
 		mEntityManger->DestroyEntity(entity);
 		mComponentManager->EntityDestroyed(entity);
-		mSystemManager->EntityDestroyed(entity);
+
+	}
+
+	bool isAlive(Entity entity)
+	{
+		auto& set = mEntityManger->getFreeSet();
+		if (set.find(entity) != set.end())
+		{
+			return false;
+		}
+		return true;
 	}
 
 	//COMPONENT
@@ -85,5 +96,9 @@ public:
 	{
 		mSystemManager->SetSystemSignature<T>(signature);
 	}
-	
+
+	std::unique_ptr<EntityManager>& getEntityManager()
+	{
+		return mEntityManger;
+	}
 };

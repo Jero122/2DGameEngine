@@ -12,11 +12,14 @@
 class EntityManager
 {
 public:
+	uint32_t mLivingEntityCount = 0;
+	
 	EntityManager()
 	{
 		for (Entity entity = 0; entity < MAX_ENTITIES; ++entity)
 		{
 			mFreeEntities.push(entity);
+			mFreeEntitiesSet.insert(mFreeEntities.back());
 		}
 		std::cout << "\n size if entities:" << sizeof(mFreeEntities) << std::endl;
 	}
@@ -28,6 +31,8 @@ public:
 		//Take an entity from the front of FreeEntities queue
 		Entity entity = mFreeEntities.front();
 		mFreeEntities.pop();
+		mFreeEntitiesSet.erase(entity);
+		
 		//increment entity counter
 		mLivingEntityCount++;
 		
@@ -40,10 +45,17 @@ public:
 		
 		//reset signature
 		mSignatures[entity].reset();
-		//add entity back into the freeList
+
+		if (mFreeEntitiesSet.find(entity) == mFreeEntitiesSet.end())
+		{
+			mFreeEntities.push(entity);
+			mFreeEntitiesSet.insert(std::ref(mFreeEntities.back()));
+			mLivingEntityCount--;
+		}
+		/*//add entity back into the freeList
 		mFreeEntities.push(entity);
-		//decrement entity counter
-		mLivingEntityCount--;
+		//decrement entity counter*/
+		
 	}
 	void SetEntitySignature(Entity entity, Signature signature)
 	{
@@ -57,8 +69,14 @@ public:
 		return mSignatures[entity];
 	}
 
+	const std::set<std::reference_wrapper<Entity>>& getFreeSet()
+	{
+		return mFreeEntitiesSet;
+	}
 private:
 	std::queue<Entity> mFreeEntities;
+	std::set<std::reference_wrapper<Entity>> mFreeEntitiesSet;
+	
 	std::array<Signature, MAX_ENTITIES> mSignatures;
-	uint32_t mLivingEntityCount = 0;
+
 };

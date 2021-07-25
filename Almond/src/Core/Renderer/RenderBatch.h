@@ -31,11 +31,7 @@ public:
 	void flush();
 	
 	void drawQuad(const Entity& entity, const Transform& transform, const SpriteRender& sprite);
-	
-private:
-	
-	
-	
+
 	typedef struct Quad
 	{
 		typedef struct Vertex
@@ -48,6 +44,14 @@ private:
 		Vertex bottomLeft;
 		Vertex topLeft;
 	};
+
+	
+	PackedArray<Quad> quadArray = PackedArray<Quad>(MAX_BATCH_COUNT);
+	
+private:
+	
+	
+	
 	
 	
 	const int POS_COUNT = 3;	//XYZ
@@ -65,7 +69,7 @@ private:
 	Quad* quadBufferPtr = nullptr;
 	*/
 
-	PackedArray<Quad> quadArray = PackedArray<Quad>(MAX_BATCH_COUNT);
+	
 
 
 	

@@ -38,7 +38,8 @@ private:
 
 	bool useBatching = true;
 	unsigned loadTexture(const char* path);
-
+	void add(Entity entity);
+	void nonRenderBatchInit();
 public:
 
 	Renderer2D() {};
@@ -48,8 +49,7 @@ public:
 	void update() override;
 	void entityAdded(Entity entity) override;
 	void entityRemoved(Entity entity) override;
-	void add(Entity entity);
-	void nonRenderBatchInit();
+	
 	
 	RenderStats getRenderStats();
 	void resetRenderStats();

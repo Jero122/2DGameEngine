@@ -1,4 +1,5 @@
 #include <random>
+#include <stack>
 #include <Core/ECS/ECS.hpp>
 #include "Core/WindowManager.hpp"
 #include "Core/Components/SpriteRender.h"
@@ -43,23 +44,45 @@ int main(int argc, char* argv[])
     }
 
     std::default_random_engine generator;
-    std::uniform_real_distribution<float> randPosition(0.0f, 1920.0f);
+    std::uniform_real_distribution<float> randPositionX(0.0f, 1920.0f);
+    std::uniform_real_distribution<float> randPositionY(0.0f, 1080.0f);
     std::uniform_real_distribution<float> randRotation(0.0f, 3.0f);
     std::uniform_real_distribution<float> randScale(0.8f, 1.5f);
     std::uniform_real_distribution<float> randGravity(-10.0f, -1.0f);
 
 
-    for (int i = 0; i < 10000; ++i)
+    for (int i = 0; i < 100; ++i)
     {
         auto entity = ecs.CreateEntity();
         {
             auto pos = glm::vec3{ 1.0f,0.0f,0.0f };
             auto rot = glm::vec3{ 0.0f,0.0f,0.0f };
             auto scale = glm::vec3{ 0.0f,0.0f,0.0f };
-            ecs.AddComponent(entity, Transform{ glm::vec3(randPosition(generator),randPosition(generator), 0),rot,scale});
-            ecs.AddComponent(entity, SpriteRender{ 10.0f * randScale(generator), 10.0f * randScale(generator), glm::vec4{255,255,255, 1} });
+            ecs.AddComponent(entity, Transform{ glm::vec3(randPositionX(generator),randPositionY(generator), 0),rot,scale});
+            ecs.AddComponent(entity, SpriteRender{ 50.0f * randScale(generator), 50.0f * randScale(generator), glm::vec4{255,255,255, 1} });
         }
     }
+
+    /*
+    auto entity1 = ecs.CreateEntity();
+    {
+        auto pos = glm::vec3{ SCR_WIDTH/2.0f - 60,SCR_HEIGHT/2.0f,0.0f };
+        auto rot = glm::vec3{ 0.0f,0.0f,0.0f };
+        auto scale = glm::vec3{ 0.0f,0.0f,0.0f };
+        ecs.AddComponent(entity1, Transform{ pos,rot,scale });
+        ecs.AddComponent(entity1, SpriteRender{ 100.0f, 100.0f , glm::vec4{255,255,255, 1} });
+    }
+    auto entity2 = ecs.CreateEntity();
+    {
+        auto pos = glm::vec3{ SCR_WIDTH / 2.0f + 60,SCR_HEIGHT / 2.0f,0.0f };
+        auto rot = glm::vec3{ 0.0f,0.0f,0.0f };
+        auto scale = glm::vec3{ 0.0f,0.0f,0.0f };
+        ecs.AddComponent(entity2, Transform{ pos,rot,scale });
+        ecs.AddComponent(entity2, SpriteRender{ 100.0f, 100.0f , glm::vec4{255,255,255, 1} });
+    }
+    */
+
+   
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -69,31 +92,18 @@ int main(int argc, char* argv[])
     ImGui_ImplSDL2_InitForOpenGL(WindowManager::instance().window, gl_context);
     ImGui_ImplOpenGL3_Init("#version 130");
 
-    /*auto entity = ecs.CreateEntity();
-    {
-        auto pos = glm::vec3{ 100.0f,100.0f,0.0f };
-        auto rot = glm::vec3{ 0.0f,0.0f,0.0f };
-        auto scale = glm::vec3{ 0.0f,0.0f,0.0f };
-    	
-        ecs.AddComponent(entity, Transform{ pos,rot,scale });
-        ecs.AddComponent(entity, SpriteRender{ 50.0f, 50.0f, glm::vec4{255,255,255, 1} });
-    }
-    auto entity2 = ecs.CreateEntity();
-    {
-        auto pos = glm::vec3{ 300.0f,300.0f,0.0f };
-        auto rot = glm::vec3{ 0.0f,0.0f,0.0f };
-        auto scale = glm::vec3{ 0.0f,0.0f,0.0f };
-        ecs.AddComponent(entity2, Transform{ pos,rot,scale });
-        ecs.AddComponent(entity2, SpriteRender{ 50.0f, 50.0f, glm::vec4{155,25,75, 1} });
-    }*/
+
     renderer->init();
 
+    int i = -1;
 
+    std::stack<Entity> entities;
 	
     bool running = true;
+    bool destoryed = false;
 	while (running)
 	{
-		
+    
         SDL_Event e;
         while (SDL_PollEvent(&e))
         {
@@ -124,6 +134,30 @@ int main(int argc, char* argv[])
             ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
             ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
 
+            ImGui::Text("ECS Stats:");
+            ImGui::Text("Living Entities: %d", ecs.getEntityManager()->mLivingEntityCount);
+
+
+            if (ImGui::Button("Create Entity"))
+            {
+                auto entity = ecs.CreateEntity();
+                {
+                    auto pos = glm::vec3{ 1.0f,0.0f,0.0f };
+                    auto rot = glm::vec3{ 0.0f,0.0f,0.0f };
+                    auto scale = glm::vec3{ 0.0f,0.0f,0.0f };
+                    ecs.AddComponent(entity, Transform{ glm::vec3(randPositionX(generator),randPositionY(generator), 0),rot,scale });
+                    ecs.AddComponent(entity, SpriteRender{ 50.0f * randScale(generator), 50.0f * randScale(generator), glm::vec4{255,255,255, 1} });
+                }
+                entities.push(entity);
+            }
+        	
+            if(ImGui::Button("Destroy Entity"))
+            {
+                int id = entities.top();
+                entities.pop();
+                ecs.DestroyEntity(id);
+            }
+
             bool batching = renderer->isBatching();
             if (ImGui::Checkbox("use Batching", &batching))
             {
@@ -135,6 +169,9 @@ int main(int argc, char* argv[])
         }
 		
         renderer->update();
+
+      
+       
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         SDL_GL_SwapWindow(WindowManager::instance().window);

@@ -37,6 +37,7 @@ public:
 			if ((entitySignature & systemSignature) == systemSignature)
 			{
 				system->mEntities.insert(entity);
+				system->entityAdded(entity);
 			}
 			//if signature does not match, try to erase that entity (if it exists)
 			else
@@ -50,7 +51,9 @@ public:
 		for (auto const& pair: mSystems)
 		{
 			auto const& system = pair.second;
+			system->entityRemoved(entity);
 			system->mEntities.erase(entity);
+
 		}
 	}
 
