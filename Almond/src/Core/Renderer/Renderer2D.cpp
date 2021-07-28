@@ -29,10 +29,7 @@ void Renderer2D::entityRemoved(Entity entity)
 		//need to check if entity is valid
 		auto spriteRender = ecs.GetComponent<SpriteRender>(entity);
 		auto& batch = renderBatches.at(spriteRender.batchID);
-
-		batch.quadArray.removeData(entity);
-		batch.indexCount -= 6;
-		batch.endBatch();
+		batch.removeQuad(entity);
 	}
 
 }
@@ -45,11 +42,11 @@ void Renderer2D::add(Entity entity)
 	bool added = false;
 	for (auto &pair : renderBatches)
 	{
-		auto& render_batch = pair.second;
-		if (!(render_batch.indexCount >= RenderBatch::MAX_INDEX_COUNT))
+		auto& renderBatch = pair.second;
+		if (!(renderBatch.indexCount >= RenderBatch::MAX_INDEX_COUNT))
 		{
-			render_batch.drawQuad(entity, transform, spriteRender);
-			spriteRender.batchID = render_batch.id;
+			renderBatch.drawQuad(entity, transform, spriteRender);
+			spriteRender.batchID = renderBatch.id;
 			added = true;
 		}
 	}
@@ -121,12 +118,6 @@ void Renderer2D::nonRenderBatchInit()
 
 void Renderer2D::init()
 {
-
-	/*for (auto& entity : mEntities)
-	{
-		add(entity);
-	}*/
-
 	nonRenderBatchInit();
 }
 
@@ -139,14 +130,9 @@ void Renderer2D::update()
 	{
 		for (auto& pair : renderBatches)
 		{
-			auto& render_batch = pair.second;
-			/*if (render_batch.batchEnded == false)
-			{
-				render_batch.endBatch();
-				render_batch.batchEnded = true;
-			}*/
-			render_batch.endBatch();
-			render_batch.flush();
+			auto& renderBatch = pair.second;
+			renderBatch.endBatch();
+			renderBatch.flush();
 			stats.DrawCalls++;
 		}
 	}

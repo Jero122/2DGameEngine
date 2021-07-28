@@ -55,15 +55,16 @@ void RenderBatch::beginBatch()
 
 void RenderBatch::endBatch()
 {
-	auto& array = quadArray.getComponentArray();
-	
-	/*GLsizeiptr size = (quadBufferPtr - quadBuffer) * sizeof(Quad);*/
-	
-	GLsizeiptr quadArrSize = (quadArray.mCurrentEntityIndex + 1) * sizeof(Quad);
-	
-	GLCALL(glBindBuffer(GL_ARRAY_BUFFER, VBO));
-	GLCALL(glBufferSubData(GL_ARRAY_BUFFER, 0, quadArrSize, &array[0]));
-	
+	if (isDirty)
+	{
+		auto& array = quadArray.getComponentArray();
+		GLsizeiptr quadArrSize = (quadArray.mCurrentEntityIndex + 1) * sizeof(Quad);
+		GLCALL(glBindBuffer(GL_ARRAY_BUFFER, VBO));
+		GLCALL(glBufferSubData(GL_ARRAY_BUFFER, 0, quadArrSize, &array[0]));
+		isDirty = false;
+	}
+
+	//GLsizeiptr size = (quadBufferPtr - quadBuffer) * sizeof(Quad);
 	/*GLCALL(glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * 4 * MAX_BATCH_COUNT, vertexBuffer, GL_DYNAMIC_DRAW));*/
 	//GLCALL(glBufferSubData(GL_ARRAY_BUFFER, 0, size, quadBuffer));
 }
@@ -104,22 +105,17 @@ void RenderBatch::drawQuad(const Entity& entity,const Transform& transform, cons
 
 	Quad quad = Quad{ v1,v2,v3,v4 };
 	
-	/*quadBufferPtr->topRight.Position = { pos.x , pos.y, 0 };
-	quadBufferPtr->topRight.Color = sprite.colour;
-	
-	quadBufferPtr->bottomRight.Position = { pos.x , pos.y - height, 0 };
-	quadBufferPtr->bottomRight.Color = sprite.colour;
-
-	quadBufferPtr->bottomLeft.Position = { pos.x - width , pos.y - height, 0 };
-	quadBufferPtr->bottomLeft.Color = sprite.colour;
-
-	quadBufferPtr->topLeft.Position = { pos.x - width, pos.y, 0 };
-	quadBufferPtr->topLeft.Color = sprite.colour;
-	
-	quadBufferPtr++*/;
-
 	quadArray.insertData(entity,quad);
+	isDirty = true;
 	indexCount += 6;
+}
+
+void RenderBatch::removeQuad(Entity entity)
+{
+
+	quadArray.removeData(entity);
+	indexCount -= 6;
+	isDirty = true;
 }
 
 

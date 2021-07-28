@@ -13,7 +13,9 @@ public:
 
 	int indexCount = 0;
 	int id;
-	bool batchEnded = false;
+	
+	
+	
 	static const int MAX_BATCH_COUNT = 20000;
 	static const int MAX_VERTEX_COUNT = MAX_BATCH_COUNT * 4;
 	static const int MAX_INDEX_COUNT = MAX_BATCH_COUNT * 6;
@@ -31,6 +33,7 @@ public:
 	void flush();
 	
 	void drawQuad(const Entity& entity, const Transform& transform, const SpriteRender& sprite);
+	void removeQuad(Entity entity);
 
 	typedef struct Quad
 	{
@@ -46,14 +49,12 @@ public:
 	};
 
 	
-	PackedArray<Quad> quadArray = PackedArray<Quad>(MAX_BATCH_COUNT);
+	
 	
 private:
-	
-	
-	
-	
-	
+	bool isDirty = true;
+	PackedArray<Quad> quadArray = PackedArray<Quad>(MAX_BATCH_COUNT);
+
 	const int POS_COUNT = 3;	//XYZ
 	const int COLOR_COUNT = 4;	//RGBA
 	const int POS_OFFSET = 0;
@@ -63,15 +64,10 @@ private:
 
 	unsigned int VAO, VBO, EBO;
 	Shader shader;
-
+	glm::mat4 projection = glm::ortho(0.0f, 1920.0f, 1080.0f, 0.0f, -1.0f, 1.0f);
+	
 	/*
 	Quad* quadBuffer = nullptr;
 	Quad* quadBufferPtr = nullptr;
 	*/
-
-	
-
-
-	
-		glm::mat4 projection = glm::ortho(0.0f, 1920.0f, 1080.0f, 0.0f, -1.0f, 1.0f);
 };
