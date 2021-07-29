@@ -1,4 +1,3 @@
-/*
 #pragma once
 #include <string>
 
@@ -20,5 +19,4 @@ public:
 protected:
 	std::string m_debugName;
 };
-*/
 
