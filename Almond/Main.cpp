@@ -1,12 +1,13 @@
 #include <random>
 #include <stack>
 #include <Core/ECS/ECS.hpp>
-#include "Core/WindowManager.hpp"
+#include "Core/Window.h"
 #include "Core/Components/SpriteRender.h"
 #include "Core/Components/Transform.h"
 #include <GL/glew.h>
 #include <SDL/SDL.h>
 
+#include "Core/Application.h"
 #include "Core/Input.h"
 #include "Core/Renderer/Renderer2D.h"
 
@@ -21,11 +22,15 @@ ECS ecs;
 
 int main(int argc, char* argv[])
 {
-    ecs.Init();
-    WindowManager window_manager = WindowManager::instance();
-    window_manager.Init("OUR OpenGL Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCR_WIDTH, SCR_HEIGHT, SDL_WINDOW_OPENGL);
+    Application* application = new Application();
+    application->Run();
+	
+    /*ecs.Init();*/
+    /*
+    Window window = Window::instance();
+    window.Init("OUR OpenGL Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCR_WIDTH, SCR_HEIGHT, SDL_WINDOW_OPENGL);
 
-    SDL_GLContext gl_context = SDL_GL_CreateContext(WindowManager::instance().window);
+    SDL_GLContext gl_context = SDL_GL_CreateContext(Window::instance().window);
     if (glewInit() != GLEW_OK)
     {
         std::cout << "GLEW DIDNT INIT";
@@ -85,7 +90,7 @@ int main(int argc, char* argv[])
         ecs.AddComponent(entity2, Transform{ pos,rot,scale });
         ecs.AddComponent(entity2, SpriteRender{ 100.0f, 100.0f , glm::vec4{255,255,255, 1} });
     }
-    */
+    #1#
 
    
 
@@ -94,17 +99,18 @@ int main(int argc, char* argv[])
     ImGuiIO& io = ImGui::GetIO(); (void)io;
     ImGui::StyleColorsDark();
 
-    ImGui_ImplSDL2_InitForOpenGL(WindowManager::instance().window, gl_context);
+    ImGui_ImplSDL2_InitForOpenGL(Window::instance().window, gl_context);
     ImGui_ImplOpenGL3_Init("#version 130");
 
 
     renderer->init();
 
     int i = -1;
+    */
 
     
 	
-    bool running = true;
+    /*bool running = true;
     bool destoryed = false;
 	while (running)
 	{
@@ -117,7 +123,7 @@ int main(int argc, char* argv[])
         }
 
         ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplSDL2_NewFrame(WindowManager::instance().window);
+        ImGui_ImplSDL2_NewFrame(Window::instance().window);
         ImGui::NewFrame();
 
         glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
@@ -173,7 +179,7 @@ int main(int argc, char* argv[])
        
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-        SDL_GL_SwapWindow(WindowManager::instance().window);
+        SDL_GL_SwapWindow(Window::instance().window);
 
 	}
 
@@ -184,7 +190,8 @@ int main(int argc, char* argv[])
 	ImGui::DestroyContext();
 
 	SDL_GL_DeleteContext(gl_context);
-	SDL_DestroyWindow(WindowManager::instance().window);
+	SDL_DestroyWindow(Window::instance().window);
 	SDL_Quit();
+	*/
 	return 0;
 }

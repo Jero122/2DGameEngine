@@ -5,7 +5,7 @@
 #include "GLCall.h"
 #include <SDL/SDL.h>
 
-#include "Core/WindowManager.hpp"
+#include "Core/Window.h"
 #include "Core/ECS/ECS.hpp"
 #include "stb/stb_image.h"
 
@@ -122,7 +122,7 @@ void Renderer2D::init()
 }
 
 
-void Renderer2D::update()
+void Renderer2D::Update()
 {
 	resetRenderStats();
 	stats.QuadCount = mEntities.size();
@@ -138,7 +138,7 @@ void Renderer2D::update()
 	}
 	else
 	{
-		glm::mat4 view = WindowManager::instance().camera.GetViewMatrix();
+		/*glm::mat4 view = Window::instance().camera.GetViewMatrix();
 		glm::mat4 projection = glm::ortho(0.0f, 1920.0f, 1080.0f, 0.0f, -1.0f, 1.0f);
 		
 
@@ -168,7 +168,7 @@ void Renderer2D::update()
 			
 			stats.DrawCalls++;
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		}
+		}*/
 	}
 
 

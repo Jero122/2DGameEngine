@@ -46,7 +46,7 @@ public:
 	void init() override;
 	void shutdown() override;
 	
-	void update() override;
+	void Update() override;
 	void entityAdded(Entity entity) override;
 	void entityRemoved(Entity entity) override;
 	

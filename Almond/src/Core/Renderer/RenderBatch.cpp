@@ -1,6 +1,6 @@
 #include "RenderBatch.h"
 #include "GLCall.h"
-#include "Core/WindowManager.hpp"
+#include "Core/Window.h"
 
 void RenderBatch::init()
 {
@@ -75,7 +75,9 @@ void RenderBatch::flush()
 	glm::mat4 model = glm::mat4(1.0f);
 
 
-	glm::mat4 view = WindowManager::instance().camera.GetViewMatrix();
+	Camera camera = Camera();
+	camera.init(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::mat4 view = camera.GetViewMatrix();
 	
 	shader.setMat4("model", model);
 	shader.setMat4("view", view);
