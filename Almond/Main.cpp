@@ -7,6 +7,7 @@
 #include <GL/glew.h>
 #include <SDL/SDL.h>
 
+#include "Core/Input.h"
 #include "Core/Renderer/Renderer2D.h"
 
 #include "imgui/imgui.h"
@@ -32,6 +33,7 @@ int main(int argc, char* argv[])
 
     glEnable(GL_MULTISAMPLE);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
 	
     ecs.CreateComponent<SpriteRender>();
     ecs.CreateComponent<Transform>();
@@ -64,6 +66,7 @@ int main(int argc, char* argv[])
             entities.push(entity);
         }
     }
+
 
     /*
     auto entity1 = ecs.CreateEntity();
@@ -106,14 +109,11 @@ int main(int argc, char* argv[])
 	while (running)
 	{
     
-        SDL_Event e;
-        while (SDL_PollEvent(&e))
+        Input::GetInstance()->Listen();
+
+        if (Input::GetInstance()->GetKeyUp(SDL_SCANCODE_A))
         {
-            ImGui_ImplSDL2_ProcessEvent(&e);
-            if (e.type == SDL_QUIT)
-            {
-                running = false;
-            }
+	        std::cout << "A released" << std::endl;
         }
 
         ImGui_ImplOpenGL3_NewFrame();
@@ -164,16 +164,12 @@ int main(int argc, char* argv[])
                 ecs.DestroyEntity(id);
             }
 
-         
-
-            
-
         	ImGui::End();
         }
 		
         renderer->update();
 
-      
+        Input::GetInstance()->Reset();
        
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
