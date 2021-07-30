@@ -1,11 +1,8 @@
 #include "Renderer2D.h"
 #include "RenderBatch.h"
 
-#include <vector>
 #include "GLCall.h"
 #include <SDL/SDL.h>
-
-#include "Core/Window.h"
 #include "Core/ECS/ECS.hpp"
 #include "stb/stb_image.h"
 
@@ -19,7 +16,7 @@ std::unordered_map<uint32_t, RenderBatch> renderBatches;
 
 void Renderer2D::entityAdded(Entity entity)
 {
-	/*add(entity);*/
+	add(entity);
 }
 
 void Renderer2D::entityRemoved(Entity entity)
@@ -126,16 +123,16 @@ void Renderer2D::Update()
 {
 	resetRenderStats();
 
-	for (auto entity : mEntities)
+	/*for (auto entity : mEntities)
 	{
 		add(entity);
-	}
+	}*/
 	for (auto& pair : renderBatches)
 	{
 		auto& renderBatch = pair.second;
 		renderBatch.endBatch();
 		renderBatch.flush();
-		renderBatch.beginBatch();
+		//renderBatch.beginBatch();
 		stats.DrawCalls++;
 	}
 	

@@ -54,7 +54,6 @@ public:
 private:
 	bool isDirty = true;
 	PackedArray<Quad> quadArray = PackedArray<Quad>(MAX_BATCH_COUNT);
-	std::vector<Quad> quadBuffer = std::vector<Quad>();
 
 	const int POS_COUNT = 3;	//XYZ
 	const int COLOR_COUNT = 4;	//RGBA

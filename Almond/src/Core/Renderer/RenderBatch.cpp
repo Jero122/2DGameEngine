@@ -40,9 +40,6 @@ void RenderBatch::init()
 		offset += 4;
 	}
 
-	/*quadBufferPtr = quadBuffer;*/
-
-	
 	GLCALL(glGenBuffers(1, &EBO));
 	GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO));
 	GLCALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
@@ -50,8 +47,6 @@ void RenderBatch::init()
 
 void RenderBatch::beginBatch()
 {
-	/*quadBufferPtr = quadBuffer;*/
-	quadBuffer.clear();
 	indexCount = 0;
 }
 
@@ -60,15 +55,11 @@ void RenderBatch::endBatch()
 	//if (isDirty)
 	{
 		auto& array = quadArray.getComponentArray();
-		GLsizeiptr quadArrSize = quadBuffer.size() * sizeof(Quad);
+		GLsizeiptr quadArrSize = (quadArray.mCurrentEntityIndex + 1) * sizeof(Quad);
 		GLCALL(glBindBuffer(GL_ARRAY_BUFFER, VBO));
-		GLCALL(glBufferSubData(GL_ARRAY_BUFFER, 0, quadArrSize, &quadBuffer[0]));
+		GLCALL(glBufferSubData(GL_ARRAY_BUFFER, 0, quadArrSize, &array[0]));
 		isDirty = false;
 	}
-
-	//GLsizeiptr size = (quadBufferPtr - quadBuffer) * sizeof(Quad);
-	/*GLCALL(glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * 4 * MAX_BATCH_COUNT, vertexBuffer, GL_DYNAMIC_DRAW));*/
-	//GLCALL(glBufferSubData(GL_ARRAY_BUFFER, 0, size, quadBuffer));
 }
 
 void RenderBatch::flush()
@@ -110,9 +101,8 @@ void RenderBatch::drawQuad(const Entity& entity,const Transform& transform, cons
 
 	Quad quad = Quad{ v1,v2,v3,v4 };
 	
-	//quadArray.insertData(entity,quad);
-	quadBuffer.push_back(quad);
-	
+	quadArray.insertData(entity,quad);
+
 	isDirty = true;
 	indexCount += 6;
 }
@@ -120,7 +110,7 @@ void RenderBatch::drawQuad(const Entity& entity,const Transform& transform, cons
 void RenderBatch::removeQuad(Entity entity)
 {
 
-	//quadArray.removeData(entity);
+	quadArray.removeData(entity);
 	indexCount -= 6;
 	isDirty = true;
 }
