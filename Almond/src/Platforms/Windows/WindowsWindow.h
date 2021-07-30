@@ -9,6 +9,9 @@ public:
 
 	void OnUpdate() override;
 
+	virtual void* GetNativeWindow() const { return m_window; }
+	virtual void* GetGLContext() const { return gl_context; }
+
 private:
 	virtual void Init(const WindowProps& props);
 	virtual void ShutDown();

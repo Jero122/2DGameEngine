@@ -89,7 +89,9 @@ public:
 	template<typename T>
 	std::shared_ptr<T> CreateSystem()
 	{
-		return mSystemManager->CreateSystem<T>();
+		auto system = mSystemManager->CreateSystem<T>();
+		//m_systems.insert(system);
+		return system;
 	}
 	template<typename T>
 	void SetSystemSignature(Signature signature)
@@ -101,4 +103,13 @@ public:
 	{
 		return mEntityManger;
 	}
+
+	std::vector<std::shared_ptr<System>>::iterator begin() { return m_systems.begin(); }
+	std::vector<std::shared_ptr<System>>::iterator end() { return m_systems.end(); }
+
+	std::vector<std::shared_ptr<System>>::const_iterator Begin() const { return m_systems.begin(); }
+	std::vector<std::shared_ptr<System>>::const_iterator End() const { return m_systems.end(); }
+
+private:
+	std::vector<std::shared_ptr<System>> m_systems;
 };

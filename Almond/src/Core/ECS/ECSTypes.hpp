@@ -15,7 +15,7 @@ class System
 {
 public:
 	virtual void init(){};
-	virtual void update(){};
+	virtual void Update(){};
 	virtual void shutdown() {};
 	virtual void entityAdded(Entity entity) {};
 	virtual void entityRemoved(Entity entity) {};

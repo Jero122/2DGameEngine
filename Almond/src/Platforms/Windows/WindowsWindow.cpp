@@ -45,3 +45,4 @@ void WindowsWindow::ShutDown()
 {
 	SDL_DestroyWindow(m_window);
 }
+

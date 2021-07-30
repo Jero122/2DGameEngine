@@ -25,9 +25,12 @@ public:
 
 	virtual ~Window() = default;
 	virtual void OnUpdate() = 0;
+	
 
 	static Scope<Window> Create(const WindowProps& props = WindowProps());
-	
+
+	virtual void* GetNativeWindow() const = 0;
+	virtual void* GetGLContext() const = 0;
 
 	/*
 	Camera camera = Camera();*/
