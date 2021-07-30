@@ -19,7 +19,7 @@ std::unordered_map<uint32_t, RenderBatch> renderBatches;
 
 void Renderer2D::entityAdded(Entity entity)
 {
-	add(entity);
+	/*add(entity);*/
 }
 
 void Renderer2D::entityRemoved(Entity entity)
@@ -125,8 +125,22 @@ void Renderer2D::init()
 void Renderer2D::Update()
 {
 	resetRenderStats();
+
+	for (auto entity : mEntities)
+	{
+		add(entity);
+	}
+	for (auto& pair : renderBatches)
+	{
+		auto& renderBatch = pair.second;
+		renderBatch.endBatch();
+		renderBatch.flush();
+		renderBatch.beginBatch();
+		stats.DrawCalls++;
+	}
+	
 	stats.QuadCount = mEntities.size();
-	if (useBatching)
+	/*if (useBatching)
 	{
 		for (auto& pair : renderBatches)
 		{
@@ -135,8 +149,8 @@ void Renderer2D::Update()
 			renderBatch.flush();
 			stats.DrawCalls++;
 		}
-	}
-	else
+	}*/
+	//else
 	{
 		/*glm::mat4 view = Window::instance().camera.GetViewMatrix();
 		glm::mat4 projection = glm::ortho(0.0f, 1920.0f, 1080.0f, 0.0f, -1.0f, 1.0f);

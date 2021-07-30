@@ -1,8 +1,8 @@
 #include "Application.h"
 
-#include "Layers/ECSLayer.h"
+#include "ECS/ECSLayer.h"
 #include "Layers/InputLayer.h"
-#include "Layers/RendererLayer.h"
+#include "Renderer/RendererLayer.h"
 
 Application* Application::s_Instance = nullptr;
 
@@ -69,6 +69,12 @@ void Application::Run()
 		{
 			layer->OnImGuiRender();
 		}
+
+		for (auto layer : m_LayerStack)
+		{
+			layer->OnLateUpdate();
+		}
+		
 		m_ImGuiLayer->End();
 		m_Window->OnUpdate();
 	}

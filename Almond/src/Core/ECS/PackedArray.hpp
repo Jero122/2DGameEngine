@@ -78,6 +78,13 @@ public:
 		}
 	}
 
+	void clear()
+	{
+		mComponentArray.clear();
+		mEntityToIndexMap.clear();
+		mIndexToEntityMap.clear();
+	}
+
 	std::vector<T>& getComponentArray()
 	{
 		return mComponentArray;

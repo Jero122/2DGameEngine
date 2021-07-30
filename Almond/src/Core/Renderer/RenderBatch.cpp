@@ -41,6 +41,7 @@ void RenderBatch::init()
 	}
 
 	/*quadBufferPtr = quadBuffer;*/
+
 	
 	GLCALL(glGenBuffers(1, &EBO));
 	GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO));
@@ -50,17 +51,18 @@ void RenderBatch::init()
 void RenderBatch::beginBatch()
 {
 	/*quadBufferPtr = quadBuffer;*/
+	quadBuffer.clear();
 	indexCount = 0;
 }
 
 void RenderBatch::endBatch()
 {
-	if (isDirty)
+	//if (isDirty)
 	{
 		auto& array = quadArray.getComponentArray();
-		GLsizeiptr quadArrSize = (quadArray.mCurrentEntityIndex + 1) * sizeof(Quad);
+		GLsizeiptr quadArrSize = quadBuffer.size() * sizeof(Quad);
 		GLCALL(glBindBuffer(GL_ARRAY_BUFFER, VBO));
-		GLCALL(glBufferSubData(GL_ARRAY_BUFFER, 0, quadArrSize, &array[0]));
+		GLCALL(glBufferSubData(GL_ARRAY_BUFFER, 0, quadArrSize, &quadBuffer[0]));
 		isDirty = false;
 	}
 
@@ -78,6 +80,7 @@ void RenderBatch::flush()
 	Camera camera = Camera();
 	camera.init(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 view = camera.GetViewMatrix();
+	
 	
 	shader.setMat4("model", model);
 	shader.setMat4("view", view);
@@ -107,7 +110,9 @@ void RenderBatch::drawQuad(const Entity& entity,const Transform& transform, cons
 
 	Quad quad = Quad{ v1,v2,v3,v4 };
 	
-	quadArray.insertData(entity,quad);
+	//quadArray.insertData(entity,quad);
+	quadBuffer.push_back(quad);
+	
 	isDirty = true;
 	indexCount += 6;
 }
@@ -115,7 +120,7 @@ void RenderBatch::drawQuad(const Entity& entity,const Transform& transform, cons
 void RenderBatch::removeQuad(Entity entity)
 {
 
-	quadArray.removeData(entity);
+	//quadArray.removeData(entity);
 	indexCount -= 6;
 	isDirty = true;
 }

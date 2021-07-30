@@ -54,6 +54,7 @@ public:
 private:
 	bool isDirty = true;
 	PackedArray<Quad> quadArray = PackedArray<Quad>(MAX_BATCH_COUNT);
+	std::vector<Quad> quadBuffer = std::vector<Quad>();
 
 	const int POS_COUNT = 3;	//XYZ
 	const int COLOR_COUNT = 4;	//RGBA
@@ -65,9 +66,4 @@ private:
 	unsigned int VAO, VBO, EBO;
 	Shader shader;
 	glm::mat4 projection = glm::ortho(0.0f, 1920.0f, 1080.0f, 0.0f, -1.0f, 1.0f);
-	
-	/*
-	Quad* quadBuffer = nullptr;
-	Quad* quadBufferPtr = nullptr;
-	*/
 };

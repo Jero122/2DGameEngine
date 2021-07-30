@@ -93,9 +93,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Layers\ImGuiLayer.cpp" />
-    <ClCompile Include="src\Core\Layers\RendererLayer.cpp" />
+    <ClCompile Include="src\Core\Renderer\RendererLayer.cpp" />
     <ClCompile Include="src\Core\Layers\InputLayer.cpp" />
-    <ClCompile Include="src\Core\Layers\ECSLayer.cpp" />
+    <ClCompile Include="src\Core\ECS\ECSLayer.cpp" />
     <ClCompile Include="src\Core\Application.cpp" />
     <ClCompile Include="src\Core\Input.cpp" />
     <ClCompile Include="src\Core\LayerStack.cpp" />
@@ -121,9 +121,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Core\Layers\ImGuiLayer.h" />
-    <ClInclude Include="src\Core\Layers\RendererLayer.h" />
+    <ClInclude Include="src\Core\Renderer\RendererLayer.h" />
     <ClInclude Include="src\Core\Layers\InputLayer.h" />
-    <ClInclude Include="src\Core\Layers\ECSLayer.h" />
+    <ClInclude Include="src\Core\ECS\ECSLayer.h" />
     <ClInclude Include="src\Core\Application.h" />
     <ClInclude Include="src\Core\Base.h" />
     <ClInclude Include="src\Core\LayerStack.h" />

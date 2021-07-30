@@ -3,11 +3,14 @@
 #include <random>
 #include <stack>
 
+#include "Core/Input.h"
 #include "Core/Components/SpriteRender.h"
 #include "Core/Components/Transform.h"
 #include "Core/ECS/ECS.hpp"
 
 ECS ecs;
+Entity entity;
+
 ECSLayer::ECSLayer()
 {
 	ecs.Init();
@@ -43,6 +46,13 @@ void ECSLayer::OnAttach()
             entities.push(entity);
         }
     }
+
+    entity = ecs.CreateEntity();
+    {
+        ecs.AddComponent(entity, Transform{ glm::vec3(0,0,0), glm::vec3(0,0,0),glm::vec3(1,1,1) });
+        ecs.AddComponent(entity, SpriteRender{ 400, 400, glm::vec4{255,255,255, 1} });
+       
+    }
 }
 
 void ECSLayer::OnDetach()
@@ -55,6 +65,34 @@ void ECSLayer::OnUpdate()
 	{
 		system->Update();
 	}
+
+	if (Input::GetInstance()->GetKey(SDL_SCANCODE_A))
+	{
+        auto& transform = ecs.GetComponent<Transform>(entity);
+        transform.position.x--;
+	}
+    if (Input::GetInstance()->GetKey(SDL_SCANCODE_D))
+    {
+        auto& transform = ecs.GetComponent<Transform>(entity);
+        transform.position.x++;
+    }
+    if (Input::GetInstance()->GetKey(SDL_SCANCODE_W))
+    {
+        auto& transform = ecs.GetComponent<Transform>(entity);
+        transform.position.y--;
+    }
+    if (Input::GetInstance()->GetKey(SDL_SCANCODE_S))
+    {
+        auto& transform = ecs.GetComponent<Transform>(entity);
+        transform.position.y++;
+    }
+
+    if (Input::GetInstance()->GetKey(SDL_SCANCODE_RIGHT))
+    {
+        auto& transform = ecs.GetComponent<Transform>(entity);
+        transform.scale.x--;
+        std::cout << transform.scale.x << std::endl;
+    }
 }
 
 void ECSLayer::OnImGuiRender()

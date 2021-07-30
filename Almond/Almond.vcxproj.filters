@@ -81,13 +81,13 @@
     <ClCompile Include="src\Platforms\Windows\WindowsWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Layers\ECSLayer.cpp">
+    <ClCompile Include="src\Core\ECS\ECSLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Layers\InputLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Layers\RendererLayer.cpp">
+    <ClCompile Include="src\Core\Renderer\RendererLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Layers\ImGuiLayer.cpp">
@@ -1031,13 +1031,13 @@
     <ClInclude Include="src\Platforms\Windows\WindowsWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Layers\ECSLayer.h">
+    <ClInclude Include="src\Core\ECS\ECSLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Layers\InputLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Layers\RendererLayer.h">
+    <ClInclude Include="src\Core\Renderer\RendererLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Layers\ImGuiLayer.h">
