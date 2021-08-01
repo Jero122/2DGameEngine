@@ -47,25 +47,18 @@ void RenderBatch::init()
 
 void RenderBatch::beginBatch()
 {
-	indexCount = 0;
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	quadBuffer = (Quad*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
 }
 
 void RenderBatch::endBatch()
 {
-	//if (isDirty)
-	{
-		auto& array = quadArray.getComponentArray();
-		GLsizeiptr quadArrSize = (quadArray.mCurrentEntityIndex + 1) * sizeof(Quad);
-		GLCALL(glBindBuffer(GL_ARRAY_BUFFER, VBO));
-		GLCALL(glBufferSubData(GL_ARRAY_BUFFER, 0, quadArrSize, &array[0]));
-		isDirty = false;
-	}
+	glUnmapBuffer(GL_ARRAY_BUFFER);
 }
 
 void RenderBatch::flush()
 {
 	shader.use();
-	glm::mat4 model = glm::mat4(1.0f);
 
 
 	Camera camera = Camera();
@@ -73,36 +66,33 @@ void RenderBatch::flush()
 	glm::mat4 view = camera.GetViewMatrix();
 	
 	
-	shader.setMat4("model", model);
 	shader.setMat4("view", view);
-	//shader.setMat4("view", view);
 	shader.setMat4("projection", projection);
 
 	GLCALL(glBindVertexArray(VAO));
-	GLCALL(glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));
-	//indexCount = 0;
+	GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO));
+	
+	glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
+
+	GLCALL(glBindVertexArray(0));
+	GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
+	indexCount = 0;
 }
 
-void RenderBatch::drawQuad(const Entity& entity,const Transform& transform, const SpriteRender& sprite)
+void RenderBatch::drawQuad(const Transform& transform, const SpriteRender& sprite)
 {
-	glm::vec3 pos = transform.position;
-	float width = sprite.width;
-	float height = sprite.height;
-	glm::vec4 col = sprite.colour;
 
 	//top right
-	Quad::Vertex v1 = Quad::Vertex{ glm::vec3(pos.x + width / 2,pos.y + height / 2,0), glm::vec4(col.r / 255,col.g / 255,col.b / 255, 1) };
+	quadBuffer->topRight = Quad::Vertex{ glm::vec3(transform.position.x + sprite.width / 2,transform.position.y + sprite.height / 2,0), glm::vec4(sprite.colour.r / 255,sprite.colour.g / 255,sprite.colour.b / 255, 1) };
 	//bottom right
-	Quad::Vertex v2 = Quad::Vertex{ glm::vec3(pos.x + width / 2,pos.y - height / 2,0), glm::vec4(col.r / 255,col.g / 255,col.b / 255, 1) };
+	quadBuffer->bottomRight = Quad::Vertex{ glm::vec3(transform.position.x + sprite.width / 2,transform.position.y - sprite.height / 2,0), glm::vec4(sprite.colour.r / 255,sprite.colour.g / 255,sprite.colour.b / 255, 1) };
 	//bottom left
-	Quad::Vertex v3 = Quad::Vertex{ glm::vec3(pos.x - width / 2,pos.y - height / 2,0), glm::vec4(col.r / 255,col.g / 255,col.b / 255, 1) };
+	quadBuffer->bottomLeft = Quad::Vertex{ glm::vec3(transform.position.x - sprite.width / 2,transform.position.y - sprite.height / 2,0), glm::vec4(sprite.colour.r / 255,sprite.colour.g / 255,sprite.colour.b / 255, 1) };
 	//top left
-	Quad::Vertex v4 = Quad::Vertex{ glm::vec3(pos.x - width / 2,pos.y + height / 2,0), glm::vec4(col.r / 255,col.g / 255,col.b, 1) };
+	quadBuffer->topLeft= Quad::Vertex{ glm::vec3(transform.position.x - sprite.width / 2,transform.position.y + sprite.height / 2,0), glm::vec4(sprite.colour.r / 255,sprite.colour.g / 255,sprite.colour.b, 1) };
 
-	Quad quad = Quad{ v1,v2,v3,v4 };
+	quadBuffer++;
 	
-	quadArray.insertData(entity,quad);
-
 	isDirty = true;
 	indexCount += 6;
 }
@@ -110,9 +100,9 @@ void RenderBatch::drawQuad(const Entity& entity,const Transform& transform, cons
 void RenderBatch::removeQuad(Entity entity)
 {
 
-	quadArray.removeData(entity);
+	/*quadArray.removeData(entity);
 	indexCount -= 6;
-	isDirty = true;
+	isDirty = true;*/
 }
 
 

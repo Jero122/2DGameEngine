@@ -1,5 +1,7 @@
 #pragma once
 #include "Shader.h"
+#include "Core/Components/SpriteRender.h"
+#include "Core/Components/Transform.h"
 #include "Core/ECS/ECSTypes.hpp"
 
 typedef struct RenderStats
@@ -38,7 +40,7 @@ private:
 
 	bool useBatching = true;
 	unsigned loadTexture(const char* path);
-	void add(Entity entity);
+	void add(Transform& transform, SpriteRender& spriteRender);
 	void nonRenderBatchInit();
 public:
 

@@ -16,7 +16,7 @@ public:
 	
 	
 	
-	static const int MAX_BATCH_COUNT = 20000;
+	static const int MAX_BATCH_COUNT = 100000;
 	static const int MAX_VERTEX_COUNT = MAX_BATCH_COUNT * 4;
 	static const int MAX_INDEX_COUNT = MAX_BATCH_COUNT * 6;
 	RenderBatch()
@@ -32,7 +32,7 @@ public:
 	void endBatch();
 	void flush();
 	
-	void drawQuad(const Entity& entity, const Transform& transform, const SpriteRender& sprite);
+	void drawQuad(const Transform& transform, const SpriteRender& sprite);
 	void removeQuad(Entity entity);
 
 	typedef struct Quad
@@ -53,8 +53,9 @@ public:
 	
 private:
 	bool isDirty = true;
-	PackedArray<Quad> quadArray = PackedArray<Quad>(MAX_BATCH_COUNT);
-
+	//PackedArray<Quad> quadArray = PackedArray<Quad>(MAX_BATCH_COUNT);
+	Quad* quadBuffer;
+	
 	const int POS_COUNT = 3;	//XYZ
 	const int COLOR_COUNT = 4;	//RGBA
 	const int POS_OFFSET = 0;

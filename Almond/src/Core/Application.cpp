@@ -2,9 +2,12 @@
 
 #include "ECS/ECSLayer.h"
 #include "Layers/InputLayer.h"
+#include "Renderer/RenderBatch.h"
 #include "Renderer/RendererLayer.h"
 
 Application* Application::s_Instance = nullptr;
+
+
 
 Application::Application()
 {
@@ -23,9 +26,9 @@ Application::Application()
 	RendererLayer* Renderer = new RendererLayer();
 	m_LayerStack.PushLayer(Renderer);
 
-	//IMGUI
+	/*//IMGUI
 	m_ImGuiLayer = new ImGuiLayer();
-	m_LayerStack.PushOverLay(m_ImGuiLayer);
+	m_LayerStack.PushOverLay(m_ImGuiLayer);*/
 
 	for (auto layer : m_LayerStack)
 	{
@@ -59,23 +62,32 @@ void Application::Run()
 	m_Running = true;
 	while (m_Running)
 	{
+		Uint64 start = SDL_GetPerformanceCounter();
+
+
+
+	
 		for (auto layer : m_LayerStack)
 		{
 			layer->OnUpdate();
 		}
 
-		m_ImGuiLayer->Begin();
+		/*m_ImGuiLayer->Begin();
 		for (auto layer : m_LayerStack)
 		{
 			layer->OnImGuiRender();
 		}
+		m_ImGuiLayer->End();*/
 
 		for (auto layer : m_LayerStack)
 		{
 			layer->OnLateUpdate();
 		}
-		
-		m_ImGuiLayer->End();
 		m_Window->OnUpdate();
+		
+		Uint64 end = SDL_GetPerformanceCounter();
+		float secondsElapsed = (end - start) / (float)SDL_GetPerformanceFrequency();
+		float fps = 1.0f / secondsElapsed;
+		std::cout << "FrameTime: " << secondsElapsed * 1000.0f<< " | FPS: " << fps << std::endl;
 	}
 }

@@ -1,4 +1,7 @@
 #pragma once
+#include <stack>
+
+#include "ECSTypes.hpp"
 #include "Core/Layer.h"
 
 class ECSLayer : public Layer
@@ -13,5 +16,6 @@ public:
 	
 	void OnImGuiRender() override;
 	void OnLateUpdate() override;
+	std::stack<Entity> m_entities;
 };
 

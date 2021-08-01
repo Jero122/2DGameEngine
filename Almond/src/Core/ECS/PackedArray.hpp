@@ -2,8 +2,7 @@
 #include "ECSTypes.hpp"
 #include "cassert"
 #include <unordered_map>
-#include <array>
-#include <iostream>
+#include <sparsepp/spp.h>
 
 class IComponentArray
 {
@@ -19,9 +18,11 @@ class PackedArray : public IComponentArray
 private:
 	//std::array<T, MAX_ENTITIES> mComponentArray{};
 	std::vector<T> mComponentArray = std::vector<T>(MAX_ENTITIES);
+
+	spp::sparse_hash_map<Entity, size_t> mEntityToIndexMap{MAX_ENTITIES};
+	spp::sparse_hash_map<size_t, Entity> mIndexToEntityMap{ MAX_ENTITIES };
+
 	
-	std::unordered_map<Entity, size_t> mEntityToIndexMap{};
-	std::unordered_map<size_t, Entity> mIndexToEntityMap{};
 
 
 public:
@@ -39,7 +40,7 @@ public:
 	
 	void insertData(Entity entity, T component)
 	{
-		assert(mEntityToIndexMap.find(entity) == mEntityToIndexMap.end() && "Component added to same entity more than once.");
+		//assert(mEntityToIndexMap.find(entity) == mEntityToIndexMap.end() && "Component added to same entity more than once.");
 		
 		mCurrentEntityIndex++;
 		mComponentArray[mCurrentEntityIndex] = component;
@@ -65,7 +66,7 @@ public:
 
 	T& getData(Entity entity)
 	{
-		assert(mEntityToIndexMap.find(entity) != mEntityToIndexMap.end() && "retrieving non existant component");
+		//assert(mEntityToIndexMap.find(entity) != mEntityToIndexMap.end() && "retrieving non existant component");
 		
 		return mComponentArray[mEntityToIndexMap[entity]];
 	}
@@ -80,7 +81,7 @@ public:
 
 	void clear()
 	{
-		mComponentArray.clear();
+		mCurrentEntityIndex = -1;
 		mEntityToIndexMap.clear();
 		mIndexToEntityMap.clear();
 	}
