@@ -1,6 +1,7 @@
 #include "Application.h"
 
 #include "ECS/ECSLayer.h"
+#include "imgui/imgui.h"
 #include "Layers/InputLayer.h"
 #include "Renderer/RenderBatch.h"
 #include "Renderer/RendererLayer.h"
@@ -26,9 +27,9 @@ Application::Application()
 	RendererLayer* Renderer = new RendererLayer();
 	m_LayerStack.PushLayer(Renderer);
 
-	/*//IMGUI
+	//IMGUI
 	m_ImGuiLayer = new ImGuiLayer();
-	m_LayerStack.PushOverLay(m_ImGuiLayer);*/
+	m_LayerStack.PushOverLay(m_ImGuiLayer);
 
 	for (auto layer : m_LayerStack)
 	{
@@ -72,12 +73,16 @@ void Application::Run()
 			layer->OnUpdate();
 		}
 
-		/*m_ImGuiLayer->Begin();
+		m_ImGuiLayer->Begin();
 		for (auto layer : m_LayerStack)
 		{
 			layer->OnImGuiRender();
 		}
-		m_ImGuiLayer->End();*/
+
+		ImGui::Begin("Application Stats");
+		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		ImGui::End();
+		m_ImGuiLayer->End();
 
 		for (auto layer : m_LayerStack)
 		{

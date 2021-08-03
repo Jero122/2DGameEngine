@@ -30,7 +30,7 @@
     <ClCompile Include="src\vendor\stb\stb_image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Renderer\Renderer2D.cpp">
+    <ClCompile Include="src\Core\Renderer\RenderSysten2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Renderer\Camera.cpp">
@@ -971,7 +971,7 @@
     <ClInclude Include="src\vendor\stb\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Renderer\Renderer2D.h">
+    <ClInclude Include="src\Core\Renderer\RenderSysten2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Renderer\Camera.h">

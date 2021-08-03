@@ -5,29 +5,26 @@
 #include "Core/Components/SpriteRender.h"
 #include "Core/Components/Transform.h"
 #include "Core/ECS/ECS.hpp"
-#include "Core/Renderer/Renderer2D.h"
+#include "Core/Renderer/RenderSysten2D.h"
 #include "imgui/imgui.h"
 
 extern ECS ecs;
-std::shared_ptr<Renderer2D> renderer;
+std::shared_ptr<RenderSysten2D> renderer;
 
 RendererLayer::RendererLayer()
 {
-    renderer = ecs.CreateSystem<Renderer2D>();
+    renderer = ecs.CreateSystem<RenderSysten2D>();
     {
         Signature signature;
         signature.set(ecs.GetComponentType<SpriteRender>());
         signature.set(ecs.GetComponentType<Transform>());
-        ecs.SetSystemSignature<Renderer2D>(signature);
+        ecs.SetSystemSignature<RenderSysten2D>(signature);
     }
 
-    renderer->init();
+    renderer->Init();
 }
 
-RendererLayer::~RendererLayer()
-{
-	
-}
+RendererLayer::~RendererLayer() = default;
 
 void RendererLayer::OnAttach()
 {
@@ -36,7 +33,7 @@ void RendererLayer::OnAttach()
 
 void RendererLayer::OnDetach()
 {
-    renderer->shutdown();
+    renderer->ShutDown();
 }
 
 void RendererLayer::OnUpdate()
@@ -49,23 +46,12 @@ void RendererLayer::OnUpdate()
 
 void RendererLayer::OnImGuiRender()
 {
-    RenderStats stats = renderer->getRenderStats();
-    bool batching = renderer->isBatching();
-
+    RenderStats stats = renderer->GetRenderStats();
     ImGui::Begin("Renderer Stats");
-    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
     ImGui::Text("Draw Calls: %d", stats.DrawCalls);
     ImGui::Text("Quads: %d", stats.QuadCount);
     ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
     ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
-    if (ImGui::Checkbox("use Batching", &batching))
-    {
-        renderer->setBatching(batching);
-    }
-    ImGui::End();
-
-    ImGui::Begin("ECS");
-    ImGui::Text("Living Entities: %d", ecs.getEntityManager()->mLivingEntityCount);
     ImGui::End();
 }
 

@@ -68,7 +68,7 @@ public:
 	{
 		mComponentManager->RemoveComponent(entity, component);
 		
-		auto signature = mEntityManger->GetEntitySignature();
+		auto signature = mEntityManger->GetEntitySignature(entity);
 		signature.set(mComponentManager->GetComponentType<T>(), false);
 		mEntityManger->SetEntitySignature(entity, signature);
 

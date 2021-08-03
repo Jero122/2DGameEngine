@@ -54,14 +54,21 @@ public:
 		assert(mEntityToIndexMap.find(entity) != mEntityToIndexMap.end() && "Removing non-existent component.");
 		int removedEntityIndex = mEntityToIndexMap[entity];
 		Entity currentEntity = mIndexToEntityMap[mCurrentEntityIndex];
-		
-		mComponentArray[removedEntityIndex] = mComponentArray[mCurrentEntityIndex];
 
-		mEntityToIndexMap[currentEntity] = removedEntityIndex;
-		mIndexToEntityMap[removedEntityIndex] = currentEntity;
-		mEntityToIndexMap.erase(entity);
-		mIndexToEntityMap.erase(mCurrentEntityIndex);
-		mCurrentEntityIndex--;
+		if (mCurrentEntityIndex >= 0)
+		{
+			mComponentArray[removedEntityIndex] = mComponentArray[mCurrentEntityIndex];
+
+			mEntityToIndexMap[currentEntity] = removedEntityIndex;
+			mIndexToEntityMap[removedEntityIndex] = currentEntity;
+			mEntityToIndexMap.erase(entity);
+			mIndexToEntityMap.erase(mCurrentEntityIndex);
+			mCurrentEntityIndex--;
+		}
+		else
+		{
+			//TODO LOG ERROR
+		}
 	}
 
 	T& getData(Entity entity)

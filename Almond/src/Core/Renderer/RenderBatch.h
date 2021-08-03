@@ -25,14 +25,14 @@ public:
 		currentID++;
 	}
 
-	void init();
+	void Init();
 	void shutdown();
 	
-	void beginBatch();
+	void BeginBatch();
 	void endBatch();
 	void flush();
 	
-	void drawQuad(const Transform& transform, const SpriteRender& sprite);
+	void Submit(const Transform& transform, const SpriteRender& sprite);
 	void removeQuad(Entity entity);
 
 	typedef struct Quad

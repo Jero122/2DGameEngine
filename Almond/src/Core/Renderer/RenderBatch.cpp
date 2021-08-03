@@ -2,7 +2,7 @@
 #include "GLCall.h"
 #include "Core/Window.h"
 
-void RenderBatch::init()
+void RenderBatch::Init()
 {
 	std::string shaderPath("resources/shaders/Basic.glsl");
 	shader = Shader();
@@ -45,7 +45,7 @@ void RenderBatch::init()
 	GLCALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
 }
 
-void RenderBatch::beginBatch()
+void RenderBatch::BeginBatch()
 {
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	quadBuffer = (Quad*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
@@ -79,7 +79,7 @@ void RenderBatch::flush()
 	indexCount = 0;
 }
 
-void RenderBatch::drawQuad(const Transform& transform, const SpriteRender& sprite)
+void RenderBatch::Submit(const Transform& transform, const SpriteRender& sprite)
 {
 
 	//top right
