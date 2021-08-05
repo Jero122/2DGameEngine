@@ -37,7 +37,7 @@ void ECSLayer::OnAttach()
    
 
   
-    /*for (int i = 0; i < 57000; ++i)
+    for (int i = 0; i < 100000; ++i)
     {
         auto entity = ecs.CreateEntity();
         {
@@ -48,16 +48,16 @@ void ECSLayer::OnAttach()
             ecs.AddComponent(entity, SpriteRender{ 10.0f * randScale(generator), 10.0f * randScale(generator), glm::vec4{255,255,255, 1} });
             m_entities.push(entity);
         }
-    }*/
+    }
 
 
-    entity = ecs.CreateEntity();
+    /*entity = ecs.CreateEntity();
     {
         ecs.AddComponent(entity, Transform{ glm::vec3(0,0,0), glm::vec3(0,0,0),glm::vec3(1,1,1) });
         ecs.AddComponent(entity, SpriteRender{ 400, 400, glm::vec4{255,255,255, 1} });
         m_entities.push(entity);
        
-    }
+    }*/
 }
 
 void ECSLayer::OnDetach()
@@ -71,7 +71,7 @@ void ECSLayer::OnUpdate()
 		system->Update();
 	}
 
-	if (Input::GetInstance()->GetKeyDown(SDL_SCANCODE_A))
+	if (Input::GetInstance()->GetKey(SDL_SCANCODE_A))
 	{
         auto& transform = ecs.GetComponent<Transform>(entity);
         transform.position.x--;

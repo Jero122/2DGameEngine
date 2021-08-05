@@ -11,7 +11,8 @@
 extern ECS ecs;
 
 
-std::unordered_map<uint32_t, RenderBatch> renderBatches;
+
+
 typedef struct Renderable
 {
 	Entity entity;
@@ -45,6 +46,8 @@ typedef struct Renderable
 };
 
 std::vector<Renderable> renderables;
+RenderBatch dynamicRenderBatch(RenderBatch::Dynamic);
+RenderBatch staticRenderBatch(RenderBatch::Static);
 
 void RenderSysten2D::EntityAdded(Entity entity)
 {
@@ -67,30 +70,14 @@ void RenderSysten2D::EntityRemoved(Entity entity)
 
 void RenderSysten2D::Submit(Transform& transform, SpriteRender& spriteRender)
 {
-	bool added = false;
-	for (auto &pair : renderBatches)
+	if (dynamicRenderBatch.indexCount >= RenderBatch::MAX_INDEX_COUNT)
 	{
-		auto& renderBatch = pair.second;
-	
-		
-		if (!(renderBatch.indexCount >= RenderBatch::MAX_INDEX_COUNT))
-		{
-			renderBatch.Submit(transform, spriteRender);
-			added = true;
-		}
-	}
-	if (!added)
-	{
-		RenderBatch*newRenderBatch = new RenderBatch();
-		newRenderBatch->Init();
-		newRenderBatch->BeginBatch();
-		
-		newRenderBatch->Submit(transform, spriteRender);
-		
-		renderBatches.insert(std::make_pair(newRenderBatch->id, *newRenderBatch));
-
+		dynamicRenderBatch.endBatch();
+		dynamicRenderBatch.flush();
+		dynamicRenderBatch.BeginBatch();
 		stats.DrawCalls++;
 	}
+	dynamicRenderBatch.Submit(transform, spriteRender);
 	stats.QuadCount++;
 }
 
@@ -98,6 +85,7 @@ void RenderSysten2D::Submit(Transform& transform, SpriteRender& spriteRender)
 
 void RenderSysten2D::Init()
 {
+	dynamicRenderBatch.Init();
 }
 
 
@@ -108,27 +96,21 @@ void RenderSysten2D::Update()
 
 	for (auto renderable : renderables)
 	{
-		Submit( renderable.transform, renderable.sprite);
+			Submit(renderable.transform, renderable.sprite);
 	}
-	for (auto& pair : renderBatches)
+
+	if (dynamicRenderBatch.indexCount >= 0)
 	{
-		auto& renderBatch = pair.second;
-		renderBatch.endBatch();
-		renderBatch.flush();
-		renderBatch.BeginBatch();
+		dynamicRenderBatch.endBatch();
+		dynamicRenderBatch.flush();
+		dynamicRenderBatch.BeginBatch();
 		stats.DrawCalls++;
 	}
-	
-	stats.QuadCount = mEntities.size();
 }
 
 void RenderSysten2D::ShutDown()
 {
-	for (auto &pair : renderBatches)
-	{
-		auto render_batch = pair.second;
-		render_batch.shutdown();
-	}
+	
 }
 
 

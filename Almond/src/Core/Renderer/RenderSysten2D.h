@@ -40,7 +40,6 @@ private:
 
 	unsigned LoadTexture(const char* path);
 	void Submit(Transform& transform, SpriteRender& spriteRender);
-	void nonRenderBatchInit();
 public:
 
 	RenderSysten2D() {};

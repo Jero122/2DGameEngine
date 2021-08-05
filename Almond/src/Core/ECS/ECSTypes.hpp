@@ -4,7 +4,7 @@
 #include <set>
 
 using Entity = std::uint32_t;
-const Entity MAX_ENTITIES = 100000;
+const Entity MAX_ENTITIES = 1000000;
 
 using ComponentType = std::uint8_t;
 const ComponentType MAX_COMPONENTS = 32;

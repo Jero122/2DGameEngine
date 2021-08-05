@@ -4,6 +4,7 @@
 #include "Core/Components/SpriteRender.h"
 #include "Core/Components/Transform.h"
 #include "Core/ECS/PackedArray.hpp"
+#include <boost/unordered/unordered_map.hpp>
 
 static int currentID = 0;
 
@@ -16,7 +17,7 @@ public:
 	
 	
 	
-	static const int MAX_BATCH_COUNT = 100000;
+	static const int MAX_BATCH_COUNT = 10000;
 	static const int MAX_VERTEX_COUNT = MAX_BATCH_COUNT * 4;
 	static const int MAX_INDEX_COUNT = MAX_BATCH_COUNT * 6;
 	RenderBatch()
@@ -54,14 +55,17 @@ public:
 private:
 	bool isDirty = true;
 	//PackedArray<Quad> quadArray = PackedArray<Quad>(MAX_BATCH_COUNT);
-	Quad* quadBuffer;
 	
-	const int POS_COUNT = 3;	//XYZ
-	const int COLOR_COUNT = 4;	//RGBA
-	const int POS_OFFSET = 0;
-	const int COLOR_OFFSET = POS_OFFSET + POS_COUNT;
-	const int VERTEX_ELEMENT_COUNT = 7;
-	const int VERTEX_SIZE = VERTEX_ELEMENT_COUNT * sizeof(float);
+	Quad* m_QuadBuffer;
+	Quad* m_QuadBufferPtr = nullptr;
+
+	
+	static const int POS_COUNT = 3;	//XYZ
+	static const int COLOR_COUNT = 4;	//RGBA
+	static const int POS_OFFSET = 0;
+	static const int COLOR_OFFSET = POS_OFFSET + POS_COUNT;
+	static const int VERTEX_ELEMENT_COUNT = 7;
+	static const int VERTEX_SIZE = VERTEX_ELEMENT_COUNT * sizeof(float);
 
 	unsigned int VAO, VBO, EBO;
 	Shader shader;
