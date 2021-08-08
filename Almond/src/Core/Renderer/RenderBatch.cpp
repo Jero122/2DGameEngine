@@ -96,7 +96,6 @@ void RenderBatch::Submit(const Transform& transform, const SpriteRender& sprite)
 
 	m_QuadBufferPtr++;
 	
-	m_IsDirty = true;
 	indexCount += 6;
 }
 

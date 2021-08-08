@@ -442,6 +442,15 @@
     <ClInclude Include="src\vendor\imgui\imstb_rectpack.h" />
     <ClInclude Include="src\vendor\imgui\imstb_textedit.h" />
     <ClInclude Include="src\vendor\imgui\imstb_truetype.h" />
+    <ClInclude Include="src\vendor\sparsepp\spp.h" />
+    <ClInclude Include="src\vendor\sparsepp\spp_config.h" />
+    <ClInclude Include="src\vendor\sparsepp\spp_dlalloc.h" />
+    <ClInclude Include="src\vendor\sparsepp\spp_memory.h" />
+    <ClInclude Include="src\vendor\sparsepp\spp_smartptr.h" />
+    <ClInclude Include="src\vendor\sparsepp\spp_stdint.h" />
+    <ClInclude Include="src\vendor\sparsepp\spp_timer.h" />
+    <ClInclude Include="src\vendor\sparsepp\spp_traits.h" />
+    <ClInclude Include="src\vendor\sparsepp\spp_utils.h" />
     <ClInclude Include="src\vendor\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>

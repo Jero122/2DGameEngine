@@ -46,8 +46,7 @@ typedef struct Renderable
 };
 
 std::vector<Renderable> renderables;
-RenderBatch dynamicRenderBatch(RenderBatch::Dynamic);
-RenderBatch staticRenderBatch(RenderBatch::Static);
+RenderBatch dynamicRenderBatch;
 
 void RenderSysten2D::EntityAdded(Entity entity)
 {
