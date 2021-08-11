@@ -69,15 +69,7 @@ void RenderSysten2D::EntityRemoved(Entity entity)
 
 void RenderSysten2D::Submit(Transform& transform, SpriteRender& spriteRender)
 {
-	if (dynamicRenderBatch.indexCount >= RenderBatch::MAX_INDEX_COUNT)
-	{
-		dynamicRenderBatch.endBatch();
-		dynamicRenderBatch.flush();
-		dynamicRenderBatch.BeginBatch();
-		stats.DrawCalls++;
-	}
 	dynamicRenderBatch.Submit(transform, spriteRender);
-	stats.QuadCount++;
 }
 
 
@@ -100,10 +92,7 @@ void RenderSysten2D::Update()
 
 	if (dynamicRenderBatch.indexCount >= 0)
 	{
-		dynamicRenderBatch.endBatch();
-		dynamicRenderBatch.flush();
-		dynamicRenderBatch.BeginBatch();
-		stats.DrawCalls++;
+		dynamicRenderBatch.NextBatch();
 	}
 }
 

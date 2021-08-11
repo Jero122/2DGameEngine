@@ -596,6 +596,8 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\textures\container.jpg" />
+    <Image Include="resources\textures\Crate.jpg" />
+    <Image Include="resources\textures\UpArrow.png" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="src\vendor\imgui\LICENSE.txt" />

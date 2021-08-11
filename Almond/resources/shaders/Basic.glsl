@@ -1,46 +1,46 @@
 #shader vertex
 #version 330 core
-layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec4 aColor;
-layout (location = 2) in vec2 aTexCoord;
-//layout (location = 3) in int aTexIndex;
+layout (location=0) in vec3 aPos;
+layout (location=1) in vec4 aColor;
+layout (location=2) in vec2 aTexCoords;
+layout (location=3) in float aTexId;
 
-out vec4 ourColor;
-out vec2 TexCoord;
+uniform mat4 uProjection;
+uniform mat4 uView;
 
-uniform mat4 model= mat4(1.0);
-uniform mat4 view;
-uniform mat4 projection;
+out vec4 fColor;
+out vec2 fTexCoords;
+out float fTexId;
 
 void main()
 {
-	gl_Position = projection * model * view * vec4(aPos, 1.0);
-	ourColor = aColor;
-	TexCoord = vec2(aTexCoord.x, aTexCoord.y);
+    fColor = aColor;
+    fTexCoords = aTexCoords;
+    fTexId = aTexId;
+
+    gl_Position = uProjection * uView * vec4(aPos, 1.0);
 }
-
-
 
 #shader fragment
 #version 330 core
-out vec4 FragColor;
 
-in vec4 ourColor;
-in vec2 TexCoord;
+in vec4 fColor;
+in vec2 fTexCoords;
+in float fTexId;
 
-// texture sampler
-uniform sampler2D ourTexture;
+uniform sampler2D uTextures[32];
+
+out vec4 color;
 
 void main()
 {
 
-	//FragColor = texture(texture1, TexCoord);
-	vec4 texColor = texture(ourTexture, TexCoord);
-
-	 if(texColor.a < 0.1)
-        discard;
-    FragColor = texColor;
-
-
-	//FragColor = ourColor;
+    if (fTexId > 0) {
+        int id = int(fTexId);
+        color = texture(uTextures[id], fTexCoords);
+        //color = vec4(fTexCoords, 0, 1);
+    } else {
+        color = fColor;
+    }
+    //color = vec4(fTexCoords, 0, 1);
 }

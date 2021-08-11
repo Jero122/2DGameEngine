@@ -25,6 +25,9 @@ public:
 		return m_Height;
 	}
 
+	void Bind();
+	void UnBind();
+
 private:
 	unsigned int m_TexID;
 	int m_Width;

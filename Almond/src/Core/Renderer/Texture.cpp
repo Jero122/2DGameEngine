@@ -32,4 +32,6 @@ Texture::Texture(const std::string filePath)
 		std::cout << "Texture failed to load at path: " << filePath << std::endl;
 	}
 	stbi_image_free(data);
+
+	
 }

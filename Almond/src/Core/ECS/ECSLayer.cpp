@@ -37,8 +37,10 @@ void ECSLayer::OnAttach()
 {
    
     Texture texture("resources/textures/container.jpg");
+    Texture texture1("resources/textures/UpArrow.png");
+    Texture texture2("resources/textures/Crate.jpg");
   
-    for (int i = 0; i < 10; ++i)
+    /*for (int i = 0; i < 10; ++i)
     {
         auto entity = ecs.CreateEntity();
         {
@@ -49,16 +51,35 @@ void ECSLayer::OnAttach()
             ecs.AddComponent(entity, SpriteRender{ 100.0f * randScale(generator), 100.0f * randScale(generator), glm::vec4{255,255,255, 1}, texture.GetTexID() });
             m_entities.push(entity);
         }
-    }
+    }*/
 
 
     entity = ecs.CreateEntity();
     {
         ecs.AddComponent(entity, Transform{ glm::vec3(0,0,0), glm::vec3(0,0,0),glm::vec3(1,1,1) });
-        ecs.AddComponent(entity, SpriteRender{ 400, 400, glm::vec4{255,255,255, 1}, texture.GetTexID()});
+        ecs.AddComponent(entity, SpriteRender{ 400, 400, glm::vec4{255,255,255, 1}, texture1.GetTexID()});
         m_entities.push(entity);
        
     }
+
+    entity = ecs.CreateEntity();
+    {
+        ecs.AddComponent(entity, Transform{ glm::vec3(400,400,0), glm::vec3(0,0,0),glm::vec3(1,1,1) });
+        ecs.AddComponent(entity, SpriteRender{ 400, 400, glm::vec4{255,255,255, 1}, texture.GetTexID() });
+        m_entities.push(entity);
+
+    }
+
+    entity = ecs.CreateEntity();
+    {
+        ecs.AddComponent(entity, Transform{ glm::vec3(800,800,0), glm::vec3(0,0,0),glm::vec3(1,1,1) });
+        ecs.AddComponent(entity, SpriteRender{ 400, 400, glm::vec4{255,255,255, 1}, texture2.GetTexID() });
+        m_entities.push(entity);
+
+    }
+
+
+  
 }
 
 void ECSLayer::OnDetach()

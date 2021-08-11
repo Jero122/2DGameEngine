@@ -7,6 +7,7 @@ void RenderBatch::Init()
 	std::string shaderPath("resources/shaders/Basic.glsl");
 	shader = Shader();
 	shader.init(shaderPath);
+	shader.use();
 
 	m_QuadBuffer = new Quad[MAX_BATCH_COUNT];
 
@@ -26,10 +27,9 @@ void RenderBatch::Init()
 	//TEX UV
 	GLCALL(glVertexAttribPointer(2, TEX_COORD_COUNT, GL_FLOAT, GL_FALSE, VERTEX_ELEMENT_COUNT * sizeof(float), (void*)(TEX_COORD_OFFSET * sizeof(float))));
 	GLCALL(glEnableVertexAttribArray(2));
-	/*//TEX ID
+	//TEX ID
 	GLCALL(glVertexAttribPointer(3, TEX_ID_COUNT, GL_FLOAT, GL_FALSE, VERTEX_ELEMENT_COUNT * sizeof(float), (void*)(TEX_ID_OFFSET * sizeof(float))));
 	GLCALL(glEnableVertexAttribArray(3));
-	*/
 	
 
 	//EBO
@@ -54,12 +54,22 @@ void RenderBatch::Init()
 	GLCALL(glGenBuffers(1, &EBO));
 	GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO));
 	GLCALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
+
+	int32_t samplers[s_MaxTextureSlots];
+	for (uint32_t i = 0; i < s_MaxTextureSlots; ++i)
+	{
+		samplers[i] = i;
+	}
+
+	shader.setIntArray("uTextures", samplers, s_MaxTextureSlots);
+
 }
 
 void RenderBatch::BeginBatch()
 {
 	m_QuadBufferPtr = m_QuadBuffer;
 	indexCount = 0;
+	m_TextureSlotIndex = 1; //Set to 1 because 0 is reserved for colored quads
 }
 
 void RenderBatch::endBatch()
@@ -80,35 +90,77 @@ void RenderBatch::flush()
 	camera.init(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	glm::mat4 view = camera.GetViewMatrix();
 	
-	
-	shader.setMat4("view", view);
-	shader.setMat4("projection", projection);
+	shader.setMat4("uView", view);
+	shader.setMat4("uProjection", projection);
 
+	for (int i = 1; i < m_TextureSlotIndex; ++i)
+	{
+		GLCALL(glActiveTexture(GL_TEXTURE0 + i));
+		glBindTexture(GL_TEXTURE_2D, m_TextureSlots[i]);
+	}
+	
 	GLCALL(glBindVertexArray(VAO));
 	GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO));
 	
 	glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
+}
 
-	indexCount = 0;
+
+void RenderBatch::NextBatch()
+{
+	endBatch();
+	flush();
+	BeginBatch();
 }
 
 void RenderBatch::Submit(const Transform& transform, const SpriteRender& sprite)
 {
+
+	if (indexCount >= MAX_INDEX_COUNT)
+	{
+		NextBatch();
+	}
+
+	float textureIndex = 0;
+
+	//If textureID is already in batch
+	for (int i = 0; i < m_TextureSlotIndex; ++i)
+	{
+		if (m_TextureSlots[i] == sprite.textureID)
+		{
+			//Set the textureIndex for this quad to the one already in the batch;
+			textureIndex = i;
+			break;
+		}
+	}
+
+	//If textureID was not in batch
+	if (textureIndex == 0 && sprite.textureID > 0)
+	{
+		//If all the textureSlots have been occupied, end batch
+		if (m_TextureSlotIndex >= s_MaxTextureSlots)
+		{
+			NextBatch();
+		}
+
+		textureIndex = m_TextureSlotIndex;
+		m_TextureSlots[m_TextureSlotIndex] = sprite.textureID;
+		m_TextureSlotIndex++;
+	}
+	
 	//top right
-	m_QuadBufferPtr->topRight = Quad::Vertex{ glm::vec3(transform.position.x + sprite.width / 2,transform.position.y + sprite.height / 2,0), glm::vec4(sprite.color.r / 255,sprite.color.g / 255,sprite.color.b / 255, 1), glm::vec2(1,1) };
+	m_QuadBufferPtr->topRight = Quad::Vertex{ glm::vec3(transform.position.x + sprite.width / 2,transform.position.y + sprite.height / 2,0), glm::vec4(sprite.color.r / 255,sprite.color.g / 255,sprite.color.b / 255, 1), glm::vec2(1,1), textureIndex};
 	//bottom right
-	m_QuadBufferPtr->bottomRight = Quad::Vertex{ glm::vec3(transform.position.x + sprite.width / 2,transform.position.y - sprite.height / 2,0), glm::vec4(sprite.color.r / 255,sprite.color.g / 255,sprite.color.b / 255, 1), glm::vec2(1,0) };
+	m_QuadBufferPtr->bottomRight = Quad::Vertex{ glm::vec3(transform.position.x + sprite.width / 2,transform.position.y - sprite.height / 2,0), glm::vec4(sprite.color.r / 255,sprite.color.g / 255,sprite.color.b / 255, 1), glm::vec2(1,0), textureIndex };
 	//bottom left
-	m_QuadBufferPtr->bottomLeft = Quad::Vertex{ glm::vec3(transform.position.x - sprite.width / 2,transform.position.y - sprite.height / 2,0), glm::vec4(sprite.color.r / 255,sprite.color.g / 255,sprite.color.b / 255, 1), glm::vec2(0,0) };
+	m_QuadBufferPtr->bottomLeft = Quad::Vertex{ glm::vec3(transform.position.x - sprite.width / 2,transform.position.y - sprite.height / 2,0), glm::vec4(sprite.color.r / 255,sprite.color.g / 255,sprite.color.b / 255, 1), glm::vec2(0,0), textureIndex };
 	//top left
-	m_QuadBufferPtr->topLeft= Quad::Vertex{ glm::vec3(transform.position.x - sprite.width / 2,transform.position.y + sprite.height / 2,0), glm::vec4(sprite.color.r / 255,sprite.color.g / 255,sprite.color.b, 1), glm::vec2(0,1) };
+	m_QuadBufferPtr->topLeft= Quad::Vertex{ glm::vec3(transform.position.x - sprite.width / 2,transform.position.y + sprite.height / 2,0), glm::vec4(sprite.color.r / 255,sprite.color.g / 255,sprite.color.b, 1), glm::vec2(0,1), textureIndex };
 
 	m_QuadBufferPtr++;
 	
 	indexCount += 6;
 
-
-	glBindTexture(GL_TEXTURE_2D, sprite.textureID);
 }
 
 void RenderBatch::removeQuad(Entity entity)
