@@ -21,27 +21,12 @@ private:
 	unsigned int VBO;
 	unsigned int EBO;
 
-	unsigned int texture;
 	Shader shader;
-
 	RenderStats stats;
 
-	unsigned int indices[6] = {  // note that we start from 0!
-		3, 2, 0,  // first Triangle
-		0, 2, 1   // second Triangle
-	};
-	float vertices[32] = {
-		// positions          //RGB colors        // texture coords
-		0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 1.0f,   1.0f, 1.0f, // top right
-		0.5f, -0.5f, 0.0f,   1.0f, 1.0f, 1.0f,   1.0f, 0.0f, // bottom right
-		-0.5f, -0.5f, 0.0f,   1.0f, 1.0f, 1.0f,   0.0f, 0.0f, // bottom left
-		-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 1.0f,   0.0f, 1.0f  // top left 
-	};
-
-	unsigned LoadTexture(const char* path);
 	void Submit(Transform& transform, SpriteRender& spriteRender);
-public:
 
+public:
 	RenderSysten2D() {};
 	void Init() override;
 	void ShutDown() override;

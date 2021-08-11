@@ -36,12 +36,13 @@ public:
 	void Submit(const Transform& transform, const SpriteRender& sprite);
 	void removeQuad(Entity entity);
 
-	typedef struct Quad
+	struct Quad
 	{
-		typedef struct Vertex
+		struct Vertex
 		{
 			glm::vec3 Position;
 			glm::vec4 Color;
+			glm::vec2 TexCoord;
 		};
 		Vertex topRight;
 		Vertex bottomRight;
@@ -62,9 +63,16 @@ private:
 	
 	static const int POS_COUNT = 3;	//XYZ
 	static const int COLOR_COUNT = 4;	//RGBA
+	static const int TEX_COORD_COUNT = 2;	//UV
+	static const int TEX_ID_COUNT = 1;
+	
 	static const int POS_OFFSET = 0;
 	static const int COLOR_OFFSET = POS_OFFSET + POS_COUNT;
-	static const int VERTEX_ELEMENT_COUNT = 7;
+	static const int TEX_COORD_OFFSET = COLOR_OFFSET + COLOR_COUNT;
+	static const int TEX_ID_OFFSET = TEX_COORD_OFFSET + TEX_COORD_COUNT;
+
+	
+	static const int VERTEX_ELEMENT_COUNT = POS_COUNT + COLOR_COUNT + TEX_COORD_COUNT;
 	static const int VERTEX_SIZE = VERTEX_ELEMENT_COUNT * sizeof(float);
 
 	unsigned int VAO, VBO, EBO;

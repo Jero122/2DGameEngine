@@ -17,11 +17,20 @@ void RenderBatch::Init()
 	GLCALL(glBindBuffer(GL_ARRAY_BUFFER, VBO));
 	GLCALL(glBufferData(GL_ARRAY_BUFFER, MAX_VERTEX_COUNT * sizeof(Quad::Vertex), nullptr, GL_DYNAMIC_DRAW));
 
-	GLCALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, VERTEX_ELEMENT_COUNT * sizeof(float), (void*)0));
+	// POSITIOn
+	GLCALL(glVertexAttribPointer(0, POS_COUNT, GL_FLOAT, GL_FALSE, VERTEX_ELEMENT_COUNT * sizeof(float), (void*)POS_OFFSET));
 	GLCALL(glEnableVertexAttribArray(0));
-	// color attribute
-	GLCALL(glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, VERTEX_ELEMENT_COUNT * sizeof(float), (void*)(3 * sizeof(float))));
+	//RGBA COLOR
+	GLCALL(glVertexAttribPointer(1, COLOR_COUNT, GL_FLOAT, GL_FALSE, VERTEX_ELEMENT_COUNT * sizeof(float), (void*)(COLOR_OFFSET * sizeof(float))));
 	GLCALL(glEnableVertexAttribArray(1));
+	//TEX UV
+	GLCALL(glVertexAttribPointer(2, TEX_COORD_COUNT, GL_FLOAT, GL_FALSE, VERTEX_ELEMENT_COUNT * sizeof(float), (void*)(TEX_COORD_OFFSET * sizeof(float))));
+	GLCALL(glEnableVertexAttribArray(2));
+	/*//TEX ID
+	GLCALL(glVertexAttribPointer(3, TEX_ID_COUNT, GL_FLOAT, GL_FALSE, VERTEX_ELEMENT_COUNT * sizeof(float), (void*)(TEX_ID_OFFSET * sizeof(float))));
+	GLCALL(glEnableVertexAttribArray(3));
+	*/
+	
 
 	//EBO
 	//Populates INDICES array as that will remain the same
@@ -86,17 +95,20 @@ void RenderBatch::flush()
 void RenderBatch::Submit(const Transform& transform, const SpriteRender& sprite)
 {
 	//top right
-	m_QuadBufferPtr->topRight = Quad::Vertex{ glm::vec3(transform.position.x + sprite.width / 2,transform.position.y + sprite.height / 2,0), glm::vec4(sprite.colour.r / 255,sprite.colour.g / 255,sprite.colour.b / 255, 1) };
+	m_QuadBufferPtr->topRight = Quad::Vertex{ glm::vec3(transform.position.x + sprite.width / 2,transform.position.y + sprite.height / 2,0), glm::vec4(sprite.color.r / 255,sprite.color.g / 255,sprite.color.b / 255, 1), glm::vec2(1,1) };
 	//bottom right
-	m_QuadBufferPtr->bottomRight = Quad::Vertex{ glm::vec3(transform.position.x + sprite.width / 2,transform.position.y - sprite.height / 2,0), glm::vec4(sprite.colour.r / 255,sprite.colour.g / 255,sprite.colour.b / 255, 1) };
+	m_QuadBufferPtr->bottomRight = Quad::Vertex{ glm::vec3(transform.position.x + sprite.width / 2,transform.position.y - sprite.height / 2,0), glm::vec4(sprite.color.r / 255,sprite.color.g / 255,sprite.color.b / 255, 1), glm::vec2(1,0) };
 	//bottom left
-	m_QuadBufferPtr->bottomLeft = Quad::Vertex{ glm::vec3(transform.position.x - sprite.width / 2,transform.position.y - sprite.height / 2,0), glm::vec4(sprite.colour.r / 255,sprite.colour.g / 255,sprite.colour.b / 255, 1) };
+	m_QuadBufferPtr->bottomLeft = Quad::Vertex{ glm::vec3(transform.position.x - sprite.width / 2,transform.position.y - sprite.height / 2,0), glm::vec4(sprite.color.r / 255,sprite.color.g / 255,sprite.color.b / 255, 1), glm::vec2(0,0) };
 	//top left
-	m_QuadBufferPtr->topLeft= Quad::Vertex{ glm::vec3(transform.position.x - sprite.width / 2,transform.position.y + sprite.height / 2,0), glm::vec4(sprite.colour.r / 255,sprite.colour.g / 255,sprite.colour.b, 1) };
+	m_QuadBufferPtr->topLeft= Quad::Vertex{ glm::vec3(transform.position.x - sprite.width / 2,transform.position.y + sprite.height / 2,0), glm::vec4(sprite.color.r / 255,sprite.color.g / 255,sprite.color.b, 1), glm::vec2(0,1) };
 
 	m_QuadBufferPtr++;
 	
 	indexCount += 6;
+
+
+	glBindTexture(GL_TEXTURE_2D, sprite.textureID);
 }
 
 void RenderBatch::removeQuad(Entity entity)

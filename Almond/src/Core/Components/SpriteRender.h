@@ -5,5 +5,6 @@ struct SpriteRender
 {
 	float width;
 	float height;
-	glm::vec4 colour;
+	glm::vec4 color;
+	unsigned int textureID;
 };

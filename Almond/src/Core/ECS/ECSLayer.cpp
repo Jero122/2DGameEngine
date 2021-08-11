@@ -8,6 +8,7 @@
 #include "Core/Components/Transform.h"
 #include "Core/ECS/ECS.hpp"
 #include "Core/Renderer/RenderBatch.h"
+#include "Core/Renderer/Texture.h"
 #include "imgui/imgui.h"
 
 ECS ecs;
@@ -35,9 +36,9 @@ ECSLayer::~ECSLayer()
 void ECSLayer::OnAttach()
 {
    
-
+    Texture texture("resources/textures/container.jpg");
   
-    for (int i = 0; i < 10000; ++i)
+    for (int i = 0; i < 10; ++i)
     {
         auto entity = ecs.CreateEntity();
         {
@@ -45,19 +46,19 @@ void ECSLayer::OnAttach()
             auto rot = glm::vec3{ 0.0f,0.0f,0.0f };
             auto scale = glm::vec3{ 0.0f,0.0f,0.0f };
             ecs.AddComponent(entity, Transform{ glm::vec3(randPositionX(generator),randPositionY(generator), 0),rot,scale });
-            ecs.AddComponent(entity, SpriteRender{ 10.0f * randScale(generator), 10.0f * randScale(generator), glm::vec4{255,255,255, 1} });
+            ecs.AddComponent(entity, SpriteRender{ 100.0f * randScale(generator), 100.0f * randScale(generator), glm::vec4{255,255,255, 1}, texture.GetTexID() });
             m_entities.push(entity);
         }
     }
 
 
-    /*entity = ecs.CreateEntity();
+    entity = ecs.CreateEntity();
     {
         ecs.AddComponent(entity, Transform{ glm::vec3(0,0,0), glm::vec3(0,0,0),glm::vec3(1,1,1) });
-        ecs.AddComponent(entity, SpriteRender{ 400, 400, glm::vec4{255,255,255, 1} });
+        ecs.AddComponent(entity, SpriteRender{ 400, 400, glm::vec4{255,255,255, 1}, texture.GetTexID()});
         m_entities.push(entity);
        
-    }*/
+    }
 }
 
 void ECSLayer::OnDetach()

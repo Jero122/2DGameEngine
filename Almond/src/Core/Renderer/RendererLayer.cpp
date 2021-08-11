@@ -22,6 +22,9 @@ RendererLayer::RendererLayer()
     }
 
     renderer->Init();
+
+    GLint texture_units;
+    glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &texture_units);
 }
 
 RendererLayer::~RendererLayer() = default;
