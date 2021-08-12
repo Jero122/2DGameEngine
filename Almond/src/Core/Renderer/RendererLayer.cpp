@@ -49,7 +49,7 @@ void RendererLayer::OnUpdate()
 
 void RendererLayer::OnImGuiRender()
 {
-    RenderStats stats = renderer->GetRenderStats();
+    RenderStats stats = renderer->GetRenderBatch().GetRenderStats();
     ImGui::Begin("Renderer Stats");
     ImGui::Text("Draw Calls: %d", stats.DrawCalls);
     ImGui::Text("Quads: %d", stats.QuadCount);

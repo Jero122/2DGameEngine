@@ -10,9 +10,6 @@
 
 extern ECS ecs;
 
-
-
-
 typedef struct Renderable
 {
 	Entity entity;
@@ -46,7 +43,7 @@ typedef struct Renderable
 };
 
 std::vector<Renderable> renderables;
-RenderBatch dynamicRenderBatch;
+
 
 void RenderSysten2D::EntityAdded(Entity entity)
 {
@@ -69,30 +66,27 @@ void RenderSysten2D::EntityRemoved(Entity entity)
 
 void RenderSysten2D::Submit(Transform& transform, SpriteRender& spriteRender)
 {
-	dynamicRenderBatch.Submit(transform, spriteRender);
+	m_RenderBatch.Submit(transform, spriteRender);
 }
-
-
 
 void RenderSysten2D::Init()
 {
-	dynamicRenderBatch.Init();
+	m_RenderBatch.Init();
 }
 
 
 void RenderSysten2D::Update()
 {
-	ResetRenderStats();
-
-
+	m_RenderBatch.ResetRenderStats();
+	
 	for (auto renderable : renderables)
 	{
-			Submit(renderable.transform, renderable.sprite);
+		Submit(renderable.transform, renderable.sprite);
 	}
 
-	if (dynamicRenderBatch.indexCount >= 0)
+	if (m_RenderBatch.indexCount >= 0)
 	{
-		dynamicRenderBatch.NextBatch();
+		m_RenderBatch.NextBatch();
 	}
 }
 
@@ -100,15 +94,3 @@ void RenderSysten2D::ShutDown()
 {
 	
 }
-
-
-void RenderSysten2D::ResetRenderStats()
-{
-	memset(&stats, 0, sizeof(RenderStats));
-}
-
-RenderStats RenderSysten2D::GetRenderStats() const
-{
-	return stats;
-}
-

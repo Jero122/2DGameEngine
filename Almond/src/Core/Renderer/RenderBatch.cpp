@@ -72,8 +72,10 @@ void RenderBatch::BeginBatch()
 	m_TextureSlotIndex = 1; //Set to 1 because 0 is reserved for colored quads
 }
 
-void RenderBatch::endBatch()
+void RenderBatch::EndBatch()
 {
+	m_RenderStats.DrawCalls++;
+	
 	GLsizeiptr size = m_QuadBufferPtr - m_QuadBuffer;
 	size = size * sizeof(Quad);
 	GLCALL(glBindBuffer(GL_ARRAY_BUFFER, VBO));
@@ -81,7 +83,7 @@ void RenderBatch::endBatch()
 	GLCALL(glBufferSubData(GL_ARRAY_BUFFER, 0, size, m_QuadBuffer));
 }
 
-void RenderBatch::flush()
+void RenderBatch::Flush()
 {
 	shader.use();
 
@@ -108,14 +110,15 @@ void RenderBatch::flush()
 
 void RenderBatch::NextBatch()
 {
-	endBatch();
-	flush();
+	EndBatch();
+	Flush();
 	BeginBatch();
 }
 
 void RenderBatch::Submit(const Transform& transform, const SpriteRender& sprite)
 {
-
+	m_RenderStats.QuadCount++;
+	
 	if (indexCount >= MAX_INDEX_COUNT)
 	{
 		NextBatch();

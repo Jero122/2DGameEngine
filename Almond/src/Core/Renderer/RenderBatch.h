@@ -8,6 +8,15 @@
 
 static int currentID = 0;
 
+typedef struct RenderStats
+{
+	uint32_t DrawCalls = 0;
+	uint32_t QuadCount = 0;
+
+	uint32_t GetTotalVertexCount() { return  QuadCount * 4; }
+	uint32_t GetTotalIndexCount() { return  QuadCount * 6; }
+};
+
 class RenderBatch
 {
 public:
@@ -30,12 +39,22 @@ public:
 	void shutdown();
 	
 	void BeginBatch();
-	void endBatch();
-	void flush();
+	void EndBatch();
+	void Flush();
 	void NextBatch();
 	
 	void Submit(const Transform& transform, const SpriteRender& sprite);
 	void removeQuad(Entity entity);
+
+	RenderStats GetRenderStats() const
+	{
+		return m_RenderStats;
+	}
+
+	void ResetRenderStats()
+	{
+		memset(&m_RenderStats, 0, sizeof(RenderStats));
+	}
 
 	struct Quad
 	{
@@ -70,20 +89,20 @@ private:
 	static const int VERTEX_ELEMENT_COUNT = POS_COUNT + COLOR_COUNT + TEX_COORD_COUNT + TEX_ID_COUNT;
 	static const int VERTEX_SIZE = VERTEX_ELEMENT_COUNT * sizeof(float);
 
-	static const int s_MaxTextureSlots = 2;
+	
 
 
 	Quad* m_QuadBuffer;
 	Quad* m_QuadBufferPtr = nullptr;
-
+	
+	static const int s_MaxTextureSlots = 32;
 	std::array<int, s_MaxTextureSlots> m_TextureSlots;
-	unsigned int m_TextureSlotIndex = 32; //0 = white texture;
+	unsigned int m_TextureSlotIndex = 1; //0 = white texture;
 	
-
-	
-
 
 	unsigned int VAO, VBO, EBO;
 	Shader shader;
 	glm::mat4 projection = glm::ortho(0.0f, 1920.0f, 1080.0f, 0.0f, -1.0f, 1.0f);
+
+	RenderStats m_RenderStats;
 };
