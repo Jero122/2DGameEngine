@@ -100,6 +100,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Core\Renderer\SpriteSheet.cpp" />
     <ClCompile Include="src\Core\Renderer\Texture.cpp" />
     <ClCompile Include="src\Core\Layers\ImGuiLayer.cpp" />
     <ClCompile Include="src\Core\Renderer\RendererLayer.cpp" />
@@ -128,6 +129,7 @@
     <ClCompile Include="src\vendor\stb\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Core\Renderer\SpriteSheet.h" />
     <ClInclude Include="src\Core\Renderer\Texture.h" />
     <ClInclude Include="src\Core\Layers\ImGuiLayer.h" />
     <ClInclude Include="src\Core\Renderer\RendererLayer.h" />

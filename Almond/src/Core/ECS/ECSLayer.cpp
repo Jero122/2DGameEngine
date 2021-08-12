@@ -8,6 +8,7 @@
 #include "Core/Components/Transform.h"
 #include "Core/ECS/ECS.hpp"
 #include "Core/Renderer/RenderBatch.h"
+#include "Core/Renderer/SpriteSheet.h"
 #include "Core/Renderer/Texture.h"
 #include "imgui/imgui.h"
 
@@ -37,8 +38,10 @@ void ECSLayer::OnAttach()
 {
    
     Texture texture("resources/textures/container.jpg");
-    Texture texture1("resources/textures/UpArrow.png");
-    Texture texture2("resources/textures/Crate.jpg");
+	
+    SpriteSheet spriteSheet("resources/textures/UpArrow.png", 32, 32, 1, 1);
+	
+    Texture texture1("resources/textures/Crate.jpg");
   
     /*for (int i = 0; i < 10; ++i)
     {
@@ -56,8 +59,8 @@ void ECSLayer::OnAttach()
 
     entity = ecs.CreateEntity();
     {
-        ecs.AddComponent(entity, Transform{ glm::vec3(0,0,0), glm::vec3(0,0,0),glm::vec3(1,1,1) });
-        ecs.AddComponent(entity, SpriteRender{ 400, 400, glm::vec4{255,255,255, 1}, texture1.GetTexID()});
+        ecs.AddComponent(entity, Transform{ glm::vec3(800,800,0), glm::vec3(0,0,0),glm::vec3(1,1,1) });
+        ecs.AddComponent(entity, SpriteRender(400, 400, texture.GetTexID()));
         m_entities.push(entity);
        
     }
@@ -65,7 +68,7 @@ void ECSLayer::OnAttach()
     entity = ecs.CreateEntity();
     {
         ecs.AddComponent(entity, Transform{ glm::vec3(400,400,0), glm::vec3(0,0,0),glm::vec3(1,1,1) });
-        ecs.AddComponent(entity, SpriteRender{ 400, 400, glm::vec4{255,255,255, 1}, texture.GetTexID() });
+        ecs.AddComponent(entity, SpriteRender{ 400, 400, texture1.GetTexID() });
         m_entities.push(entity);
 
     }
@@ -73,7 +76,8 @@ void ECSLayer::OnAttach()
     entity = ecs.CreateEntity();
     {
         ecs.AddComponent(entity, Transform{ glm::vec3(800,800,0), glm::vec3(0,0,0),glm::vec3(1,1,1) });
-        ecs.AddComponent(entity, SpriteRender{ 400, 400, glm::vec4{255,255,255, 1}, texture2.GetTexID() });
+        Quad quad = spriteSheet.GetQuad(0,0);
+    	ecs.AddComponent(entity, SpriteRender{ 400, 400, spriteSheet.GetTexID(),quad.topRight,quad.bottomRight,quad.bottomLeft,quad.topLeft});
         m_entities.push(entity);
 
     }
