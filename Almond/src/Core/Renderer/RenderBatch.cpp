@@ -40,11 +40,11 @@ void RenderBatch::Init()
 	{
 		indices[i + 0] = 0 + offset;
 		indices[i + 1] = 1 + offset;
-		indices[i + 2] = 2 + offset;
+		indices[i + 2] = 3 + offset;
 
-		indices[i + 3] = 2 + offset;
-		indices[i + 4] = 3 + offset;
-		indices[i + 5] = 0 + offset;
+		indices[i + 3] = 1 + offset;
+		indices[i + 4] = 2 + offset;
+		indices[i + 5] = 3 + offset;
 
 		offset += 4;
 	}
@@ -61,6 +61,12 @@ void RenderBatch::Init()
 		samplers[i] = i;
 	}
 
+	m_Vertices[0] = { 0.5f, 0.5f, 0.0f, 1.0f }; // top right
+	m_Vertices[1] = { 0.5f, -0.5f, 0.0f, 1.0f };  // bottom right
+	m_Vertices[2] = { -0.5f, -0.5f, 0.0f, 1.0f };  // bottom left
+	m_Vertices[3] = { -0.5f,  0.5f, 0.0f, 1.0f };   // top left 
+
+	
 	shader.setIntArray("uTextures", samplers, s_MaxTextureSlots);
 
 }
@@ -150,15 +156,20 @@ void RenderBatch::Submit(const Transform& transform, const SpriteRender& sprite)
 		m_TextureSlots[m_TextureSlotIndex] = sprite.textureID;
 		m_TextureSlotIndex++;
 	}
+
+	glm::mat4 transFormMatrix = glm::translate(glm::mat4(1.0f), transform.position)
+		* glm::rotate(glm::mat4(1.0f), glm::radians(transform.rotation.z), { 0.0f,0.0f,1.0f })
+		* glm::scale(glm::mat4(1.0f), { sprite.width * transform.scale.x, sprite.height * transform.scale.y, 1.0f });
+	
 	
 	//top right
-	m_QuadBufferPtr->topRight = Quad::Vertex{ glm::vec3(transform.position.x + sprite.width / 2,transform.position.y + sprite.height / 2,0), glm::vec4(sprite.color.r / 255,sprite.color.g / 255,sprite.color.b / 255, 1), sprite.texCoords[0], textureIndex};
+	m_QuadBufferPtr->topRight = Quad::Vertex{ transFormMatrix * m_Vertices[0], glm::vec4(sprite.color.r / 255,sprite.color.g / 255,sprite.color.b / 255, 1), sprite.texCoords[0], textureIndex};
 	//bottom right
-	m_QuadBufferPtr->bottomRight = Quad::Vertex{ glm::vec3(transform.position.x + sprite.width / 2,transform.position.y - sprite.height / 2,0), glm::vec4(sprite.color.r / 255,sprite.color.g / 255,sprite.color.b / 255, 1), sprite.texCoords[1], textureIndex };
+	m_QuadBufferPtr->bottomRight = Quad::Vertex{ transFormMatrix * m_Vertices[1], glm::vec4(sprite.color.r / 255,sprite.color.g / 255,sprite.color.b / 255, 1), sprite.texCoords[1], textureIndex };
 	//bottom left
-	m_QuadBufferPtr->bottomLeft = Quad::Vertex{ glm::vec3(transform.position.x - sprite.width / 2,transform.position.y - sprite.height / 2,0), glm::vec4(sprite.color.r / 255,sprite.color.g / 255,sprite.color.b / 255, 1), sprite.texCoords[2], textureIndex };
+	m_QuadBufferPtr->bottomLeft = Quad::Vertex{ transFormMatrix * m_Vertices[2], glm::vec4(sprite.color.r / 255,sprite.color.g / 255,sprite.color.b / 255, 1), sprite.texCoords[2], textureIndex };
 	//top left
-	m_QuadBufferPtr->topLeft= Quad::Vertex{ glm::vec3(transform.position.x - sprite.width / 2,transform.position.y + sprite.height / 2,0), glm::vec4(sprite.color.r / 255,sprite.color.g / 255,sprite.color.b, 1), sprite.texCoords[3], textureIndex };
+	m_QuadBufferPtr->topLeft= Quad::Vertex{transFormMatrix * m_Vertices[3], glm::vec4(sprite.color.r / 255,sprite.color.g / 255,sprite.color.b, 1), sprite.texCoords[3], textureIndex };
 
 	m_QuadBufferPtr++;
 	

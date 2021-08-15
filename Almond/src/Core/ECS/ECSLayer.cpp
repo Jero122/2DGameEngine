@@ -75,7 +75,7 @@ void ECSLayer::OnAttach()
 
     entity = ecs.CreateEntity();
     {
-        ecs.AddComponent(entity, Transform{ glm::vec3(800,800,0), glm::vec3(0,0,0),glm::vec3(1,1,1) });
+        ecs.AddComponent(entity, Transform{ glm::vec3(800,800,0), glm::vec3(0,0,90),glm::vec3(1,1,1) });
         Quad quad = spriteSheet.GetQuad(0,0);
     	ecs.AddComponent(entity, SpriteRender{ 400, 400, spriteSheet.GetTexID(),quad.topRight,quad.bottomRight,quad.bottomLeft,quad.topLeft});
         m_entities.push(entity);
