@@ -84,7 +84,7 @@
     <ClCompile Include="src\Core\Layers\InputLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Renderer\RendererLayer.cpp">
+    <ClCompile Include="src\Core\Layers\RendererLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Layers\ImGuiLayer.cpp">
@@ -94,6 +94,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Renderer\SpriteSheet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Layers\Geometry2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1040,7 +1043,7 @@
     <ClInclude Include="src\Core\Layers\InputLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Renderer\RendererLayer.h">
+    <ClInclude Include="src\Core\Layers\RendererLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Layers\ImGuiLayer.h">
@@ -1077,6 +1080,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Renderer\SpriteSheet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Layers\Geometry2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

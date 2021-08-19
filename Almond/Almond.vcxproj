@@ -100,10 +100,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Core\Layers\Geometry2D.cpp" />
     <ClCompile Include="src\Core\Renderer\SpriteSheet.cpp" />
     <ClCompile Include="src\Core\Renderer\Texture.cpp" />
     <ClCompile Include="src\Core\Layers\ImGuiLayer.cpp" />
-    <ClCompile Include="src\Core\Renderer\RendererLayer.cpp" />
+    <ClCompile Include="src\Core\Layers\RendererLayer.cpp" />
     <ClCompile Include="src\Core\Layers\InputLayer.cpp" />
     <ClCompile Include="src\Core\ECS\ECSLayer.cpp" />
     <ClCompile Include="src\Core\Application.cpp" />
@@ -129,10 +130,11 @@
     <ClCompile Include="src\vendor\stb\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Core\Layers\Geometry2D.h" />
     <ClInclude Include="src\Core\Renderer\SpriteSheet.h" />
     <ClInclude Include="src\Core\Renderer\Texture.h" />
     <ClInclude Include="src\Core\Layers\ImGuiLayer.h" />
-    <ClInclude Include="src\Core\Renderer\RendererLayer.h" />
+    <ClInclude Include="src\Core\Layers\RendererLayer.h" />
     <ClInclude Include="src\Core\Layers\InputLayer.h" />
     <ClInclude Include="src\Core\ECS\ECSLayer.h" />
     <ClInclude Include="src\Core\Application.h" />
