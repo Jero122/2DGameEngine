@@ -90,14 +90,7 @@ public:
 	std::shared_ptr<T> CreateSystem()
 	{
 		auto system = mSystemManager->CreateSystem<T>();
-		m_systems.push_back(system);
-		return system;
-	}
-
-	template<typename T>
-	std::shared_ptr<T> CreateManualSystem()
-	{
-		auto system = mSystemManager->CreateManualSystem<T>();
+		//m_systems.insert(system);
 		return system;
 	}
 	template<typename T>
