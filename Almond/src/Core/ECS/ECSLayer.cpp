@@ -7,6 +7,7 @@
 #include "Core/Components/SpriteRender.h"
 #include "Core/Components/Transform.h"
 #include "Core/ECS/ECS.hpp"
+#include "Core/Physics2D/Geometry2D.h"
 #include "Core/Renderer/RenderBatch.h"
 #include "Core/Renderer/SpriteSheet.h"
 #include "Core/Renderer/Texture.h"
@@ -56,7 +57,11 @@ void ECSLayer::OnAttach()
         }
     }*/
 
-
+    Line2D line({ 0,0 }, { 10,10 });
+    float mag = Length(line);
+    float magSq = LengthSquared(line);
+	
+	
     entity = ecs.CreateEntity();
     {
         ecs.AddComponent(entity, Transform{ glm::vec3(800,800,0), glm::vec3(0,0,0),glm::vec3(1,1,1) });

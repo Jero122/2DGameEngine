@@ -96,7 +96,13 @@
     <ClCompile Include="src\Core\Renderer\SpriteSheet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Layers\Geometry2D.cpp">
+    <ClCompile Include="src\Core\Physics2D\Geometry2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Layers\Physics2DLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Physics2D\Physics2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1082,7 +1088,13 @@
     <ClInclude Include="src\Core\Renderer\SpriteSheet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Layers\Geometry2D.h">
+    <ClInclude Include="src\Core\Physics2D\Geometry2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Layers\Physics2DLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Physics2D\Physics2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
