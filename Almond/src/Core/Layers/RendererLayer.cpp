@@ -13,7 +13,7 @@ std::shared_ptr<RenderSysten2D> renderer;
 
 RendererLayer::RendererLayer()
 {
-    renderer = ecs.CreateSystem<RenderSysten2D>();
+    renderer = ecs.CreateManualSystem<RenderSysten2D>();
     {
         Signature signature;
         signature.set(ecs.GetComponentType<SpriteRender>());
