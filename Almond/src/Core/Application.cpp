@@ -93,6 +93,6 @@ void Application::Run()
 		Uint64 end = SDL_GetPerformanceCounter();
 		float secondsElapsed = (end - start) / (float)SDL_GetPerformanceFrequency();
 		float fps = 1.0f / secondsElapsed;
-		std::cout << "FrameTime: " << secondsElapsed * 1000.0f<< " | FPS: " << fps << std::endl;
+		//std::cout << "FrameTime: " << secondsElapsed * 1000.0f<< " | FPS: " << fps << std::endl;
 	}
 }

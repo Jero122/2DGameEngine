@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <bitset>
 #include <set>
+#include <vector>
 
 using Entity = std::uint32_t;
 const Entity MAX_ENTITIES = 50000;

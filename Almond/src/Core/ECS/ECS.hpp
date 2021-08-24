@@ -93,6 +93,14 @@ public:
 		//m_systems.insert(system);
 		return system;
 	}
+
+	template<typename T>
+	std::shared_ptr<T> CreateManualSystem()
+	{
+		auto system = mSystemManager->CreateManualSystem<T>();
+		return system;
+	}
+	
 	template<typename T>
 	void SetSystemSignature(Signature signature)
 	{
