@@ -95,7 +95,7 @@ public:
 	}
 	void EntityDestroyed(Entity entity)
 	{
-		for (auto const& pair: mManualSystems)
+		for (auto const& pair: mSystems)
 		{
 			auto const& system = pair.second;
 			system->EntityRemoved(entity);
