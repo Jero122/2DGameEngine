@@ -1,13 +1,16 @@
 #include "Application.h"
 
+#include "Components/RigidBody.h"
+#include "ECS/ECS.hpp"
 #include "ECS/ECSLayer.h"
 #include "imgui/imgui.h"
 #include "Layers/InputLayer.h"
+#include "Layers/Physics2DLayer.h"
 #include "Layers/RendererLayer.h"
 #include "Renderer/RenderBatch.h"
 
 Application* Application::s_Instance = nullptr;
-
+ECS ecs;
 
 
 Application::Application()
@@ -15,6 +18,16 @@ Application::Application()
 	s_Instance = this;
 	m_Window = Window::Create(WindowProps());
 
+	ecs.Init();
+
+	ecs.CreateComponent<SpriteRender>();
+	ecs.CreateComponent<Transform>();
+	ecs.CreateComponent<RigidBody>();
+	
+	//PHYSICS
+	Physics2DLayer* physics = new Physics2DLayer();
+	m_LayerStack.PushLayer(physics);
+	
 	//INPUT
 	InputLayer* input = new InputLayer();
 	m_LayerStack.PushLayer(input);
@@ -39,6 +52,7 @@ Application::Application()
 
 Application::~Application()
 {
+	//TODO destruction of application
 }
 
 void Application::PushLayer(Layer* layer)

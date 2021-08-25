@@ -13,11 +13,12 @@
 #include "Core/Renderer/Texture.h"
 #include "imgui/imgui.h"
 #include "box2d/box2d.h"
+#include "Core/Components/RigidBody.h"
 
-ECS ecs;
+extern ECS ecs;
+b2World* world;
+
 Entity entity;
-
-std::unique_ptr<b2World> world;
 b2Body* ent1Body;
 
 bool running = false;
@@ -25,14 +26,10 @@ bool running = false;
 
 ECSLayer::ECSLayer()
 {
-	ecs.Init();
-
-	ecs.CreateComponent<SpriteRender>();
-	ecs.CreateComponent<Transform>();
 }
 std::default_random_engine generator;
-std::uniform_real_distribution<float> randPositionX(0.0f, 1920.0f);
-std::uniform_real_distribution<float> randPositionY(0.0f, 1080.0f);
+std::uniform_real_distribution<float> randPositionX(200.0f, 1800.0f);
+std::uniform_real_distribution<float> randPositionY(0.0f, 1000.0f);
 std::uniform_real_distribution<float> randRotation(0.0f, 3.0f);
 std::uniform_real_distribution<float> randScale(0.8f, 1.5f);
 std::uniform_real_distribution<float> randGravity(-10.0f, -1.0f);
@@ -50,32 +47,40 @@ void ECSLayer::OnAttach()
 	
     Texture texture1("resources/textures/Crate.jpg");
 
-    world = std::make_unique<b2World>(b2Vec2(0, 10));
+    world =new b2World(b2Vec2(0, 10));
   
-    /*for (int i = 0; i < 10; ++i)
+    for (int i = 0; i < 200; ++i)
     {
         auto entity = ecs.CreateEntity();
         {
-            auto pos = glm::vec3{ 1.0f,0.0f,0.0f };
+            auto pos = glm::vec3{ randPositionX(generator),randPositionY(generator),0.0f };
             auto rot = glm::vec3{ 0.0f,0.0f,0.0f };
-            auto scale = glm::vec3{ 0.0f,0.0f,0.0f };
-            ecs.AddComponent(entity, Transform{ glm::vec3(randPositionX(generator),randPositionY(generator), 0),rot,scale });
-            ecs.AddComponent(entity, SpriteRender{ 100.0f * randScale(generator), 100.0f * randScale(generator), glm::vec4{255,255,255, 1}, texture.GetTexID() });
-            m_entities.push(entity);
-        }
-    }*/
+            auto scale = glm::vec3{ 1.0f,1.0f,1.0f };
+            ecs.AddComponent(entity, Transform{ glm::vec3(pos.x,pos.y, 0),rot,scale });
+            ecs.AddComponent(entity, SpriteRender{ 50.0f , 50.0f, texture1.GetTexID() });
 
-    Line2D line({ 0,0 }, { 10,10 });
-    float mag = Length(line);
-    float magSq = LengthSquared(line);
+            RigidBody body(*world, pos.x, pos.y, BodyType::Dynamic);
+            OrientedBox box(25, 25, 1.0f, 0.1f, 0.0f);
+            body.AddBoxCollider(box);
+        	
+            ecs.AddComponent(entity, body);
+        }
+    }
+
+
 	
-	
+    /*
     Entity ent0 = ecs.CreateEntity();
     {
         ecs.AddComponent(ent0, Transform{ glm::vec3(800,800,0), glm::vec3(0,0,0),glm::vec3(1,1,1) });
         ecs.AddComponent(ent0, SpriteRender(400, 400, texture.GetTexID()));
 
-       
+        RigidBody body(*world, 800, 800, BodyType::Static);
+        OrientedBox box(200, 200, 0.0f, 1.0f, 0.0f);
+
+        body.AddBoxCollider(box);
+        ecs.AddComponent(ent0, body);
+		
     }
 
     Entity ent1 = ecs.CreateEntity();
@@ -83,51 +88,27 @@ void ECSLayer::OnAttach()
         ecs.AddComponent(ent1, Transform{ glm::vec3(500,100,0), glm::vec3(0,0,0),glm::vec3(1,1,1) });
         ecs.AddComponent(ent1, SpriteRender{ 400, 400, texture1.GetTexID() });
       
+        RigidBody body(*world, 500, 100, BodyType::Dynamic);
+        OrientedBox box(200, 200, 1.0f, 1.0f, 0.0f);
 
+        body.AddBoxCollider(box);
+        ecs.AddComponent(ent1, body);
     }
+    */
 
     Entity ent2 = ecs.CreateEntity();
     {
-        ecs.AddComponent(ent2, Transform{ glm::vec3(500,1080,0), glm::vec3(0,0,0),glm::vec3(1,1,1) });
-        ecs.AddComponent(ent2, SpriteRender{ 1000, 100, texture1.GetTexID() });
+        ecs.AddComponent(ent2, Transform{ glm::vec3(1000,1080,0), glm::vec3(0,0,0),glm::vec3(1,1,1) });
+        ecs.AddComponent(ent2, SpriteRender{ 2000, 100, {0,0,0,1} });
 
+        RigidBody body(*world, 1000, 1080, BodyType::Static);
+        OrientedBox box(1000, 50, 0.0f, 1.0f, 0.0f);
 
+        body.AddBoxCollider(box);
+        ecs.AddComponent(ent2, body);
     }
 
-    b2BodyDef ent0BodyDef;
-    ent0BodyDef.position.Set(800, 800);
-    b2Body* ent0Body = world->CreateBody(&ent0BodyDef);
 
-    b2PolygonShape ent0Box;
-    ent0Box.SetAsBox(200, 200);
-
-    ent0Body->CreateFixture(&ent0Box, 0.0f);
-
-
-    b2BodyDef ent1BodyDef;
-    ent1BodyDef.type = b2_dynamicBody;
-    ent1BodyDef.position.Set(500, 100);
-    ent1Body = world->CreateBody(&ent1BodyDef);
-
-    b2PolygonShape ent1BodyBox;
-    ent1BodyBox.SetAsBox(200, 200);
-    b2FixtureDef ent1FixtureDef;
-    ent1FixtureDef.shape = &ent1BodyBox;
-    ent1FixtureDef.density = 1.0f;
-    ent1FixtureDef.friction = 0.3f;
-
-    ent1Body->CreateFixture(&ent1FixtureDef);
-
-
-
-    b2BodyDef ent2BodyDef;
-    ent2BodyDef.position.Set(500, 1080);
-    b2Body* ent2Body = world->CreateBody(&ent2BodyDef);
-
-    b2PolygonShape ent2Box;
-    ent2Box.SetAsBox(500, 50);
-
-    ent2Body->CreateFixture(&ent2Box, 0.0f);
 }
 
 void ECSLayer::OnDetach()
@@ -136,14 +117,9 @@ void ECSLayer::OnDetach()
 
 void ECSLayer::OnUpdate()
 {
-	if (running)
-	{
-        world->Step(1.0f / 180.0f, 6, 2);
-        auto& transform = ecs.GetComponent<Transform>(1);
-        transform.position.x = ent1Body->GetPosition().x;
-        transform.position.y = ent1Body->GetPosition().y;
-        transform.rotation.z = glm::degrees(ent1Body->GetAngle());
-	}
+
+
+	
   
 	
 	for (auto system : ecs)

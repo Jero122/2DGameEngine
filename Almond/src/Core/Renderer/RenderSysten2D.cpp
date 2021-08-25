@@ -10,20 +10,20 @@
 
 extern ECS ecs;
 
-typedef struct Renderable
+typedef struct PhysicsObject
 {
 	Entity entity;
 	Transform& transform;
 	SpriteRender& sprite;
 
-	Renderable(Entity entity, Transform& transform, SpriteRender& sprite)
+	PhysicsObject(Entity entity, Transform& transform, SpriteRender& sprite)
 		: entity(entity),
 		  transform(transform),
 		  sprite(sprite)
 	{
 	}
 
-	Renderable(const Renderable& other)
+	PhysicsObject(const PhysicsObject& other)
 		: entity(other.entity),
 		  transform(other.transform),
 		  sprite(other.sprite)
@@ -31,7 +31,7 @@ typedef struct Renderable
 	}
 
 
-	Renderable& operator=(const Renderable& other)
+	PhysicsObject& operator=(const PhysicsObject& other)
 	{
 		if (this == &other)
 			return *this;
@@ -42,7 +42,7 @@ typedef struct Renderable
 	}
 };
 
-std::vector<Renderable> renderables;
+std::vector<PhysicsObject> renderables;
 
 
 void RenderSysten2D::EntityAdded(Entity entity)
