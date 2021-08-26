@@ -14,14 +14,11 @@
 #include "imgui/imgui.h"
 #include "box2d/box2d.h"
 #include "Core/Components/RigidBody.h"
+#include "Core/Physics2D/DebugDrawBox2D.h"
 
 extern ECS ecs;
-b2World* world;
+extern b2World* world;
 
-Entity entity;
-b2Body* ent1Body;
-
-bool running = false;
 
 
 ECSLayer::ECSLayer()
@@ -47,7 +44,8 @@ void ECSLayer::OnAttach()
 	
     Texture texture1("resources/textures/Crate.jpg");
 
-    world =new b2World(b2Vec2(0, 10));
+
+   
   
     for (int i = 0; i < 200; ++i)
     {
@@ -127,10 +125,9 @@ void ECSLayer::OnUpdate()
 		system->Update();
 	}
 
-	if (Input::GetInstance()->GetKey(SDL_SCANCODE_A))
+	/*if (Input::GetInstance()->GetKey(SDL_SCANCODE_A))
 	{
         auto& transform = ecs.GetComponent<Transform>(entity);
-        running = true;
 	}
     if (Input::GetInstance()->GetKey(SDL_SCANCODE_D))
     {
@@ -153,7 +150,7 @@ void ECSLayer::OnUpdate()
         auto& transform = ecs.GetComponent<Transform>(entity);
         transform.scale.x--;
         std::cout << transform.scale.x << std::endl;
-    }
+    }*/
 }
 
 void ECSLayer::OnImGuiRender()

@@ -11,6 +11,7 @@
 
 Application* Application::s_Instance = nullptr;
 ECS ecs;
+b2World* world;
 
 
 Application::Application()
@@ -23,10 +24,10 @@ Application::Application()
 	ecs.CreateComponent<SpriteRender>();
 	ecs.CreateComponent<Transform>();
 	ecs.CreateComponent<RigidBody>();
+
+
+	world = world = new b2World(b2Vec2(0, 10));
 	
-	//PHYSICS
-	Physics2DLayer* physics = new Physics2DLayer();
-	m_LayerStack.PushLayer(physics);
 	
 	//INPUT
 	InputLayer* input = new InputLayer();
@@ -40,6 +41,10 @@ Application::Application()
 	RendererLayer* Renderer = new RendererLayer();
 	m_LayerStack.PushLayer(Renderer);
 
+	//PHYSICS
+	Physics2DLayer* physics = new Physics2DLayer();
+	m_LayerStack.PushLayer(physics);
+	
 	//IMGUI
 	m_ImGuiLayer = new ImGuiLayer();
 	m_LayerStack.PushOverLay(m_ImGuiLayer);

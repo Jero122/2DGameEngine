@@ -18,7 +18,7 @@ void RenderBatch::Init()
 	GLCALL(glBindBuffer(GL_ARRAY_BUFFER, VBO));
 	GLCALL(glBufferData(GL_ARRAY_BUFFER, MAX_VERTEX_COUNT * sizeof(Quad::Vertex), nullptr, GL_DYNAMIC_DRAW));
 
-	// POSITIOn
+	// POSITION
 	GLCALL(glVertexAttribPointer(0, POS_COUNT, GL_FLOAT, GL_FALSE, VERTEX_ELEMENT_COUNT * sizeof(float), (void*)POS_OFFSET));
 	GLCALL(glEnableVertexAttribArray(0));
 	//RGBA COLOR

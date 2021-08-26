@@ -101,6 +101,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Layers\Physics2DLayer.cpp" />
+    <ClCompile Include="src\Core\Physics2D\DebugDrawBox2D.cpp" />
     <ClCompile Include="src\Core\Physics2D\Geometry2D.cpp" />
     <ClCompile Include="src\Core\Physics2D\Physics2D.cpp" />
     <ClCompile Include="src\Core\Physics2D\Physics2DSystem.cpp" />
@@ -135,6 +136,7 @@
   <ItemGroup>
     <ClInclude Include="src\Core\Components\RigidBody.h" />
     <ClInclude Include="src\Core\Layers\Physics2DLayer.h" />
+    <ClInclude Include="src\Core\Physics2D\DebugDrawBox2D.h" />
     <ClInclude Include="src\Core\Physics2D\Geometry2D.h" />
     <ClInclude Include="src\Core\Physics2D\Physics2D.h" />
     <ClInclude Include="src\Core\Physics2D\Physics2DSystem.h" />
@@ -468,6 +470,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\Basic.glsl" />
+    <None Include="resources\shaders\DebugLine.glsl" />
     <None Include="src\vendor\glm\detail\func_common.inl" />
     <None Include="src\vendor\glm\detail\func_common_simd.inl" />
     <None Include="src\vendor\glm\detail\func_exponential.inl" />

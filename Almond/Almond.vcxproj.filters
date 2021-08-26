@@ -108,6 +108,9 @@
     <ClCompile Include="src\Core\Physics2D\Physics2DSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Core\Physics2D\DebugDrawBox2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Core\ECS\ECS.hpp">
@@ -1106,6 +1109,9 @@
     <ClInclude Include="src\Core\Physics2D\Physics2DSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Core\Physics2D\DebugDrawBox2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\vendor\glm\detail\func_common.inl">
@@ -1517,6 +1523,7 @@
       <Filter>Header Files</Filter>
     </None>
     <None Include="resources\shaders\Basic.glsl" />
+    <None Include="resources\shaders\DebugLine.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\textures\container.jpg">

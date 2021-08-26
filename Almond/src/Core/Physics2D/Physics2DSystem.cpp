@@ -1,5 +1,6 @@
 ﻿#include "Physics2DSystem.h"
 
+#include "DebugDrawBox2D.h"
 #include "Core/Components/RigidBody.h"
 #include "Core/Components/Transform.h"
 #include "Core/ECS/ECS.hpp"
@@ -8,6 +9,7 @@
 
 extern ECS ecs;
 extern b2World* world;
+DebugDrawBox2D* debugDraw;
 
 typedef struct PhysicsObject
 {
@@ -45,6 +47,9 @@ std::vector<PhysicsObject> physicsObjects;
 
 void Physics2DSystem::Init()
 {
+	debugDraw = new DebugDrawBox2D();
+	debugDraw->Create();
+	world->SetDebugDraw(debugDraw);
 	
 }
 
@@ -58,6 +63,20 @@ void Physics2DSystem::Update()
 		physics_object.transform.position.y = physics_object.rigidBody.body->GetPosition().y;
 		physics_object.transform.rotation.z = glm::degrees(physics_object.rigidBody.body->GetAngle());
 	}
+
+	uint32 flags = 0;
+	flags += b2Draw::e_shapeBit;
+	flags += b2Draw::e_jointBit;
+	flags += b2Draw::e_aabbBit;
+	flags += b2Draw::e_pairBit;
+	flags += b2Draw::e_centerOfMassBit;
+	
+	debugDraw->SetFlags(b2Draw::e_shapeBit);
+
+
+
+	world->DebugDraw();
+	debugDraw->Flush();
 }
 
 void Physics2DSystem::ShutDown()
