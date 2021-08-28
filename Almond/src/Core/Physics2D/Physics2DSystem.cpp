@@ -1,6 +1,7 @@
 ﻿#include "Physics2DSystem.h"
 
 #include "DebugDrawBox2D.h"
+#include "PhysicsWorld.h"
 #include "Core/Components/RigidBody.h"
 #include "Core/Components/Transform.h"
 #include "Core/ECS/ECS.hpp"
@@ -8,7 +9,6 @@
 
 
 extern ECS ecs;
-extern b2World* world;
 DebugDrawBox2D* debugDraw;
 
 typedef struct PhysicsObject
@@ -49,13 +49,22 @@ void Physics2DSystem::Init()
 {
 	debugDraw = new DebugDrawBox2D();
 	debugDraw->Create();
-	world->SetDebugDraw(debugDraw);
+	uint32 flags = 0;
+	flags += b2Draw::e_shapeBit;
+	flags += b2Draw::e_jointBit;
+	flags += b2Draw::e_aabbBit;
+	flags += b2Draw::e_pairBit;
+	flags += b2Draw::e_centerOfMassBit;
+
+	debugDraw->SetFlags(flags);
+	
+	PhysicsWorld::GetInstance()->SetDebugDraw(debugDraw);
 	
 }
 
 void Physics2DSystem::Update()
 {
-	world->Step(1.0f / 60.0f, 6, 2);
+	PhysicsWorld::GetInstance()->Step(1.0f / 60.0f, 6, 2);
 
 	for (auto& physics_object : physicsObjects)
 	{
@@ -64,18 +73,11 @@ void Physics2DSystem::Update()
 		physics_object.transform.rotation.z = glm::degrees(physics_object.rigidBody.body->GetAngle());
 	}
 
-	uint32 flags = 0;
-	flags += b2Draw::e_shapeBit;
-	flags += b2Draw::e_jointBit;
-	flags += b2Draw::e_aabbBit;
-	flags += b2Draw::e_pairBit;
-	flags += b2Draw::e_centerOfMassBit;
-	
-	debugDraw->SetFlags(b2Draw::e_shapeBit);
 
 
 
-	world->DebugDraw();
+
+	PhysicsWorld::GetInstance()->DebugDraw();
 	debugDraw->Flush();
 }
 

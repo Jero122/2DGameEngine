@@ -105,6 +105,7 @@
     <ClCompile Include="src\Core\Physics2D\Geometry2D.cpp" />
     <ClCompile Include="src\Core\Physics2D\Physics2D.cpp" />
     <ClCompile Include="src\Core\Physics2D\Physics2DSystem.cpp" />
+    <ClCompile Include="src\Core\Physics2D\PhysicsWorld.cpp" />
     <ClCompile Include="src\Core\Renderer\SpriteSheet.cpp" />
     <ClCompile Include="src\Core\Renderer\Texture.cpp" />
     <ClCompile Include="src\Core\Layers\ImGuiLayer.cpp" />
@@ -140,6 +141,7 @@
     <ClInclude Include="src\Core\Physics2D\Geometry2D.h" />
     <ClInclude Include="src\Core\Physics2D\Physics2D.h" />
     <ClInclude Include="src\Core\Physics2D\Physics2DSystem.h" />
+    <ClInclude Include="src\Core\Physics2D\PhysicsWorld.h" />
     <ClInclude Include="src\Core\Renderer\SpriteSheet.h" />
     <ClInclude Include="src\Core\Renderer\Texture.h" />
     <ClInclude Include="src\Core\Layers\ImGuiLayer.h" />

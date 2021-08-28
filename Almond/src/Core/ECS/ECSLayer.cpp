@@ -12,12 +12,10 @@
 #include "Core/Renderer/SpriteSheet.h"
 #include "Core/Renderer/Texture.h"
 #include "imgui/imgui.h"
-#include "box2d/box2d.h"
 #include "Core/Components/RigidBody.h"
-#include "Core/Physics2D/DebugDrawBox2D.h"
+#include "Core/Physics2D/PhysicsWorld.h"
 
 extern ECS ecs;
-extern b2World* world;
 
 
 
@@ -57,7 +55,7 @@ void ECSLayer::OnAttach()
             ecs.AddComponent(entity, Transform{ glm::vec3(pos.x,pos.y, 0),rot,scale });
             ecs.AddComponent(entity, SpriteRender{ 50.0f , 50.0f, texture1.GetTexID() });
 
-            RigidBody body(*world, pos.x, pos.y, BodyType::Dynamic);
+            RigidBody body(*PhysicsWorld::GetInstance(), pos.x, pos.y, BodyType::Dynamic);
             OrientedBox box(25, 25, 1.0f, 0.1f, 0.0f);
             body.AddBoxCollider(box);
         	
@@ -66,44 +64,16 @@ void ECSLayer::OnAttach()
     }
 
 
-	
-    /*
-    Entity ent0 = ecs.CreateEntity();
+    Entity ent = ecs.CreateEntity();
     {
-        ecs.AddComponent(ent0, Transform{ glm::vec3(800,800,0), glm::vec3(0,0,0),glm::vec3(1,1,1) });
-        ecs.AddComponent(ent0, SpriteRender(400, 400, texture.GetTexID()));
+        ecs.AddComponent(ent, Transform{ glm::vec3(1000,1080,0), glm::vec3(0,0,0),glm::vec3(1,1,1) });
+        ecs.AddComponent(ent, SpriteRender{ 2000, 100, {0,0,0,1} });
 
-        RigidBody body(*world, 800, 800, BodyType::Static);
-        OrientedBox box(200, 200, 0.0f, 1.0f, 0.0f);
-
-        body.AddBoxCollider(box);
-        ecs.AddComponent(ent0, body);
-		
-    }
-
-    Entity ent1 = ecs.CreateEntity();
-    {
-        ecs.AddComponent(ent1, Transform{ glm::vec3(500,100,0), glm::vec3(0,0,0),glm::vec3(1,1,1) });
-        ecs.AddComponent(ent1, SpriteRender{ 400, 400, texture1.GetTexID() });
-      
-        RigidBody body(*world, 500, 100, BodyType::Dynamic);
-        OrientedBox box(200, 200, 1.0f, 1.0f, 0.0f);
-
-        body.AddBoxCollider(box);
-        ecs.AddComponent(ent1, body);
-    }
-    */
-
-    Entity ent2 = ecs.CreateEntity();
-    {
-        ecs.AddComponent(ent2, Transform{ glm::vec3(1000,1080,0), glm::vec3(0,0,0),glm::vec3(1,1,1) });
-        ecs.AddComponent(ent2, SpriteRender{ 2000, 100, {0,0,0,1} });
-
-        RigidBody body(*world, 1000, 1080, BodyType::Static);
+        RigidBody body(*PhysicsWorld::GetInstance(), 1000, 1080, BodyType::Static);
         OrientedBox box(1000, 50, 0.0f, 1.0f, 0.0f);
 
         body.AddBoxCollider(box);
-        ecs.AddComponent(ent2, body);
+        ecs.AddComponent(ent, body);
     }
 
 
@@ -115,10 +85,6 @@ void ECSLayer::OnDetach()
 
 void ECSLayer::OnUpdate()
 {
-
-
-	
-  
 	
 	for (auto system : ecs)
 	{

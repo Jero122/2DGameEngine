@@ -7,11 +7,11 @@
 #include "Layers/InputLayer.h"
 #include "Layers/Physics2DLayer.h"
 #include "Layers/RendererLayer.h"
+#include "Physics2D/PhysicsWorld.h"
 #include "Renderer/RenderBatch.h"
 
 Application* Application::s_Instance = nullptr;
 ECS ecs;
-b2World* world;
 
 
 Application::Application()
@@ -26,7 +26,7 @@ Application::Application()
 	ecs.CreateComponent<RigidBody>();
 
 
-	world = world = new b2World(b2Vec2(0, 10));
+	PhysicsWorld::GetInstance()->SetGravity({0,10});
 	
 	
 	//INPUT
