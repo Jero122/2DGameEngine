@@ -2,6 +2,8 @@
 #include "GLCall.h"
 #include "Core/Window.h"
 
+extern Camera camera;
+
 void RenderBatch::Init()
 {
 	std::string shaderPath("resources/shaders/Basic.glsl");
@@ -94,9 +96,9 @@ void RenderBatch::Flush()
 	shader.use();
 
 
-	Camera camera = Camera();
-	camera.init(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	//TODO Replace orthographic dimensions with a global aspect ratio setting
 	glm::mat4 view = camera.GetViewMatrix();
+	glm::mat4 projection = glm::ortho(-8.0f/camera.fov, 8.0f / camera.fov, -4.5f / camera.fov, 4.5f / camera.fov, -1.0f, 1.0f);
 	
 	shader.setMat4("uView", view);
 	shader.setMat4("uProjection", projection);

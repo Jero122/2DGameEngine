@@ -8,6 +8,7 @@ void Camera::init(glm::vec3 position, glm::vec3 front, glm::vec3 up)
 	this->front = front;
 	this->up = up;
 	this->right = glm::normalize(glm::cross(front, up));
+	fov = 1.0f;
 }
 
 void Camera::Move(CAMERA_MOVEMENT movement, float deltaTime)
@@ -52,7 +53,7 @@ void Camera::Zoom(float value)
 		fov = 1.0f;
 	if (fov > 45.0f)
 		fov = 45.0f;
-	updateCamera();
+	updateCamera(); 
 }
 
 glm::mat4 Camera::GetViewMatrix()

@@ -15,21 +15,28 @@ void Input::Listen()
     while (SDL_PollEvent(&e))
     {
         //ImGui_ImplSDL2_ProcessEvent(&e);
-        switch (e.type)
-	    {
-	        case SDL_QUIT: break;
-	        case SDL_KEYDOWN:
-		        if (e.key.repeat == 0)
-		        {
-                    keysPressed.insert(e.key.keysym.scancode);
-		        }
-                KeyDown();
-        		break;
-	        case SDL_KEYUP: 
-                KeyUp();
-                KeysReleased.insert(e.key.keysym.scancode);
-        		break;
+        if (e.type == SDL_QUIT)
+        {
+	        
         }
+        else if (e.type == SDL_KEYDOWN)
+        {
+            if (e.key.repeat == 0)
+            {
+                keysPressed.insert(e.key.keysym.scancode);
+            }
+            KeyDown();
+        }
+        else if (e.type == SDL_KEYUP)
+        {
+            KeyUp();
+            KeysReleased.insert(e.key.keysym.scancode);
+        }
+        else if (e.type == SDL_MOUSEWHEEL)
+        {
+            wheelY = e.wheel.y;
+        }
+
     }
 }
 
@@ -38,6 +45,7 @@ void Input::Reset()
 {
     keysPressed.clear();
     KeysReleased.clear();
+    wheelY = 0;
 }
 
 bool Input::GetKeyDown(SDL_Scancode key)

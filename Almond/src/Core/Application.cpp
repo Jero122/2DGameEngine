@@ -12,7 +12,7 @@
 
 Application* Application::s_Instance = nullptr;
 ECS ecs;
-
+Camera camera;
 
 Application::Application()
 {
@@ -25,8 +25,10 @@ Application::Application()
 	ecs.CreateComponent<Transform>();
 	ecs.CreateComponent<RigidBody>();
 
-
-	PhysicsWorld::GetInstance()->SetGravity({0,10});
+	camera = Camera();
+	camera.init(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	
+	PhysicsWorld::GetInstance()->SetGravity({0,-10});
 	
 	
 	//INPUT

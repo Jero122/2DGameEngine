@@ -16,6 +16,11 @@ public:
 
 	bool GetKey(SDL_Scancode key);
 	void Reset();
+
+	Sint32 getWheelY()
+	{
+		return wheelY;
+	}
 	
 private:
 	Input();
@@ -26,6 +31,8 @@ private:
 
 	std::set<SDL_Scancode> keysPressed;
 	std::set<SDL_Scancode> KeysReleased;
+
+	Sint32 wheelY;
 
 	
 	static Input* s_Instance;

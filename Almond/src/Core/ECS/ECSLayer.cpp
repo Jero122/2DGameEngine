@@ -16,15 +16,15 @@
 #include "Core/Physics2D/PhysicsWorld.h"
 
 extern ECS ecs;
-
+extern Camera camera;
 
 
 ECSLayer::ECSLayer()
 {
 }
 std::default_random_engine generator;
-std::uniform_real_distribution<float> randPositionX(200.0f, 1800.0f);
-std::uniform_real_distribution<float> randPositionY(0.0f, 1000.0f);
+std::uniform_real_distribution<float> randPositionX(-8.0f, 8.0f);
+std::uniform_real_distribution<float> randPositionY(0.0f, 8.0f);
 std::uniform_real_distribution<float> randRotation(0.0f, 3.0f);
 std::uniform_real_distribution<float> randScale(0.8f, 1.5f);
 std::uniform_real_distribution<float> randGravity(-10.0f, -1.0f);
@@ -45,7 +45,7 @@ void ECSLayer::OnAttach()
 
    
   
-    for (int i = 0; i < 200; ++i)
+    for (int i = 0; i < 500; ++i)
     {
         auto entity = ecs.CreateEntity();
         {
@@ -53,10 +53,10 @@ void ECSLayer::OnAttach()
             auto rot = glm::vec3{ 0.0f,0.0f,0.0f };
             auto scale = glm::vec3{ 1.0f,1.0f,1.0f };
             ecs.AddComponent(entity, Transform{ glm::vec3(pos.x,pos.y, 0),rot,scale });
-            ecs.AddComponent(entity, SpriteRender{ 50.0f , 50.0f, texture1.GetTexID() });
+            ecs.AddComponent(entity, SpriteRender{ 0.5f , 0.5f, texture1.GetTexID() });
 
             RigidBody body(*PhysicsWorld::GetInstance(), pos.x, pos.y, BodyType::Dynamic);
-            OrientedBox box(25, 25, 1.0f, 0.1f, 0.0f);
+            OrientedBox box(0.24, 0.24, 1.0f, 0.1f, 0.0f);
             body.AddBoxCollider(box);
         	
             ecs.AddComponent(entity, body);
@@ -66,11 +66,11 @@ void ECSLayer::OnAttach()
 
     Entity ent = ecs.CreateEntity();
     {
-        ecs.AddComponent(ent, Transform{ glm::vec3(1000,1080,0), glm::vec3(0,0,0),glm::vec3(1,1,1) });
-        ecs.AddComponent(ent, SpriteRender{ 2000, 100, {0,0,0,1} });
+        ecs.AddComponent(ent, Transform{ glm::vec3(0,-4.5,0), glm::vec3(0,0,0),glm::vec3(1,1,1) });
+        ecs.AddComponent(ent, SpriteRender{ 16, 1, {255,255,255,1} });
 
-        RigidBody body(*PhysicsWorld::GetInstance(), 1000, 1080, BodyType::Static);
-        OrientedBox box(1000, 50, 0.0f, 1.0f, 0.0f);
+        RigidBody body(*PhysicsWorld::GetInstance(), 0, -4.5, BodyType::Static);
+        OrientedBox box(8, 0.50, 0.0f, 1.0f, 0.0f);
 
         body.AddBoxCollider(box);
         ecs.AddComponent(ent, body);
@@ -91,32 +91,34 @@ void ECSLayer::OnUpdate()
 		system->Update();
 	}
 
-	/*if (Input::GetInstance()->GetKey(SDL_SCANCODE_A))
+	//TODO timestep
+	if (Input::GetInstance()->GetKey(SDL_SCANCODE_A))
 	{
-        auto& transform = ecs.GetComponent<Transform>(entity);
+        camera.Move(LEFT, 1.0f/ 120.0f);
 	}
     if (Input::GetInstance()->GetKey(SDL_SCANCODE_D))
     {
-        auto& transform = ecs.GetComponent<Transform>(entity);
-        transform.position.x++;
+        camera.Move(RIGHT, 1.0f / 120.0f);
     }
     if (Input::GetInstance()->GetKey(SDL_SCANCODE_W))
     {
-        auto& transform = ecs.GetComponent<Transform>(entity);
-        transform.position.y--;
+        camera.Move(UP, 1.0f / 120.0f);
     }
     if (Input::GetInstance()->GetKey(SDL_SCANCODE_S))
     {
-        auto& transform = ecs.GetComponent<Transform>(entity);
-        transform.position.y++;
+        camera.Move(DOWN, 1.0f / 120.0f);
     }
 
-    if (Input::GetInstance()->GetKey(SDL_SCANCODE_RIGHT))
+    if (Input::GetInstance()->getWheelY() > 0)
     {
-        auto& transform = ecs.GetComponent<Transform>(entity);
-        transform.scale.x--;
-        std::cout << transform.scale.x << std::endl;
-    }*/
+        camera.Zoom(-1.0f);
+    }
+    if (Input::GetInstance()->getWheelY() < 0)
+    {
+        camera.Zoom(1.0f);
+    }
+
+   
 }
 
 void ECSLayer::OnImGuiRender()
