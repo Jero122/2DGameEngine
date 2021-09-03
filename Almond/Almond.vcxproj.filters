@@ -24,16 +24,16 @@
     <ClCompile Include="src\vendor\glm\detail\glm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Renderer\Shader.cpp">
+    <ClCompile Include="src\Renderer\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\vendor\stb\stb_image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Renderer\RenderSysten2D.cpp">
+    <ClCompile Include="src\Renderer\RenderSysten2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Renderer\Camera.cpp">
+    <ClCompile Include="src\Renderer\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\vendor\imgui\imgui.cpp">
@@ -60,7 +60,7 @@
     <ClCompile Include="src\vendor\imgui\imgui_impl_opengl3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Renderer\RenderBatch.cpp">
+    <ClCompile Include="src\Renderer\RenderBatch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Layer.cpp">
@@ -78,69 +78,69 @@
     <ClCompile Include="src\Platforms\Windows\WindowsWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\ECS\ECSLayer.cpp">
+    <ClCompile Include="src\ECS\ECSLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Layers\InputLayer.cpp">
+    <ClCompile Include="src\Layers\InputLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Layers\RendererLayer.cpp">
+    <ClCompile Include="src\Layers\RendererLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Layers\ImGuiLayer.cpp">
+    <ClCompile Include="src\Layers\ImGuiLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Renderer\Texture.cpp">
+    <ClCompile Include="src\Renderer\Texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Renderer\SpriteSheet.cpp">
+    <ClCompile Include="src\Renderer\SpriteSheet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Physics2D\Geometry2D.cpp">
+    <ClCompile Include="src\Physics2D\Geometry2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Layers\Physics2DLayer.cpp">
+    <ClCompile Include="src\Layers\Physics2DLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Physics2D\Physics2D.cpp">
+    <ClCompile Include="src\Physics2D\Physics2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Physics2D\Physics2DSystem.cpp">
+    <ClCompile Include="src\Physics2D\Physics2DSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Physics2D\DebugDrawBox2D.cpp">
+    <ClCompile Include="src\Physics2D\DebugDrawBox2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Physics2D\PhysicsWorld.cpp">
+    <ClCompile Include="src\Physics2D\PhysicsWorld.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Core\ECS\ECS.hpp">
+    <ClInclude Include="src\ECS\ECS.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\ECS\ECSTypes.hpp">
+    <ClInclude Include="src\ECS\ECSTypes.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\ECS\PackedArray.hpp">
+    <ClInclude Include="src\ECS\PackedArray.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\ECS\ComponentManager.hpp">
+    <ClInclude Include="src\ECS\ComponentManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\ECS\EntitiyManager.hpp">
+    <ClInclude Include="src\ECS\EntitiyManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\ECS\SystemManager.hpp">
+    <ClInclude Include="src\ECS\SystemManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Components\SpriteRender.h">
+    <ClInclude Include="src\ECS\Components\SpriteRender.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Components\Transform.h">
+    <ClInclude Include="src\ECS\Components\Transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\vendor\glm\detail\_features.hpp">
@@ -989,16 +989,16 @@
     <ClInclude Include="src\vendor\glm\vector_relational.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Renderer\Shader.h">
+    <ClInclude Include="src\Renderer\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\vendor\stb\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Renderer\RenderSysten2D.h">
+    <ClInclude Include="src\Renderer\RenderSysten2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Renderer\Camera.h">
+    <ClInclude Include="src\Renderer\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\vendor\imgui\imconfig.h">
@@ -1028,10 +1028,10 @@
     <ClInclude Include="src\vendor\imgui\imgui_impl_opengl3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Renderer\RenderBatch.h">
+    <ClInclude Include="src\Renderer\RenderBatch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Renderer\GLCall.h">
+    <ClInclude Include="src\Renderer\GLCall.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Input.h">
@@ -1052,16 +1052,16 @@
     <ClInclude Include="src\Platforms\Windows\WindowsWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\ECS\ECSLayer.h">
+    <ClInclude Include="src\ECS\ECSLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Layers\InputLayer.h">
+    <ClInclude Include="src\Layers\InputLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Layers\RendererLayer.h">
+    <ClInclude Include="src\Layers\RendererLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Layers\ImGuiLayer.h">
+    <ClInclude Include="src\Layers\ImGuiLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\vendor\sparsepp\spp.h">
@@ -1091,31 +1091,31 @@
     <ClInclude Include="src\vendor\sparsepp\spp_utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Renderer\Texture.h">
+    <ClInclude Include="src\Renderer\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Renderer\SpriteSheet.h">
+    <ClInclude Include="src\Renderer\SpriteSheet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Physics2D\Geometry2D.h">
+    <ClInclude Include="src\Physics2D\Geometry2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Layers\Physics2DLayer.h">
+    <ClInclude Include="src\Layers\Physics2DLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Physics2D\Physics2D.h">
+    <ClInclude Include="src\Physics2D\Physics2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Components\RigidBody.h">
+    <ClInclude Include="src\ECS\Components\RigidBody.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Physics2D\Physics2DSystem.h">
+    <ClInclude Include="src\Physics2D\Physics2DSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Physics2D\DebugDrawBox2D.h">
+    <ClInclude Include="src\Physics2D\DebugDrawBox2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Physics2D\PhysicsWorld.h">
+    <ClInclude Include="src\Physics2D\PhysicsWorld.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,10 +1,10 @@
 #pragma once
+
 #include "RenderBatch.h"
 #include "Shader.h"
-#include "Core/Components/SpriteRender.h"
-#include "Core/Components/Transform.h"
-#include "Core/ECS/ECSTypes.hpp"
-
+#include "ECS/ECSTypes.hpp"
+#include "ECS/Components/SpriteRender.h"
+#include "ECS/Components/Transform.h"
 
 
 class RenderSysten2D :public System

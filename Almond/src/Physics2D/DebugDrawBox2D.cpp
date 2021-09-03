@@ -1,9 +1,9 @@
 ﻿#include "DebugDrawBox2D.h"
 #include <GL/glew.h>
 
-#include "Core/Renderer/Camera.h"
-#include "Core/Renderer/GLCall.h"
-#include "Core/Renderer/Shader.h"
+#include "Renderer/Camera.h"
+#include "Renderer/GLCall.h"
+#include "Renderer/Shader.h"
 #include "glm/ext/matrix_clip_space.hpp"
 
 

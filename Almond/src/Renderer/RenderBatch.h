@@ -1,14 +1,14 @@
 #pragma once
 #include "Camera.h"
 #include "Shader.h"
-#include "Core/Components/SpriteRender.h"
-#include "Core/Components/Transform.h"
-#include "Core/ECS/PackedArray.hpp"
+#include "ECS//Components/SpriteRender.h"
+#include "ECS/Components/Transform.h"
+#include "ECS/PackedArray.hpp"
 #include <boost/unordered/unordered_map.hpp>
 
 static int currentID = 0;
 
-typedef struct RenderStats
+struct RenderStats
 {
 	uint32_t DrawCalls = 0;
 	uint32_t QuadCount = 0;

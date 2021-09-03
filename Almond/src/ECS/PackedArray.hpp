@@ -52,7 +52,7 @@ public:
 	void removeData(Entity entity)
 	{
 		assert(mEntityToIndexMap.find(entity) != mEntityToIndexMap.end() && "Removing non-existent component.");
-		int removedEntityIndex = mEntityToIndexMap[entity];
+		auto removedEntityIndex = mEntityToIndexMap[entity];
 		Entity currentEntity = mIndexToEntityMap[mCurrentEntityIndex];
 
 		if (mCurrentEntityIndex >= 0)

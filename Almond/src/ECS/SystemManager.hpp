@@ -45,7 +45,7 @@ public:
 		}
 		else
 		{
-			assert(false, "System used before creation");
+			assert("System used before creation");
 		}
 		/*assert(mSignatures.find(systemName) == mSignatures.end() && "System used before creation");
 		mSignatures.insert({ systemName, signature });*/

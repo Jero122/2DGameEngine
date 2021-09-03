@@ -2,16 +2,16 @@
 
 #include "DebugDrawBox2D.h"
 #include "PhysicsWorld.h"
-#include "Core/Components/RigidBody.h"
-#include "Core/Components/Transform.h"
-#include "Core/ECS/ECS.hpp"
+#include "ECS/Components/RigidBody.h"
+#include "ECS/Components/Transform.h"
+#include "ECS/ECS.hpp"
 #include "glm/trigonometric.hpp"
 
 
 extern ECS ecs;
 DebugDrawBox2D* debugDraw;
 
-typedef struct PhysicsObject
+struct PhysicsObject
 {
 	Entity entity;
 	Transform& transform;

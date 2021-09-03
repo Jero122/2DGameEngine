@@ -3,14 +3,14 @@
 
 #include "GLCall.h"
 #include <SDL/SDL.h>
-#include "Core/ECS/ECS.hpp"
+#include "ECS/ECS.hpp"
 #include "stb/stb_image.h"
 
 
 
 extern ECS ecs;
 
-typedef struct PhysicsObject
+struct PhysicsObject
 {
 	Entity entity;
 	Transform& transform;

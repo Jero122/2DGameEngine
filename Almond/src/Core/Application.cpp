@@ -1,6 +1,6 @@
 #include "Application.h"
 
-#include "Components/RigidBody.h"
+#include "ECS/Components/RigidBody.h"
 #include "ECS/ECS.hpp"
 #include "ECS/ECSLayer.h"
 #include "imgui/imgui.h"

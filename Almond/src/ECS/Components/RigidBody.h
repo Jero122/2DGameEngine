@@ -4,8 +4,8 @@
 #include <box2d/b2_polygon_shape.h>
 #include <box2d/b2_world.h>
 
-#include "Core/Physics2D/Geometry2D.h"
-#include "Core/Physics2D/Physics2D.h"
+#include "Physics2D/Geometry2D.h"
+#include "Physics2D/Physics2D.h"
 
 struct RigidBody
 {

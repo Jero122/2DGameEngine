@@ -4,16 +4,17 @@
 #include <stack>
 
 #include "Core/Input.h"
-#include "Core/Components/SpriteRender.h"
-#include "Core/Components/Transform.h"
-#include "Core/ECS/ECS.hpp"
-#include "Core/Physics2D/Geometry2D.h"
-#include "Core/Renderer/RenderBatch.h"
-#include "Core/Renderer/SpriteSheet.h"
-#include "Core/Renderer/Texture.h"
+#include "Components/SpriteRender.h"
+#include "Components/Transform.h"
+#include "ECS/ECS.hpp"
+#include "Physics2D/Geometry2D.h"
+#include "Renderer/RenderBatch.h"
+#include "Renderer/SpriteSheet.h"
+#include "Renderer/Texture.h"
 #include "imgui/imgui.h"
-#include "Core/Components/RigidBody.h"
-#include "Core/Physics2D/PhysicsWorld.h"
+#include "Components/RigidBody.h"
+#include "Physics2D/Physics2D.h"
+#include "Physics2D/PhysicsWorld.h"
 
 extern ECS ecs;
 extern Camera camera;

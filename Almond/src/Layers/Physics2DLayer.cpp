@@ -1,9 +1,9 @@
 ﻿#include "Physics2DLayer.h"
 
-#include "Core/Components/RigidBody.h"
-#include "Core/Components/Transform.h"
-#include "Core/ECS/ECS.hpp"
-#include "Core/Physics2D/Physics2DSystem.h"
+#include "ECS/Components/RigidBody.h"
+#include "ECS/Components/Transform.h"
+#include "ECS/ECS.hpp"
+#include "Physics2D/Physics2DSystem.h"
 
 
 extern ECS ecs;

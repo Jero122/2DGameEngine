@@ -103,7 +103,7 @@ void RenderBatch::Flush()
 	shader.setMat4("uView", view);
 	shader.setMat4("uProjection", projection);
 
-	for (int i = 1; i < m_TextureSlotIndex; ++i)
+	for (unsigned int i = 1; i < m_TextureSlotIndex; ++i)
 	{
 		GLCALL(glActiveTexture(GL_TEXTURE0 + i));
 		glBindTexture(GL_TEXTURE_2D, m_TextureSlots[i]);
@@ -135,7 +135,7 @@ void RenderBatch::Submit(const Transform& transform, const SpriteRender& sprite)
 	float textureIndex = 0;
 
 	//If textureID is already in batch
-	for (int i = 0; i < m_TextureSlotIndex; ++i)
+	for (unsigned int i = 0; i < m_TextureSlotIndex; ++i)
 	{
 		if (m_TextureSlots[i] == sprite.textureID)
 		{
