@@ -18,7 +18,7 @@ public:
     float yaw = -90.0f;
     float pitch = 0.0f;
     float fov = 45.0f;
-    float speed = 2.5f;
+    float speed = 4.5f;
     float lookSensitivity = 0.1f;
 
     void init(glm::vec3 position, glm::vec3 front, glm::vec3 up);

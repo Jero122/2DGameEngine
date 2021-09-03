@@ -31,7 +31,7 @@ void ImGuiLayer::OnDetach()
 	ImGui::DestroyContext();
 }
 
-void ImGuiLayer::OnUpdate()
+void ImGuiLayer::OnUpdate(TimeStep timeStep)
 {
 }
 

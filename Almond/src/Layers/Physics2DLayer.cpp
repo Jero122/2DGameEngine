@@ -35,7 +35,7 @@ void Physics2DLayer::OnDetach()
 	physics2D->ShutDown();
 }
 
-void Physics2DLayer::OnUpdate()
+void Physics2DLayer::OnUpdate(TimeStep timeStep)
 {
 	physics2D->Update();
 }

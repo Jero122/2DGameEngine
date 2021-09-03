@@ -12,7 +12,7 @@ public:
 	
 	void OnAttach() override;
 	void OnDetach() override;
-	void OnUpdate() override;
+	void OnUpdate(TimeStep timeStep) override;
 	
 	void OnImGuiRender() override;
 	void OnLateUpdate() override;

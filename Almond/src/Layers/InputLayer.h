@@ -15,7 +15,7 @@ public:
 		
 	}
 
-	void OnUpdate() override
+	void OnUpdate(TimeStep timeStep) override
 	{
 		Input::GetInstance()->Listen();
 	}

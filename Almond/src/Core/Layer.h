@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 
+#include "TimeStep.h"
+
 class Layer
 {
 public:
@@ -11,7 +13,7 @@ public:
 
 	virtual void OnAttach() {}
 	virtual void OnDetach(){}
-	virtual void OnUpdate(){}
+	virtual void OnUpdate(TimeStep timeStep){}
 	virtual void OnImGuiRender(){}
 	virtual void OnLateUpdate(){}
 

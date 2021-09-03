@@ -81,9 +81,6 @@
     <ClCompile Include="src\ECS\ECSLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Layers\InputLayer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Layers\RendererLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1116,6 +1113,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Physics2D\PhysicsWorld.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\TimeStep.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

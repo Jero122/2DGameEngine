@@ -110,7 +110,6 @@
     <ClCompile Include="src\Renderer\Texture.cpp" />
     <ClCompile Include="src\Layers\ImGuiLayer.cpp" />
     <ClCompile Include="src\Layers\RendererLayer.cpp" />
-    <ClCompile Include="src\Layers\InputLayer.cpp" />
     <ClCompile Include="src\ECS\ECSLayer.cpp" />
     <ClCompile Include="src\Core\Application.cpp" />
     <ClCompile Include="src\Core\Input.cpp" />
@@ -135,6 +134,7 @@
     <ClCompile Include="src\vendor\stb\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Core\TimeStep.h" />
     <ClInclude Include="src\ECS\Components\RigidBody.h" />
     <ClInclude Include="src\Layers\Physics2DLayer.h" />
     <ClInclude Include="src\Physics2D\DebugDrawBox2D.h" />

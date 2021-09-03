@@ -64,6 +64,17 @@ void ECSLayer::OnAttach()
         }
     }
 
+    Entity crate = ecs.CreateEntity();
+    {
+        ecs.AddComponent(crate, Transform{ glm::vec3(0,4.5,0), glm::vec3(0,0,0),glm::vec3(1,1,1) });
+        ecs.AddComponent(crate, SpriteRender{ 0.5f , 0.5f, texture1.GetTexID() });
+
+        RigidBody body(*PhysicsWorld::GetInstance(), 0, 4.5, BodyType::Dynamic);
+        OrientedBox box(0.24, 0.24, 1.0f, 0.1f, 0.0f);
+
+        body.AddBoxCollider(box);
+        ecs.AddComponent(crate, body);
+    }
 
     Entity ent = ecs.CreateEntity();
     {
@@ -84,7 +95,7 @@ void ECSLayer::OnDetach()
 {
 }
 
-void ECSLayer::OnUpdate()
+void ECSLayer::OnUpdate(TimeStep timeStep)
 {
 	
 	for (auto system : ecs)
@@ -95,19 +106,19 @@ void ECSLayer::OnUpdate()
 	//TODO timestep
 	if (Input::GetInstance()->GetKey(SDL_SCANCODE_A))
 	{
-        camera.Move(LEFT, 1.0f/ 120.0f);
+        camera.Move(LEFT, timeStep.GetSeconds());
 	}
     if (Input::GetInstance()->GetKey(SDL_SCANCODE_D))
     {
-        camera.Move(RIGHT, 1.0f / 120.0f);
+        camera.Move(RIGHT, timeStep.GetSeconds());
     }
     if (Input::GetInstance()->GetKey(SDL_SCANCODE_W))
     {
-        camera.Move(UP, 1.0f / 120.0f);
+        camera.Move(UP, timeStep.GetSeconds());
     }
     if (Input::GetInstance()->GetKey(SDL_SCANCODE_S))
     {
-        camera.Move(DOWN, 1.0f / 120.0f);
+        camera.Move(DOWN, timeStep.GetSeconds());
     }
 
     if (Input::GetInstance()->getWheelY() > 0)

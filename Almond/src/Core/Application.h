@@ -25,6 +25,7 @@ private:
 	static Application* s_Instance;
 
 	bool m_Running = false;
+	float m_TimeSinceLastFrame = 0.0f;
 
 	LayerStack m_LayerStack;
 	Scope<Window> m_Window;

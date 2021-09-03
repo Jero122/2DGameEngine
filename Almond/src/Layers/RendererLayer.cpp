@@ -2,10 +2,10 @@
 
 #include <GL/glew.h>
 
-#include "Core/Components/SpriteRender.h"
-#include "Core/Components/Transform.h"
-#include "Core/ECS/ECS.hpp"
-#include "Core/Renderer/RenderSysten2D.h"
+#include "ECS/Components/SpriteRender.h"
+#include "ECS/Components/Transform.h"
+#include "ECS/ECS.hpp"
+#include "Renderer/RenderSysten2D.h"
 #include "imgui/imgui.h"
 
 extern ECS ecs;
@@ -39,7 +39,7 @@ void RendererLayer::OnDetach()
     renderer->ShutDown();
 }
 
-void RendererLayer::OnUpdate()
+void RendererLayer::OnUpdate(TimeStep timeStep)
 {
     //glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);

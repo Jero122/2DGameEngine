@@ -7,6 +7,10 @@
 #include "ECS/ECS.hpp"
 #include "glm/trigonometric.hpp"
 
+#include <SDL/SDL.h>
+
+#include "glm/vec2.hpp"
+
 
 extern ECS ecs;
 DebugDrawBox2D* debugDraw;
@@ -16,6 +20,9 @@ struct PhysicsObject
 	Entity entity;
 	Transform& transform;
 	RigidBody& rigidBody;
+
+	glm::vec2 previousPosition;
+	float previousAngle;
 
 	PhysicsObject(Entity entity, Transform& transform, RigidBody& sprite)
 		: entity(entity),
@@ -64,21 +71,49 @@ void Physics2DSystem::Init()
 
 void Physics2DSystem::Update()
 {
-	PhysicsWorld::GetInstance()->Step(1.0f / 60.0f, 6, 2);
+	float newTime = SDL_GetTicks() / 1000.0f;
+	float frameTime = newTime - m_CurrentTime;
+	m_CurrentTime = newTime;
+	m_Accumulator += frameTime;
 
-	for (auto& physics_object : physicsObjects)
+	while (m_Accumulator >= dt)
 	{
-		physics_object.transform.position.x = physics_object.rigidBody.body->GetPosition().x;
-		physics_object.transform.position.y = physics_object.rigidBody.body->GetPosition().y;
-		physics_object.transform.rotation.z = glm::degrees(physics_object.rigidBody.body->GetAngle());
+
+		
+		
+		PhysicsWorld::GetInstance()->Step(dt, 6, 2);
+
+		//Copy Current State into previous states
+		for (auto& physics_object : physicsObjects)
+		{
+			physics_object.previousPosition.x = physics_object.rigidBody.body->GetPosition().x;
+			physics_object.previousPosition.y = physics_object.rigidBody.body->GetPosition().y;
+			physics_object.previousAngle = glm::degrees(physics_object.rigidBody.body->GetAngle());
+		}
+		
+		m_Accumulator -= dt;
+		t += dt;
 	}
 
+	float alpha = m_Accumulator / dt;
 
-
-
-
+	Interpolate(alpha);
+	
 	PhysicsWorld::GetInstance()->DebugDraw();
 	debugDraw->Flush();
+}
+
+
+void Physics2DSystem::Interpolate(float alpha)
+{
+	float oneMinusAlpha = 1.0f - alpha;
+	
+	for (auto& physics_object : physicsObjects)
+	{
+		physics_object.transform.position.x = physics_object.rigidBody.body->GetPosition().x * alpha + physics_object.previousPosition.x * oneMinusAlpha;
+		physics_object.transform.position.y = physics_object.rigidBody.body->GetPosition().y * alpha + physics_object.previousPosition.y * oneMinusAlpha;
+		physics_object.transform.rotation.z = glm::degrees(physics_object.rigidBody.body->GetAngle()) * alpha + physics_object.previousAngle* oneMinusAlpha;
+	}
 }
 
 void Physics2DSystem::ShutDown()

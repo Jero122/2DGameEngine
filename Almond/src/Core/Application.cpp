@@ -1,5 +1,6 @@
 #include "Application.h"
 
+#include "TimeStep.h"
 #include "ECS/Components/RigidBody.h"
 #include "ECS/ECS.hpp"
 #include "ECS/ECSLayer.h"
@@ -84,14 +85,17 @@ void Application::Run()
 	m_Running = true;
 	while (m_Running)
 	{
-		Uint64 start = SDL_GetPerformanceCounter();
+		float start = (float)SDL_GetTicks() / 1000.0f;
+		TimeStep time = start - m_TimeSinceLastFrame;
+		m_TimeSinceLastFrame = start;
 
+		float fps = 1.0f / (time.GetSeconds());
 
-
+		std::cout << "FrameTime: " << time.GetMilliseconds() << " | FPS: " << fps << std::endl;
 	
 		for (auto layer : m_LayerStack)
 		{
-			layer->OnUpdate();
+			layer->OnUpdate(time);
 		}
 
 		m_ImGuiLayer->Begin();
@@ -111,9 +115,7 @@ void Application::Run()
 		}
 		m_Window->OnUpdate();
 		
-		Uint64 end = SDL_GetPerformanceCounter();
-		float secondsElapsed = (end - start) / (float)SDL_GetPerformanceFrequency();
-		float fps = 1.0f / secondsElapsed;
-		//std::cout << "FrameTime: " << secondsElapsed * 1000.0f<< " | FPS: " << fps << std::endl;
+
+		
 	}
 }
