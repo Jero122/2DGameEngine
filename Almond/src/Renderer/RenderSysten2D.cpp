@@ -4,65 +4,14 @@
 #include "GLCall.h"
 #include <SDL/SDL.h>
 #include "ECS/ECS.hpp"
+#include "ECS/SceneView.h"
 #include "stb/stb_image.h"
 
 
 
 extern ECS ecs;
 
-struct Renderable
-{
-	Entity entity;
-	Transform& transform;
-	SpriteRender& sprite;
 
-	Renderable(Entity entity, Transform& transform, SpriteRender& sprite)
-		: entity(entity),
-		  transform(transform),
-		  sprite(sprite)
-	{
-	}
-
-	Renderable(const Renderable& other)
-		: entity(other.entity),
-		  transform(other.transform),
-		  sprite(other.sprite)
-	{
-	}
-
-
-	Renderable& operator=(const Renderable& other)
-	{
-		if (this == &other)
-			return *this;
-		entity = other.entity;
-		transform = other.transform;
-		sprite = other.sprite;
-		return *this;
-	}
-};
-
-std::vector<Renderable> renderables;
-
-
-void RenderSysten2D::EntityAdded(Entity entity)
-{
-	renderables.push_back({entity, ecs.GetComponent<Transform>(entity), ecs.GetComponent<SpriteRender>(entity) });
-}
-
-void RenderSysten2D::EntityRemoved(Entity entity)
-{
-	if (ecs.isAlive(entity))
-	{
-		for (auto iter = renderables.begin(); iter != renderables.end(); ++iter) {
-			if (iter->entity == entity) {
-				iter = renderables.erase(iter);
-				break;
-			}
-		}
-	}
-
-}
 
 void RenderSysten2D::Submit(Transform& transform, SpriteRender& spriteRender)
 {
@@ -78,10 +27,11 @@ void RenderSysten2D::Init()
 void RenderSysten2D::Update()
 {
 	m_RenderBatch.ResetRenderStats();
-	
-	for (auto renderable : renderables)
+	for (EntityID ent : SceneView<Transform, SpriteRender>(*ecs.getEntityManager()))
 	{
-		Submit(renderable.transform, renderable.sprite);
+		Transform* pTransform = ecs.GetComponent<Transform>(ent);
+		SpriteRender* pSprite = ecs.GetComponent<SpriteRender>(ent);
+		Submit(*pTransform, *pSprite);
 	}
 
 	if (m_RenderBatch.indexCount >= 0)

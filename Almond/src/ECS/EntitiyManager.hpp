@@ -1,82 +1,69 @@
 #pragma once
-
-
-#include <queue>
 #include <array>
 #include <cassert>
-#include <iostream>
 
-#include "ECSTypes.hpp"
+#include "ECSTypes.h"
+
+
 
 
 class EntityManager
 {
 public:
 	uint32_t mLivingEntityCount = 0;
+
+	struct EntDesc
+	{
+		EntityID id;
+		Signature signature;
+	};
+	
+	std::vector<EntDesc> entities;
 	
 	EntityManager()
 	{
-		for (Entity entity = 0; entity < MAX_ENTITIES; ++entity)
+		
+	}
+
+	EntityID CreateEntity()
+	{
+		if (!freeEntities.empty())
 		{
-			mFreeEntities.push(entity);
-			mFreeEntitiesSet.insert(mFreeEntities.back());
+			EntityIndex newIndex = freeEntities.back();
+			freeEntities.pop_back();
+			EntityID newID = CreateEntityId(newIndex, GetEntityVersion(entities[newIndex].id));
+			entities[newIndex].id = newID;
+			return entities[newIndex].id;
 		}
-		std::cout << "\n size if entities:" << sizeof(mFreeEntities) << std::endl;
+		
+		entities.push_back({ CreateEntityId(entities.size(), 0), Signature() });
+		return entities.back().id;
 	}
 
-	Entity CreateEntity()
+	void DestroyEntity(EntityID entity)
 	{
-		assert(mLivingEntityCount < MAX_ENTITIES && "Too many entities in existance");
-		
-		//Take an entity from the front of FreeEntities queue
-		Entity entity = mFreeEntities.front();
-		mFreeEntities.pop();
-		mFreeEntitiesSet.erase(entity);
-		
-		//increment entity counter
-		mLivingEntityCount++;
-		
-		return entity;
+		EntityID newID = CreateEntityId(EntityIndex(-1), GetEntityVersion(entity) + 1);
+		entities[GetEntityIndex(entity)].id = newID;
+		entities[GetEntityIndex(entity)].signature.reset();
+		freeEntities.push_back(GetEntityIndex(entity));
 	}
 
-	void DestroyEntity(Entity entity)
+
+	void SetEntitySignature(EntityID entity, int componentID)
 	{
-		assert(entity < MAX_ENTITIES && "Entity our of range");
-		
-		//reset signature
-		mSignatures[entity].reset();
-
-		if (mFreeEntitiesSet.find(entity) == mFreeEntitiesSet.end())
-		{
-			mFreeEntities.push(entity);
-			mFreeEntitiesSet.insert(std::ref(mFreeEntities.back()));
-			mLivingEntityCount--;
-		}
-		/*//add entity back into the freeList
-		mFreeEntities.push(entity);
-		//decrement entity counter*/
-		
+		entities[GetEntityIndex(entity)].signature.set(componentID);
 	}
-	void SetEntitySignature(Entity entity, Signature signature)
+
+	Signature GetEntitySignature(EntityID entity)
 	{
 		assert(entity < MAX_ENTITIES && "Entity our of range");
-		mSignatures[entity] = signature;
+		return entities[GetEntityIndex(entity)].signature;
 	}
 
-	Signature GetEntitySignature(Entity entity)
-	{
-		assert(entity < MAX_ENTITIES && "Entity our of range");
-		return mSignatures[entity];
-	}
 
-	const std::set<std::reference_wrapper<Entity>>& getFreeSet()
-	{
-		return mFreeEntitiesSet;
-	}
 private:
-	std::queue<Entity> mFreeEntities;
-	std::set<std::reference_wrapper<Entity>> mFreeEntitiesSet;
-	
-	std::array<Signature, MAX_ENTITIES> mSignatures;
+	std::vector<EntityIndex> freeEntities;
+
+
 
 };

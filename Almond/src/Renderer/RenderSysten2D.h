@@ -2,7 +2,7 @@
 
 #include "RenderBatch.h"
 #include "Shader.h"
-#include "ECS/ECSTypes.hpp"
+#include "ECS/ECSTypes.h"
 #include "ECS/Components/SpriteRender.h"
 #include "ECS/Components/Transform.h"
 
@@ -26,8 +26,6 @@ public:
 	void ShutDown() override;
 	
 	void Update() override;
-	void EntityAdded(Entity entity) override;
-	void EntityRemoved(Entity entity) override;
 	
 	RenderBatch GetRenderBatch() const
 	{

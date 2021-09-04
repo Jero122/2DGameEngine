@@ -1,8 +1,8 @@
 #pragma once
-#include "ECSTypes.hpp"
 #include "cassert"
 #include <unordered_map>
 #include <sparsepp/spp.h>
+#include "ECSTypes.h"
 
 class IComponentArray
 {

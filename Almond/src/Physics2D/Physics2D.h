@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "ECS/ECSTypes.hpp"
+#include "ECS/ECSTypes.h"
 
 enum BodyType
 {

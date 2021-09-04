@@ -120,20 +120,4 @@ void Physics2DSystem::ShutDown()
 {
 }
 
-void Physics2DSystem::EntityAdded(Entity entity)
-{
-	physicsObjects.push_back({ entity, ecs.GetComponent<Transform>(entity), ecs.GetComponent<RigidBody>(entity) });
-}
 
-void Physics2DSystem::EntityRemoved(Entity entity)
-{
-	if (ecs.isAlive(entity))
-	{
-		for (auto iter = physicsObjects.begin(); iter != physicsObjects.end(); ++iter) {
-			if (iter->entity == entity) {
-				iter = physicsObjects.erase(iter);
-				break;
-			}
-		}
-	}
-}

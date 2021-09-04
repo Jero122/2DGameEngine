@@ -1,7 +1,7 @@
 #pragma once
 #include <stack>
 
-#include "ECSTypes.hpp"
+#include "ECSTypes.h"
 #include "Core/Layer.h"
 
 class ECSLayer : public Layer

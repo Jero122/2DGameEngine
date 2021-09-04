@@ -11,15 +11,15 @@ std::shared_ptr<Physics2DSystem> physics2D;
 
 Physics2DLayer::Physics2DLayer()
 {
-	physics2D = ecs.CreateSystem<Physics2DSystem>();
+	/*physics2D = ecs.CreateSystem<Physics2DSystem>();
 	{
 		Signature signature;
 		signature.set(ecs.GetComponentType<RigidBody>());
 		signature.set(ecs.GetComponentType<Transform>());
 		ecs.SetSystemSignature<Physics2DSystem>(signature);
-	}
+	}*/
 
-	physics2D->Init();
+	//physics2D->Init();
 }
 
 
@@ -37,7 +37,7 @@ void Physics2DLayer::OnDetach()
 
 void Physics2DLayer::OnUpdate(TimeStep timeStep)
 {
-	physics2D->Update();
+	//physics2D->Update();
 }
 
 void Physics2DLayer::OnImGuiRender()

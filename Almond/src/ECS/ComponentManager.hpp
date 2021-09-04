@@ -1,79 +1,50 @@
 #pragma once
+#include "ECSTypes.h"
 
-#include "PackedArray.hpp"
-#include "ECSTypes.hpp"
-
-#include <unordered_map>
-#include <memory>
-#include <string>
 class ComponentManager
 {
-private:
-	std::unordered_map<std::string, std::shared_ptr<IComponentArray>> mComponentArrays{};
-
-	std::unordered_map<std::string, std::shared_ptr<IComponentArray>> map;
-	
-	std::unordered_map<const char*, ComponentType> mComponentTypes{};
-	ComponentType mNextComponentType = 0;
-
-	template<typename T>
-	std::shared_ptr<PackedArray<T>> GetComponentArray()
-	{
-		const char* componentName = typeid(T).name();
-		assert(mComponentTypes.find(componentName) != mComponentTypes.end() && "Component not created before use");
-		return std::static_pointer_cast<PackedArray<T>>(mComponentArrays[componentName]);
-	}
-
 public:
 	template<typename T>
 	void CreateComponent()
 	{
-		const char* componentName = typeid(T).name();
-		assert(mComponentTypes.find(componentName) == mComponentTypes.end() && "Creating component type more than once");
-		
-		
-		mComponentArrays.insert(std::make_pair(std::string(componentName), std::make_shared<PackedArray<T>>()));
-		
-		mComponentTypes.insert({ componentName, mNextComponentType });
-		
-		
-		mNextComponentType++;
+		int componentId = GetId<T>();
+		if (componentPools.size() <= componentId) // Not enough component pools
+		{
+			componentPools.push_back(new ComponentPool(sizeof(T)));
+		}
+
 	}
 
 	template<typename T>
-	void AddComponent(Entity entity, T component)
+	T* AddComponent(Entity entity, T component)
 	{
-		GetComponentArray<T>()->insertData(entity, component);
+		int componentId = GetId<T>();
+		T* pComponent = new (componentPools[componentId]->get(GetEntityIndex(entity))) T();
+		*pComponent = component;
+		return pComponent;
 	}
 
 	template<typename T>
 	void RemoveComponent(Entity entity, T component)
 	{
-		GetComponentArray<T>()->removeData(entity);
+		
 	}
 
 	template<typename T>
-	T& GetComponent(Entity entity)
+	T* GetComponent(Entity entity, int componentId)
 	{
-		return GetComponentArray<T>()->getData(entity);
-	}
-
-	template<typename T>
-	ComponentType GetComponentType()
-	{
-		const char* componentName = typeid(T).name();
-		assert(mComponentTypes.find(componentName) != mComponentTypes.end() && "Component not created before use");
-		return mComponentTypes[componentName];
+		T* pComponent = static_cast<T*>(componentPools[componentId]->get(GetEntityIndex(entity)));
+		return pComponent;
 	}
 
 	void EntityDestroyed(Entity entity)
 	{
-		for (auto const& pair : mComponentArrays)
-		{
-			auto const& component = pair.second;
-			component->EntityDestroyed(entity);
-		}
+	
 	}
+
+private:
+	std::vector<ComponentPool*> componentPools;
+
 };
 
 

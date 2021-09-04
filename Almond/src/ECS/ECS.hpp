@@ -1,11 +1,13 @@
 #pragma once
 
 #include <memory>
-#include "PackedArray.hpp"
-
+#include "ECSTypes.h"
 #include "EntitiyManager.hpp"
 #include "ComponentManager.hpp"
 #include "SystemManager.hpp"
+
+
+
 
 class ECS
 {
@@ -15,6 +17,11 @@ private:
 	std::unique_ptr < SystemManager> mSystemManager;
 	
 public:
+	
+
+	
+	
+	
 	void Init()
 	{
 		mEntityManger = std::make_unique<EntityManager>();
@@ -30,20 +37,7 @@ public:
 
 	void DestroyEntity(Entity entity)
 	{
-		mSystemManager->EntityDestroyed(entity);
 		mEntityManger->DestroyEntity(entity);
-		mComponentManager->EntityDestroyed(entity);
-
-	}
-
-	bool isAlive(Entity entity)
-	{
-		auto& set = mEntityManger->getFreeSet();
-		if (set.find(entity) != set.end())
-		{
-			return false;
-		}
-		return true;
 	}
 
 	//COMPONENT
@@ -52,37 +46,51 @@ public:
 	{
 		mComponentManager->CreateComponent<T>();
 	}
+	
 	template<typename T>
-	void AddComponent(Entity entity, T component)
+	T* AddComponent(Entity entity, T component)
 	{
-		mComponentManager->AddComponent(entity, component);
+		//Ensures we are not accessing a deleted entity
+		if (mEntityManger->entities[GetEntityIndex(entity)].id != entity)
+		{
+			return nullptr;
+		}
 		
-		auto signature = mEntityManger->GetEntitySignature(entity);
-		signature.set(mComponentManager->GetComponentType<T>(), true);
-		mEntityManger->SetEntitySignature(entity, signature);
+		mEntityManger->SetEntitySignature(entity, GetId<T>());
+		return mComponentManager->AddComponent(entity, component);
 		
-		mSystemManager->EntitySignatureChanged(entity, signature);
 	}
+	
 	template<typename T>
 	void RemoveComponent(Entity entity, T component)
 	{
-		mComponentManager->RemoveComponent(entity, component);
-		
-		auto signature = mEntityManger->GetEntitySignature(entity);
-		signature.set(mComponentManager->GetComponentType<T>(), false);
-		mEntityManger->SetEntitySignature(entity, signature);
+		//Ensures we are not accessing a deleted entity
+		if (mEntityManger->entities[GetEntityIndex(entity)].id != entity)
+		{
+			return;
+		}
 
-		mSystemManager->EntitySignatureChanged(entity, signature);
+		int componentId = GetId<T>();
+		mEntityManger->entities[GetEntityIndex(entity)].signature.reset(componentId);
 	}
+	
 	template<typename T>
-	T& GetComponent(Entity entity)
+	T* GetComponent(Entity entity)
 	{
-		return mComponentManager->GetComponent<T>(entity);
-	}
-	template<typename T>
-	ComponentType GetComponentType()
-	{
-		return mComponentManager->GetComponentType<T>();
+		int componentId = GetId<T>();
+
+		//Ensures we are not accessing a deleted entity
+		if (mEntityManger->entities[GetEntityIndex(entity)].id != entity)
+		{
+			return nullptr;
+		}
+		
+		if (!mEntityManger->entities[GetEntityIndex(entity)].signature.test(componentId))
+		{
+			return nullptr;
+		}
+		
+		return mComponentManager->GetComponent<T>(entity, componentId);
 	}
 
 	//SYSTEM
@@ -90,7 +98,6 @@ public:
 	std::shared_ptr<T> CreateSystem()
 	{
 		auto system = mSystemManager->CreateSystem<T>();
-		//m_systems.insert(system);
 		return system;
 	}
 
@@ -101,11 +108,7 @@ public:
 		return system;
 	}
 	
-	template<typename T>
-	void SetSystemSignature(Signature signature)
-	{
-		mSystemManager->SetSystemSignature<T>(signature);
-	}
+
 
 	std::unique_ptr<EntityManager>& getEntityManager()
 	{

@@ -100,6 +100,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\ECS\ECSTypes.cpp" />
     <ClCompile Include="src\Layers\Physics2DLayer.cpp" />
     <ClCompile Include="src\Physics2D\DebugDrawBox2D.cpp" />
     <ClCompile Include="src\Physics2D\Geometry2D.cpp" />
@@ -136,6 +137,7 @@
   <ItemGroup>
     <ClInclude Include="src\Core\TimeStep.h" />
     <ClInclude Include="src\ECS\Components\RigidBody.h" />
+    <ClInclude Include="src\ECS\SceneView.h" />
     <ClInclude Include="src\Layers\Physics2DLayer.h" />
     <ClInclude Include="src\Physics2D\DebugDrawBox2D.h" />
     <ClInclude Include="src\Physics2D\Geometry2D.h" />
@@ -162,7 +164,7 @@
     <ClInclude Include="src\ECS\ComponentManager.hpp" />
     <ClInclude Include="src\ECS\PackedArray.hpp" />
     <ClInclude Include="src\ECS\ECS.hpp" />
-    <ClInclude Include="src\ECS\ECSTypes.hpp" />
+    <ClInclude Include="src\ECS\ECSTypes.h" />
     <ClInclude Include="src\ECS\EntitiyManager.hpp" />
     <ClInclude Include="src\ECS\SystemManager.hpp" />
     <ClInclude Include="src\Renderer\Shader.h" />

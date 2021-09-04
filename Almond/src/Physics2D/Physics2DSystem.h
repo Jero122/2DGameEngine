@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "ECS/ECSTypes.hpp"
+#include "ECS/ECSTypes.h"
 
 class Physics2DSystem :  public System
 {
@@ -7,8 +7,6 @@ public:
 	void Init() override;
 	void Update() override;
 	void ShutDown() override;
-	void EntityAdded(Entity entity) override;
-	void EntityRemoved(Entity entity) override;
 
 private:
 	float t = 0.0f;

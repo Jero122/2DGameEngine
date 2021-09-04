@@ -6,6 +6,8 @@
 #include "ECS/PackedArray.hpp"
 #include <boost/unordered/unordered_map.hpp>
 
+#include "ECS/ECSTypes.h"
+
 static int currentID = 0;
 
 struct RenderStats
