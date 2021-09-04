@@ -47,7 +47,7 @@ void ECSLayer::OnAttach()
 
    
   
-    for (int i = 0; i < 50000; ++i)
+    /*for (int i = 0; i < 500; ++i)
     {
         auto entity = ecs.CreateEntity();
         {
@@ -57,14 +57,13 @@ void ECSLayer::OnAttach()
             ecs.AddComponent(entity, Transform{ glm::vec3(pos.x,pos.y, 0),rot,scale });
             ecs.AddComponent(entity, SpriteRender{ 0.5f , 0.5f, texture1.GetTexID() });
 
-            /*
             RigidBody body(*PhysicsWorld::GetInstance(), pos.x, pos.y, BodyType::Dynamic);
             OrientedBox box(0.24, 0.24, 1.0f, 0.1f, 0.0f);
             body.AddBoxCollider(box);
         	
-            ecs.AddComponent(entity, body);*/
+            ecs.AddComponent(entity, body);
         }
-    }
+    }*/
 
     Entity crate = ecs.CreateEntity();
     {
@@ -72,14 +71,16 @@ void ECSLayer::OnAttach()
         ecs.AddComponent(crate, SpriteRender{ 0.5f , 0.5f, texture1.GetTexID() });
 
     	
-        /*RigidBody body(*PhysicsWorld::GetInstance(), 0, 4.5, BodyType::Dynamic);
+        RigidBody body(*PhysicsWorld::GetInstance(), 0, 4.5, BodyType::Dynamic);
         OrientedBox box(0.24, 0.24, 1.0f, 0.1f, 0.0f);
 
         body.AddBoxCollider(box);
-        ecs.AddComponent(crate, body);*/
+        ecs.AddComponent(crate, body);
     }
 
-    /*Entity ent = ecs.CreateEntity();
+    ecs.DestroyEntity(crate);
+
+    Entity ent = ecs.CreateEntity();
     {
         ecs.AddComponent(ent, Transform{ glm::vec3(0,-4.5,0), glm::vec3(0,0,0),glm::vec3(1,1,1) });
         ecs.AddComponent(ent, SpriteRender{ 16, 1, {255,255,255,1} });
@@ -89,7 +90,7 @@ void ECSLayer::OnAttach()
 
         body.AddBoxCollider(box);
         ecs.AddComponent(ent, body);
-    }*/
+    }
 
 
 

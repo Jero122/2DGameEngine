@@ -1,17 +1,9 @@
 #include "RenderSysten2D.h"
 #include "RenderBatch.h"
-
-#include "GLCall.h"
-#include <SDL/SDL.h>
 #include "ECS/ECS.hpp"
 #include "ECS/SceneView.h"
-#include "stb/stb_image.h"
-
-
 
 extern ECS ecs;
-
-
 
 void RenderSysten2D::Submit(Transform& transform, SpriteRender& spriteRender)
 {
@@ -27,7 +19,8 @@ void RenderSysten2D::Init()
 void RenderSysten2D::Update()
 {
 	m_RenderBatch.ResetRenderStats();
-	for (EntityID ent : SceneView<Transform, SpriteRender>(*ecs.getEntityManager()))
+	
+	for (EntityID ent : SceneView<Transform, SpriteRender>(ecs))
 	{
 		Transform* pTransform = ecs.GetComponent<Transform>(ent);
 		SpriteRender* pSprite = ecs.GetComponent<SpriteRender>(ent);

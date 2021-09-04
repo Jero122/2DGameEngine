@@ -4,6 +4,7 @@
 #include <box2d/b2_polygon_shape.h>
 #include <box2d/b2_world.h>
 
+#include "glm/vec3.hpp"
 #include "Physics2D/Geometry2D.h"
 #include "Physics2D/Physics2D.h"
 
@@ -11,6 +12,8 @@ struct RigidBody
 {
 
 	b2Body* body;
+	glm::vec3 previousPosition;
+	float previousAngle;
 
 	RigidBody(b2World& world, float x, float y, BodyType type)
 	{

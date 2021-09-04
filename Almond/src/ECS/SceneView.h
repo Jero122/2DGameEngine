@@ -1,11 +1,13 @@
 #pragma once
 #include "EntitiyManager.hpp"
+#include "ECS/ECS.hpp"
 
 template<typename... ComponentTypes>
 struct SceneView
 {
-	SceneView(EntityManager& entityManager) : entityManager(&entityManager)
+	SceneView(ECS& ecs)
 	{
+		entityManager = &(*ecs.getEntityManager());
 		if (sizeof...(ComponentTypes) == 0)
 		{
 			all = true;

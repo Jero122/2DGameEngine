@@ -46,10 +46,9 @@ Application::Application()
 	RendererLayer* Renderer = new RendererLayer();
 	m_LayerStack.PushLayer(Renderer);
 	
-	/*
 	//PHYSICS
 	Physics2DLayer* physics = new Physics2DLayer();
-	m_LayerStack.PushLayer(physics);*/
+	m_LayerStack.PushLayer(physics);
 	
 	//IMGUI
 	m_ImGuiLayer = new ImGuiLayer();

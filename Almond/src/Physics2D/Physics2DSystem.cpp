@@ -9,48 +9,12 @@
 
 #include <SDL/SDL.h>
 
+#include "ECS/SceneView.h"
 #include "glm/vec2.hpp"
 
 
 extern ECS ecs;
 DebugDrawBox2D* debugDraw;
-
-struct PhysicsObject
-{
-	Entity entity;
-	Transform& transform;
-	RigidBody& rigidBody;
-
-	glm::vec2 previousPosition;
-	float previousAngle;
-
-	PhysicsObject(Entity entity, Transform& transform, RigidBody& sprite)
-		: entity(entity),
-		transform(transform),
-		rigidBody(sprite)
-	{
-	}
-
-	PhysicsObject(const PhysicsObject& other)
-		: entity(other.entity),
-		transform(other.transform),
-		rigidBody(other.rigidBody)
-	{
-	}
-
-
-	PhysicsObject& operator=(const PhysicsObject& other)
-	{
-		if (this == &other)
-			return *this;
-		entity = other.entity;
-		transform = other.transform;
-		rigidBody = other.rigidBody;
-		return *this;
-	}
-};
-
-std::vector<PhysicsObject> physicsObjects;
 
 void Physics2DSystem::Init()
 {
@@ -78,17 +42,16 @@ void Physics2DSystem::Update()
 
 	while (m_Accumulator >= dt)
 	{
-
-		
-		
 		PhysicsWorld::GetInstance()->Step(dt, 6, 2);
 
 		//Copy Current State into previous states
-		for (auto& physics_object : physicsObjects)
+		for (EntityID ent : SceneView<RigidBody>(ecs))
 		{
-			physics_object.previousPosition.x = physics_object.rigidBody.body->GetPosition().x;
-			physics_object.previousPosition.y = physics_object.rigidBody.body->GetPosition().y;
-			physics_object.previousAngle = glm::degrees(physics_object.rigidBody.body->GetAngle());
+			RigidBody* rb = ecs.GetComponent<RigidBody>(ent);
+
+			rb->previousPosition.x = rb->body->GetPosition().x;
+			rb->previousPosition.y = rb->body->GetPosition().y;
+			rb->previousAngle = glm::degrees(rb->body->GetAngle());
 		}
 		
 		m_Accumulator -= dt;
@@ -96,7 +59,6 @@ void Physics2DSystem::Update()
 	}
 
 	float alpha = m_Accumulator / dt;
-
 	Interpolate(alpha);
 	
 	PhysicsWorld::GetInstance()->DebugDraw();
@@ -108,11 +70,14 @@ void Physics2DSystem::Interpolate(float alpha)
 {
 	float oneMinusAlpha = 1.0f - alpha;
 	
-	for (auto& physics_object : physicsObjects)
+	for (EntityID ent : SceneView<Transform, RigidBody>(ecs))
 	{
-		physics_object.transform.position.x = physics_object.rigidBody.body->GetPosition().x * alpha + physics_object.previousPosition.x * oneMinusAlpha;
-		physics_object.transform.position.y = physics_object.rigidBody.body->GetPosition().y * alpha + physics_object.previousPosition.y * oneMinusAlpha;
-		physics_object.transform.rotation.z = glm::degrees(physics_object.rigidBody.body->GetAngle()) * alpha + physics_object.previousAngle* oneMinusAlpha;
+		auto rb = ecs.GetComponent<RigidBody>(ent);
+		auto transform = ecs.GetComponent<Transform>(ent);
+		
+		transform->position.x = rb->body->GetPosition().x * alpha + rb->previousPosition.x * oneMinusAlpha;
+		transform->position.y = rb->body->GetPosition().y * alpha + rb->previousPosition.y * oneMinusAlpha;
+		transform->rotation.z = glm::degrees(rb->body->GetAngle()) * alpha + rb->previousAngle* oneMinusAlpha;
 	}
 }
 

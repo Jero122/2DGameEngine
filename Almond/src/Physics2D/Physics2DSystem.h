@@ -7,6 +7,7 @@ public:
 	void Init() override;
 	void Update() override;
 	void ShutDown() override;
+	bool interpolate = true; //Interpolates each rigidbody for smoother movement
 
 private:
 	float t = 0.0f;
