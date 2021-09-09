@@ -4,8 +4,8 @@
 #include <set>
 #include <vector>
 
-using Entity = std::uint64_t;
-const Entity MAX_ENTITIES = 50000;
+
+
 
 using ComponentType = std::uint8_t;
 const ComponentType MAX_COMPONENTS = 32;
@@ -16,12 +16,12 @@ class System
 {
 public:
 	virtual void Init(){};
-	virtual void Update(){};
+	virtual void OnUpdate(){};
 	virtual void ShutDown() {};
-	std::set<Entity> mEntities;
 };
 
 typedef std::uint64_t EntityID;
+const EntityID MAX_ENTITIES = 50000;
 typedef std::bitset <MAX_COMPONENTS>  Signature;
 
 typedef std::uint32_t EntityIndex;

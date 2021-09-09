@@ -16,7 +16,7 @@ public:
 	}
 
 	template<typename T>
-	T* AddComponent(Entity entity, T component)
+	T* AddComponent(EntityID entity, T component)
 	{
 		int componentId = GetId<T>();
 		T* pComponent = new (componentPools[componentId]->get(GetEntityIndex(entity))) T();
@@ -25,19 +25,19 @@ public:
 	}
 
 	template<typename T>
-	void RemoveComponent(Entity entity, T component)
+	void RemoveComponent(EntityID entity, T component)
 	{
 		
 	}
 
 	template<typename T>
-	T* GetComponent(Entity entity, int componentId)
+	T* GetComponent(EntityID entity, int componentId)
 	{
 		T* pComponent = static_cast<T*>(componentPools[componentId]->get(GetEntityIndex(entity)));
 		return pComponent;
 	}
 
-	void EntityDestroyed(Entity entity)
+	void EntityDestroyed(EntityID entity)
 	{
 	
 	}

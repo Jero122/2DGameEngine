@@ -15,13 +15,9 @@ private:
 	std::unique_ptr<EntityManager> mEntityManger;
 	std::unique_ptr < ComponentManager> mComponentManager;
 	std::unique_ptr < SystemManager> mSystemManager;
+	std::vector<std::shared_ptr<System>> m_systems;
 	
 public:
-	
-
-	
-	
-	
 	void Init()
 	{
 		mEntityManger = std::make_unique<EntityManager>();
@@ -30,12 +26,12 @@ public:
 	}
 
 	//ENTITY
-	Entity CreateEntity()
+	EntityID CreateEntity()
 	{
 		return mEntityManger->CreateEntity();
 	}
 
-	void DestroyEntity(Entity entity)
+	void DestroyEntity(EntityID entity)
 	{
 		mEntityManger->DestroyEntity(entity);
 	}
@@ -48,7 +44,7 @@ public:
 	}
 	
 	template<typename T>
-	T* AddComponent(Entity entity, T component)
+	T* AddComponent(EntityID entity, T component)
 	{
 		//Ensures we are not accessing a deleted entity
 		if (mEntityManger->entities[GetEntityIndex(entity)].id != entity)
@@ -62,7 +58,7 @@ public:
 	}
 	
 	template<typename T>
-	void RemoveComponent(Entity entity, T component)
+	void RemoveComponent(EntityID entity, T component)
 	{
 		//Ensures we are not accessing a deleted entity
 		if (mEntityManger->entities[GetEntityIndex(entity)].id != entity)
@@ -75,7 +71,7 @@ public:
 	}
 	
 	template<typename T>
-	T* GetComponent(Entity entity)
+	T* GetComponent(EntityID entity)
 	{
 		int componentId = GetId<T>();
 
@@ -121,6 +117,5 @@ public:
 	std::vector<std::shared_ptr<System>>::const_iterator Begin() const { return m_systems.begin(); }
 	std::vector<std::shared_ptr<System>>::const_iterator End() const { return m_systems.end(); }
 
-private:
-	std::vector<std::shared_ptr<System>> m_systems;
+
 };

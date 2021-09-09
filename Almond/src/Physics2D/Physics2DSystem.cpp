@@ -33,7 +33,7 @@ void Physics2DSystem::Init()
 	
 }
 
-void Physics2DSystem::Update()
+void Physics2DSystem::OnUpdate()
 {
 	float newTime = SDL_GetTicks() / 1000.0f;
 	float frameTime = newTime - m_CurrentTime;

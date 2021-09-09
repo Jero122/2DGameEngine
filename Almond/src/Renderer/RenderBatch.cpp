@@ -4,20 +4,22 @@
 
 extern Camera camera;
 
+RenderBatch::RendererData RenderBatch::s_Data;
+
 void RenderBatch::Init()
 {
 	std::string shaderPath("resources/shaders/Basic.glsl");
-	shader = Shader();
-	shader.init(shaderPath);
-	shader.use();
+	s_Data.shader = Shader();
+	s_Data.shader.init(shaderPath);
+	s_Data.shader.use();
 
-	m_QuadBuffer = new Quad[MAX_BATCH_COUNT];
+	s_Data.m_QuadBuffer = new Quad[MAX_BATCH_COUNT];
 
-	GLCALL(glGenVertexArrays(1, &VAO));
-	GLCALL(glBindVertexArray(VAO));
+	GLCALL(glGenVertexArrays(1, &s_Data.VAO));
+	GLCALL(glBindVertexArray(s_Data.VAO));
 
-	GLCALL(glGenBuffers(1, &VBO));
-	GLCALL(glBindBuffer(GL_ARRAY_BUFFER, VBO));
+	GLCALL(glGenBuffers(1, &s_Data.VBO));
+	GLCALL(glBindBuffer(GL_ARRAY_BUFFER, s_Data.VBO));
 	GLCALL(glBufferData(GL_ARRAY_BUFFER, MAX_VERTEX_COUNT * sizeof(Quad::Vertex), nullptr, GL_DYNAMIC_DRAW));
 
 	// POSITION
@@ -51,68 +53,68 @@ void RenderBatch::Init()
 		offset += 4;
 	}
 
-	m_QuadBufferPtr = m_QuadBuffer;
+	s_Data.m_QuadBufferPtr = s_Data.m_QuadBuffer;
 	
-	GLCALL(glGenBuffers(1, &EBO));
-	GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO));
+	GLCALL(glGenBuffers(1, &s_Data.EBO));
+	GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s_Data.EBO));
 	GLCALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
 
-	int32_t samplers[s_MaxTextureSlots];
-	for (uint32_t i = 0; i < s_MaxTextureSlots; ++i)
+	int32_t samplers[s_Data.s_MaxTextureSlots];
+	for (uint32_t i = 0; i < s_Data.s_MaxTextureSlots; ++i)
 	{
 		samplers[i] = i;
 	}
 
-	m_Vertices[0] = { 0.5f, 0.5f, 0.0f, 1.0f }; // top right
-	m_Vertices[1] = { 0.5f, -0.5f, 0.0f, 1.0f };  // bottom right
-	m_Vertices[2] = { -0.5f, -0.5f, 0.0f, 1.0f };  // bottom left
-	m_Vertices[3] = { -0.5f,  0.5f, 0.0f, 1.0f };   // top left 
+	s_Data.m_Vertices[0] = { 0.5f, 0.5f, 0.0f, 1.0f }; // top right
+	s_Data.m_Vertices[1] = { 0.5f, -0.5f, 0.0f, 1.0f };  // bottom right
+	s_Data.m_Vertices[2] = { -0.5f, -0.5f, 0.0f, 1.0f };  // bottom left
+	s_Data.m_Vertices[3] = { -0.5f,  0.5f, 0.0f, 1.0f };   // top left 
 
 	
-	shader.setIntArray("uTextures", samplers, s_MaxTextureSlots);
+	s_Data.shader.setIntArray("uTextures", samplers, s_Data.s_MaxTextureSlots);
 
 }
 
 void RenderBatch::BeginBatch()
 {
-	m_QuadBufferPtr = m_QuadBuffer;
-	indexCount = 0;
-	m_TextureSlotIndex = 1; //Set to 1 because 0 is reserved for colored quads
+	s_Data.m_QuadBufferPtr = s_Data.m_QuadBuffer;
+	s_Data.indexCount = 0;
+	s_Data.m_TextureSlotIndex = 1; //Set to 1 because 0 is reserved for colored quads
 }
 
 void RenderBatch::EndBatch()
 {
-	m_RenderStats.DrawCalls++;
+	s_Data.m_RenderStats.DrawCalls++;
 	
-	GLsizeiptr size = m_QuadBufferPtr - m_QuadBuffer;
+	GLsizeiptr size = s_Data.m_QuadBufferPtr - s_Data.m_QuadBuffer;
 	size = size * sizeof(Quad);
-	GLCALL(glBindBuffer(GL_ARRAY_BUFFER, VBO));
+	GLCALL(glBindBuffer(GL_ARRAY_BUFFER, s_Data.VBO));
 	/*GLCALL(glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * 4 * MAX_BATCH_COUNT, vertexBuffer, GL_DYNAMIC_DRAW));*/
-	GLCALL(glBufferSubData(GL_ARRAY_BUFFER, 0, size, m_QuadBuffer));
+	GLCALL(glBufferSubData(GL_ARRAY_BUFFER, 0, size, s_Data.m_QuadBuffer));
 }
 
 void RenderBatch::Flush()
 {
-	shader.use();
+	s_Data.shader.use();
 
 
 	//TODO Replace orthographic dimensions with a global aspect ratio setting
 	glm::mat4 view = camera.GetViewMatrix();
 	glm::mat4 projection = glm::ortho(-8.0f/camera.fov, 8.0f / camera.fov, -4.5f / camera.fov, 4.5f / camera.fov, -1.0f, 1.0f);
 	
-	shader.setMat4("uView", view);
-	shader.setMat4("uProjection", projection);
+	s_Data.shader.setMat4("uView", view);
+	s_Data.shader.setMat4("uProjection", projection);
 
-	for (unsigned int i = 1; i < m_TextureSlotIndex; ++i)
+	for (unsigned int i = 1; i < s_Data.m_TextureSlotIndex; ++i)
 	{
 		GLCALL(glActiveTexture(GL_TEXTURE0 + i));
-		glBindTexture(GL_TEXTURE_2D, m_TextureSlots[i]);
+		glBindTexture(GL_TEXTURE_2D, s_Data.m_TextureSlots[i]);
 	}
 	
-	GLCALL(glBindVertexArray(VAO));
-	GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO));
+	GLCALL(glBindVertexArray(s_Data.VAO));
+	GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s_Data.EBO));
 	
-	glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, s_Data.indexCount, GL_UNSIGNED_INT, 0);
 }
 
 
@@ -125,9 +127,9 @@ void RenderBatch::NextBatch()
 
 void RenderBatch::Submit(const Transform& transform, const SpriteRender& sprite)
 {
-	m_RenderStats.QuadCount++;
+	s_Data.m_RenderStats.QuadCount++;
 	
-	if (indexCount >= MAX_INDEX_COUNT)
+	if (s_Data.indexCount >= MAX_INDEX_COUNT)
 	{
 		NextBatch();
 	}
@@ -135,9 +137,9 @@ void RenderBatch::Submit(const Transform& transform, const SpriteRender& sprite)
 	float textureIndex = 0;
 
 	//If textureID is already in batch
-	for (unsigned int i = 0; i < m_TextureSlotIndex; ++i)
+	for (unsigned int i = 0; i < s_Data.m_TextureSlotIndex; ++i)
 	{
-		if (m_TextureSlots[i] == sprite.textureID)
+		if (s_Data.m_TextureSlots[i] == sprite.textureID)
 		{
 			//Set the textureIndex for this quad to the one already in the batch;
 			textureIndex = i;
@@ -149,14 +151,14 @@ void RenderBatch::Submit(const Transform& transform, const SpriteRender& sprite)
 	if (textureIndex == 0 && sprite.textureID > 0)
 	{
 		//If all the textureSlots have been occupied, end batch
-		if (m_TextureSlotIndex >= s_MaxTextureSlots)
+		if (s_Data.m_TextureSlotIndex >= s_Data.s_MaxTextureSlots)
 		{
 			NextBatch();
 		}
 
-		textureIndex = m_TextureSlotIndex;
-		m_TextureSlots[m_TextureSlotIndex] = sprite.textureID;
-		m_TextureSlotIndex++;
+		textureIndex = s_Data.m_TextureSlotIndex;
+		s_Data.m_TextureSlots[s_Data.m_TextureSlotIndex] = sprite.textureID;
+		s_Data.m_TextureSlotIndex++;
 	}
 
 	glm::mat4 transFormMatrix = glm::translate(glm::mat4(1.0f), transform.position)
@@ -165,30 +167,24 @@ void RenderBatch::Submit(const Transform& transform, const SpriteRender& sprite)
 	
 	
 	//top right
-	m_QuadBufferPtr->topRight = Quad::Vertex{ transFormMatrix * m_Vertices[0], glm::vec4(sprite.color.r / 255,sprite.color.g / 255,sprite.color.b / 255, 1), sprite.texCoords[0], textureIndex};
+	s_Data.m_QuadBufferPtr->topRight = Quad::Vertex{ transFormMatrix * s_Data.m_Vertices[0], glm::vec4(sprite.color.r / 255,sprite.color.g / 255,sprite.color.b / 255, 1), sprite.texCoords[0], textureIndex};
 	//bottom right
-	m_QuadBufferPtr->bottomRight = Quad::Vertex{ transFormMatrix * m_Vertices[1], glm::vec4(sprite.color.r / 255,sprite.color.g / 255,sprite.color.b / 255, 1), sprite.texCoords[1], textureIndex };
+	s_Data.m_QuadBufferPtr->bottomRight = Quad::Vertex{ transFormMatrix * s_Data.m_Vertices[1], glm::vec4(sprite.color.r / 255,sprite.color.g / 255,sprite.color.b / 255, 1), sprite.texCoords[1], textureIndex };
 	//bottom left
-	m_QuadBufferPtr->bottomLeft = Quad::Vertex{ transFormMatrix * m_Vertices[2], glm::vec4(sprite.color.r / 255,sprite.color.g / 255,sprite.color.b / 255, 1), sprite.texCoords[2], textureIndex };
+	s_Data.m_QuadBufferPtr->bottomLeft = Quad::Vertex{ transFormMatrix * s_Data.m_Vertices[2], glm::vec4(sprite.color.r / 255,sprite.color.g / 255,sprite.color.b / 255, 1), sprite.texCoords[2], textureIndex };
 	//top left
-	m_QuadBufferPtr->topLeft= Quad::Vertex{transFormMatrix * m_Vertices[3], glm::vec4(sprite.color.r / 255,sprite.color.g / 255,sprite.color.b, 1), sprite.texCoords[3], textureIndex };
+	s_Data.m_QuadBufferPtr->topLeft= Quad::Vertex{transFormMatrix * s_Data.m_Vertices[3], glm::vec4(sprite.color.r / 255,sprite.color.g / 255,sprite.color.b, 1), sprite.texCoords[3], textureIndex };
 
-	m_QuadBufferPtr++;
+	s_Data.m_QuadBufferPtr++;
 	
-	indexCount += 6;
+	s_Data.indexCount += 6;
 
 }
 
-void RenderBatch::removeQuad(Entity entity)
-{
-
-	/*quadArray.removeData(entity);
-	indexCount -= 6;
-	isDirty = true;*/
-}
 
 
-void RenderBatch::shutdown()
+
+void RenderBatch::Shutdown()
 {
 	/*delete[] quadBuffer;*/
 }

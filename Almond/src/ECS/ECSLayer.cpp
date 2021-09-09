@@ -3,6 +3,7 @@
 #include <random>
 #include <stack>
 
+#include "Entity.h"
 #include "SceneView.h"
 #include "Core/Input.h"
 #include "Components/SpriteRender.h"
@@ -17,7 +18,7 @@
 #include "Physics2D/Physics2D.h"
 #include "Physics2D/PhysicsWorld.h"
 
-extern ECS ecs;
+
 extern Camera camera;
 
 
@@ -37,59 +38,59 @@ ECSLayer::~ECSLayer()
 
 void ECSLayer::OnAttach()
 {
-   
     Texture texture("resources/textures/container.jpg");
-	
     SpriteSheet spriteSheet("resources/textures/UpArrow.png", 32, 32, 1, 1);
-	
     Texture texture1("resources/textures/Crate.jpg");
 
-
+    m_CurrentScene = std::make_shared<Scene>();
    
   
-    /*for (int i = 0; i < 500; ++i)
+    for (int i = 0; i < 500; ++i)
     {
-        auto entity = ecs.CreateEntity();
+        auto entity = m_CurrentScene->CreateEntity();
         {
             auto pos = glm::vec3{ randPositionX(generator),randPositionY(generator),0.0f };
             auto rot = glm::vec3{ 0.0f,0.0f,0.0f };
             auto scale = glm::vec3{ 1.0f,1.0f,1.0f };
-            ecs.AddComponent(entity, Transform{ glm::vec3(pos.x,pos.y, 0),rot,scale });
-            ecs.AddComponent(entity, SpriteRender{ 0.5f , 0.5f, texture1.GetTexID() });
+            entity.AddComponent(Transform{ glm::vec3(pos.x,pos.y, 0),rot,scale });
+            entity.AddComponent(SpriteRender{ 0.5f , 0.5f, texture1.GetTexID() });
 
             RigidBody body(*PhysicsWorld::GetInstance(), pos.x, pos.y, BodyType::Dynamic);
             OrientedBox box(0.24, 0.24, 1.0f, 0.1f, 0.0f);
             body.AddBoxCollider(box);
         	
-            ecs.AddComponent(entity, body);
+            entity.AddComponent(body);
         }
-    }*/
-
-    Entity crate = ecs.CreateEntity();
-    {
-        ecs.AddComponent(crate, Transform{ glm::vec3(0,0,0), glm::vec3(0,0,0),glm::vec3(1,1,1) });
-        ecs.AddComponent(crate, SpriteRender{ 0.5f , 0.5f, texture1.GetTexID() });
-
-    	
-        RigidBody body(*PhysicsWorld::GetInstance(), 0, 4.5, BodyType::Dynamic);
-        OrientedBox box(0.24, 0.24, 1.0f, 0.1f, 0.0f);
-
-        body.AddBoxCollider(box);
-        ecs.AddComponent(crate, body);
     }
 
-    ecs.DestroyEntity(crate);
 
-    Entity ent = ecs.CreateEntity();
+    
+	
+	Entity crate = m_CurrentScene->CreateEntity();
     {
-        ecs.AddComponent(ent, Transform{ glm::vec3(0,-4.5,0), glm::vec3(0,0,0),glm::vec3(1,1,1) });
-        ecs.AddComponent(ent, SpriteRender{ 16, 1, {255,255,255,1} });
+        crate.AddComponent(Transform{ glm::vec3(0,0,0), glm::vec3(0,0,0),glm::vec3(1,1,1) });
+        crate.AddComponent(SpriteRender{ 0.5f , 0.5f, texture1.GetTexID() });
+
+        RigidBody body(*PhysicsWorld::GetInstance(), 0, 4.5, BodyType::Dynamic);
+        OrientedBox box(0.24, 0.24, 1.0f, 0.1f, 0.0f);
+        body.AddBoxCollider(box);
+
+        crate.AddComponent(body);
+    }
+
+	
+
+
+    Entity floor = m_CurrentScene->CreateEntity();
+    {
+        floor.AddComponent(Transform{ glm::vec3(0,-4.5,0), glm::vec3(0,0,0),glm::vec3(1,1,1) });
+        floor.AddComponent(SpriteRender{ 16, 1, {255,255,255,1} });
 
         RigidBody body(*PhysicsWorld::GetInstance(), 0, -4.5, BodyType::Static);
         OrientedBox box(8, 0.50, 0.0f, 1.0f, 0.0f);
 
         body.AddBoxCollider(box);
-        ecs.AddComponent(ent, body);
+        floor.AddComponent(body);
     }
 
 
@@ -103,11 +104,8 @@ void ECSLayer::OnDetach()
 
 void ECSLayer::OnUpdate(TimeStep timeStep)
 {
+    m_CurrentScene->OnUpdate(timeStep);
 	
-	for (auto system : ecs)
-	{
-		system->Update();
-	}
 
 	//TODO timestep
 	if (Input::GetInstance()->GetKey(SDL_SCANCODE_A))
@@ -141,31 +139,29 @@ void ECSLayer::OnUpdate(TimeStep timeStep)
 
 void ECSLayer::OnImGuiRender()
 {
-    ImGui::Begin("ECS");
+    /*ImGui::Begin("ECS");
     {
         ImGui::Text("Living Entities: %d", ecs.getEntityManager()->mLivingEntityCount);
 
         if (ImGui::Button("Create Entity"))
         {
-            auto entity = ecs.CreateEntity();
-            {
-                auto pos = glm::vec3{ 1.0f,0.0f,0.0f };
-                auto rot = glm::vec3{ 0.0f,0.0f,0.0f };
-                auto scale = glm::vec3{ 1.0f,1.0f,1.0f };
-                ecs.AddComponent(entity, Transform{ glm::vec3(randPositionX(generator),randPositionY(generator), 0),rot,scale });
-                ecs.AddComponent(entity, SpriteRender{ 10.0f * randScale(generator), 10.0f * randScale(generator), glm::vec4{255,255,255, 1} });
-            }
-            m_entities.push(entity);
+           
         }
 
         if (ImGui::Button("Destroy Entity"))
         {
-            int id = m_entities.top();
-            m_entities.pop();
-            ecs.DestroyEntity(id);
+           
         }
     }
-    ImGui::End();
+    ImGui::End();*/
+
+    /*RenderStats stats = renderer->GetRenderBatch().GetRenderStats();
+  ImGui::Begin("Renderer Stats");
+  ImGui::Text("Draw Calls: %d", stats.DrawCalls);
+  ImGui::Text("Quads: %d", stats.QuadCount);
+  ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
+  ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
+  ImGui::End();*/
 }
 
 void ECSLayer::OnLateUpdate()

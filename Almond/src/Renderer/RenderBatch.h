@@ -3,12 +3,9 @@
 #include "Shader.h"
 #include "ECS//Components/SpriteRender.h"
 #include "ECS/Components/Transform.h"
-#include "ECS/PackedArray.hpp"
-#include <boost/unordered/unordered_map.hpp>
 
-#include "ECS/ECSTypes.h"
+#include <array>
 
-static int currentID = 0;
 
 struct RenderStats
 {
@@ -22,40 +19,31 @@ struct RenderStats
 class RenderBatch
 {
 public:
-
-	int indexCount = 0;
-	int id;
-	
-	
-	
 	static const int MAX_BATCH_COUNT = 10000;
 	static const int MAX_VERTEX_COUNT = MAX_BATCH_COUNT * 4;
 	static const int MAX_INDEX_COUNT = MAX_BATCH_COUNT * 6;
-	RenderBatch()
+	
+
+
+	static void Init();
+	static void Shutdown();
+	
+	static void BeginBatch();
+	static void EndBatch();
+	static void Flush();
+	static void NextBatch();
+	
+	static void Submit(const Transform& transform, const SpriteRender& sprite);
+
+
+	static RenderStats GetRenderStats()
 	{
-		id = currentID;
-		currentID++;
+		return s_Data.m_RenderStats;
 	}
 
-	void Init();
-	void shutdown();
-	
-	void BeginBatch();
-	void EndBatch();
-	void Flush();
-	void NextBatch();
-	
-	void Submit(const Transform& transform, const SpriteRender& sprite);
-	void removeQuad(Entity entity);
-
-	RenderStats GetRenderStats() const
+	static void ResetRenderStats()
 	{
-		return m_RenderStats;
-	}
-
-	void ResetRenderStats()
-	{
-		memset(&m_RenderStats, 0, sizeof(RenderStats));
+		memset(&s_Data.m_RenderStats, 0, sizeof(RenderStats));
 	}
 
 	struct Quad
@@ -91,21 +79,23 @@ private:
 	static const int VERTEX_ELEMENT_COUNT = POS_COUNT + COLOR_COUNT + TEX_COORD_COUNT + TEX_ID_COUNT;
 	static const int VERTEX_SIZE = VERTEX_ELEMENT_COUNT * sizeof(float);
 
-	
+	struct RendererData
+	{
+		Quad* m_QuadBuffer;
+		Quad* m_QuadBufferPtr = nullptr;
+
+		static const int s_MaxTextureSlots = 32;
+		std::array<int, s_MaxTextureSlots> m_TextureSlots;
+		unsigned int m_TextureSlotIndex = 1; //0 = white texture;
 
 
-	Quad* m_QuadBuffer;
-	Quad* m_QuadBufferPtr = nullptr;
-	
-	static const int s_MaxTextureSlots = 32;
-	std::array<int, s_MaxTextureSlots> m_TextureSlots;
-	unsigned int m_TextureSlotIndex = 1; //0 = white texture;
-	
+		unsigned int VAO, VBO, EBO;
+		Shader shader;
+		RenderStats m_RenderStats;
 
-	unsigned int VAO, VBO, EBO;
-	Shader shader;
-	RenderStats m_RenderStats;
+		glm::vec4 m_Vertices[4];
+		int indexCount = 0;
+	};
 
-	glm::vec4 m_Vertices[4];
-	
+	static RendererData s_Data;
 };

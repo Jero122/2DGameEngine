@@ -1,8 +1,11 @@
 #pragma once
+#include <memory>
 #include <stack>
 
 #include "ECSTypes.h"
 #include "Core/Layer.h"
+
+#include "Scene.h";
 
 class ECSLayer : public Layer
 {
@@ -16,6 +19,7 @@ public:
 	
 	void OnImGuiRender() override;
 	void OnLateUpdate() override;
-	std::stack<Entity> m_entities;
+	std::stack<EntityID> m_entities;
+	std::shared_ptr<Scene> m_CurrentScene;
 };
 

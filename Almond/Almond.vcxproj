@@ -101,16 +101,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\ECS\ECSTypes.cpp" />
-    <ClCompile Include="src\Layers\Physics2DLayer.cpp" />
+    <ClCompile Include="src\ECS\Scene.cpp" />
     <ClCompile Include="src\Physics2D\DebugDrawBox2D.cpp" />
     <ClCompile Include="src\Physics2D\Geometry2D.cpp" />
     <ClCompile Include="src\Physics2D\Physics2D.cpp" />
-    <ClCompile Include="src\Physics2D\Physics2DSystem.cpp" />
     <ClCompile Include="src\Physics2D\PhysicsWorld.cpp" />
     <ClCompile Include="src\Renderer\SpriteSheet.cpp" />
     <ClCompile Include="src\Renderer\Texture.cpp" />
     <ClCompile Include="src\Layers\ImGuiLayer.cpp" />
-    <ClCompile Include="src\Layers\RendererLayer.cpp" />
     <ClCompile Include="src\ECS\ECSLayer.cpp" />
     <ClCompile Include="src\Core\Application.cpp" />
     <ClCompile Include="src\Core\Input.cpp" />
@@ -119,7 +117,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="src\Renderer\Camera.cpp" />
     <ClCompile Include="src\Renderer\RenderBatch.cpp" />
-    <ClCompile Include="src\Renderer\RenderSysten2D.cpp" />
+    <ClCompile Include="src\Renderer\Renderer2D.cpp" />
     <ClCompile Include="src\Renderer\Shader.cpp" />
     <ClCompile Include="src\Core\Window.cpp" />
     <ClCompile Include="src\Platforms\Windows\WindowsWindow.cpp" />
@@ -137,17 +135,16 @@
   <ItemGroup>
     <ClInclude Include="src\Core\TimeStep.h" />
     <ClInclude Include="src\ECS\Components\RigidBody.h" />
+    <ClInclude Include="src\ECS\Entity.h" />
+    <ClInclude Include="src\ECS\Scene.h" />
     <ClInclude Include="src\ECS\SceneView.h" />
-    <ClInclude Include="src\Layers\Physics2DLayer.h" />
     <ClInclude Include="src\Physics2D\DebugDrawBox2D.h" />
     <ClInclude Include="src\Physics2D\Geometry2D.h" />
     <ClInclude Include="src\Physics2D\Physics2D.h" />
-    <ClInclude Include="src\Physics2D\Physics2DSystem.h" />
     <ClInclude Include="src\Physics2D\PhysicsWorld.h" />
     <ClInclude Include="src\Renderer\SpriteSheet.h" />
     <ClInclude Include="src\Renderer\Texture.h" />
     <ClInclude Include="src\Layers\ImGuiLayer.h" />
-    <ClInclude Include="src\Layers\RendererLayer.h" />
     <ClInclude Include="src\Layers\InputLayer.h" />
     <ClInclude Include="src\ECS\ECSLayer.h" />
     <ClInclude Include="src\Core\Application.h" />
@@ -158,7 +155,7 @@
     <ClInclude Include="src\Renderer\Camera.h" />
     <ClInclude Include="src\Renderer\GLCall.h" />
     <ClInclude Include="src\Renderer\RenderBatch.h" />
-    <ClInclude Include="src\Renderer\RenderSysten2D.h" />
+    <ClInclude Include="src\Renderer\Renderer2D.h" />
     <ClInclude Include="src\ECS\Components\SpriteRender.h" />
     <ClInclude Include="src\ECS\Components\Transform.h" />
     <ClInclude Include="src\ECS\ComponentManager.hpp" />
