@@ -10,13 +10,14 @@
 #include "Components/Transform.h"
 #include "ECS/ECS.hpp"
 #include "Physics2D/Geometry2D.h"
-#include "Renderer/RenderBatch.h"
 #include "Renderer/SpriteSheet.h"
 #include "Renderer/Texture.h"
 #include "imgui/imgui.h"
 #include "Components/RigidBody.h"
 #include "Physics2D/Physics2D.h"
 #include "Physics2D/PhysicsWorld.h"
+#include "Renderer/Camera.h"
+#include "Renderer/Renderer2D.h"
 
 
 extern Camera camera;
@@ -155,13 +156,14 @@ void ECSLayer::OnImGuiRender()
     }
     ImGui::End();*/
 
-    /*RenderStats stats = renderer->GetRenderBatch().GetRenderStats();
-  ImGui::Begin("Renderer Stats");
-  ImGui::Text("Draw Calls: %d", stats.DrawCalls);
-  ImGui::Text("Quads: %d", stats.QuadCount);
-  ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
-  ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
-  ImGui::End();*/
+	auto stats = Renderer2D::GetStats();
+	ImGui::Begin("Renderer Stats");
+	ImGui::Text("Draw Calls: %d", stats.DrawCalls);
+	ImGui::Text("Quads: %d", stats.QuadCount);
+	ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
+	ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
+	ImGui::End();
+    Renderer2D::ResetStats();
 }
 
 void ECSLayer::OnLateUpdate()

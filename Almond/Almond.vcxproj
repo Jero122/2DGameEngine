@@ -116,7 +116,6 @@
     <ClCompile Include="src\Core\Layer.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="src\Renderer\Camera.cpp" />
-    <ClCompile Include="src\Renderer\RenderBatch.cpp" />
     <ClCompile Include="src\Renderer\Renderer2D.cpp" />
     <ClCompile Include="src\Renderer\Shader.cpp" />
     <ClCompile Include="src\Core\Window.cpp" />
@@ -154,7 +153,6 @@
     <ClInclude Include="src\Core\Input.h" />
     <ClInclude Include="src\Renderer\Camera.h" />
     <ClInclude Include="src\Renderer\GLCall.h" />
-    <ClInclude Include="src\Renderer\RenderBatch.h" />
     <ClInclude Include="src\Renderer\Renderer2D.h" />
     <ClInclude Include="src\ECS\Components\SpriteRender.h" />
     <ClInclude Include="src\ECS\Components\Transform.h" />

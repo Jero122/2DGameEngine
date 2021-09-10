@@ -6,9 +6,7 @@
 #include "ECS/ECSLayer.h"
 #include "imgui/imgui.h"
 #include "Layers/InputLayer.h"
-#include "Layers/Physics2DLayer.h"
 #include "Physics2D/PhysicsWorld.h"
-#include "Renderer/RenderBatch.h"
 #include "Renderer/Renderer2D.h"
 
 Application* Application::s_Instance = nullptr;
@@ -43,13 +41,6 @@ Application::Application()
 	
 
 	Renderer2D::Init();
-	/*//RENDERER
-	RendererLayer* Renderer = new RendererLayer();
-	m_LayerStack.PushLayer(Renderer);
-	
-	//PHYSICS
-	Physics2DLayer* physics = new Physics2DLayer();
-	m_LayerStack.PushLayer(physics);*/
 	
 	//IMGUI
 	m_ImGuiLayer = new ImGuiLayer();
