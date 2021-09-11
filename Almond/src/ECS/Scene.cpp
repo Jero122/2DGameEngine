@@ -47,7 +47,7 @@ void Scene::OnUpdate(TimeStep timestep)
 		auto transform = m_Ecs.GetComponent<Transform>(ent);
 		auto sprite = m_Ecs.GetComponent<SpriteRender>(ent);
 
-		Renderer2D::Submit(*transform, *sprite);
+		Renderer2D::Submit(transform->position,transform->rotation.z,{transform->scale.x, transform->scale.y}, sprite->color,sprite->textureID, sprite->texCoords);
 	}
 
 	Renderer2D::EndScene();

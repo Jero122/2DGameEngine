@@ -14,7 +14,8 @@ struct Quad
 	struct Vertex
 	{
 		glm::vec3 Position;
-		glm::vec4 Color;
+		//glm::vec4 Color;
+		unsigned int Color;
 		glm::vec2 TexCoord;
 		float TexID;
 	};
@@ -29,20 +30,12 @@ struct RendererData
 	static const int MAX_BATCH_COUNT = 10000;
 	static const int MAX_VERTEX_COUNT = MAX_BATCH_COUNT * 4;
 	static const int MAX_INDEX_COUNT = MAX_BATCH_COUNT * 6;
-	
+
 	static const int POS_COUNT = 3;			//XYZ
 	static const int COLOR_COUNT = 4;		//RGBA
 	static const int TEX_COORD_COUNT = 2;	//UV
 	static const int TEX_ID_COUNT = 1;		//TexID
 
-	static const int POS_OFFSET = 0;
-	static const int COLOR_OFFSET = POS_OFFSET + POS_COUNT;
-	static const int TEX_COORD_OFFSET = COLOR_OFFSET + COLOR_COUNT;
-	static const int TEX_ID_OFFSET = TEX_COORD_OFFSET + TEX_COORD_COUNT;
-
-
-	static const int VERTEX_ELEMENT_COUNT = POS_COUNT + COLOR_COUNT + TEX_COORD_COUNT + TEX_ID_COUNT;
-	static const int VERTEX_SIZE = VERTEX_ELEMENT_COUNT * sizeof(float);
 
 	Quad* m_QuadBuffer;
 	Quad* m_QuadBufferPtr = nullptr;
@@ -79,16 +72,16 @@ void Renderer2D::Init()
 	GLCALL(glBufferData(GL_ARRAY_BUFFER, s_Data.MAX_VERTEX_COUNT * sizeof(Quad::Vertex), nullptr, GL_DYNAMIC_DRAW));
 
 	// POSITION
-	GLCALL(glVertexAttribPointer(0, s_Data.POS_COUNT, GL_FLOAT, GL_FALSE, s_Data.VERTEX_ELEMENT_COUNT * sizeof(float), (void*)s_Data.POS_OFFSET));
+	GLCALL(glVertexAttribPointer(0, s_Data.POS_COUNT, GL_FLOAT, GL_FALSE, sizeof(Quad::Vertex), (void*)(offsetof(Quad::Vertex, Quad::Vertex::Position))));
 	GLCALL(glEnableVertexAttribArray(0));
 	//RGBA COLOR
-	GLCALL(glVertexAttribPointer(1, s_Data.COLOR_COUNT, GL_FLOAT, GL_FALSE, s_Data.VERTEX_ELEMENT_COUNT * sizeof(float), (void*)(s_Data.COLOR_OFFSET * sizeof(float))));
+	GLCALL(glVertexAttribPointer(1, s_Data.COLOR_COUNT, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Quad::Vertex), (void*)(offsetof(Quad::Vertex, Quad::Vertex::Color))));
 	GLCALL(glEnableVertexAttribArray(1));
 	//TEX UV
-	GLCALL(glVertexAttribPointer(2, s_Data.TEX_COORD_COUNT, GL_FLOAT, GL_FALSE, s_Data.VERTEX_ELEMENT_COUNT * sizeof(float), (void*)(s_Data.TEX_COORD_OFFSET * sizeof(float))));
+	GLCALL(glVertexAttribPointer(2, s_Data.TEX_COORD_COUNT, GL_FLOAT, GL_FALSE, sizeof(Quad::Vertex), (void*)(offsetof(Quad::Vertex, Quad::Vertex::TexCoord))));
 	GLCALL(glEnableVertexAttribArray(2));
 	//TEX ID
-	GLCALL(glVertexAttribPointer(3, s_Data.TEX_ID_COUNT, GL_FLOAT, GL_FALSE, s_Data.VERTEX_ELEMENT_COUNT * sizeof(float), (void*)(s_Data.TEX_ID_OFFSET * sizeof(float))));
+	GLCALL(glVertexAttribPointer(3, s_Data.TEX_ID_COUNT, GL_FLOAT, GL_FALSE, sizeof(Quad::Vertex), (void*)(offsetof(Quad::Vertex, Quad::Vertex::TexID))));
 	GLCALL(glEnableVertexAttribArray(3));
 
 
@@ -149,7 +142,28 @@ void Renderer2D::EndScene()
 	Flush();
 }
 
-void Renderer2D::Submit(Transform& transform, SpriteRender& sprite)
+void Renderer2D::Submit(const glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, int textureID, glm::vec2* texCoords)
+{
+	glm::mat4 transformMatrix{ 1.0f };
+
+	if (rotation == 0)
+	{
+		transformMatrix = glm::translate(glm::mat4(1.0f), position)
+			* glm::scale(glm::mat4(1.0f), { scale.x, scale.y, 1.0f });
+	}
+	else
+	{
+		transformMatrix = glm::translate(glm::mat4(1.0f), position)
+			* glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f,0.0f,1.0f })
+			* glm::scale(glm::mat4(1.0f), { scale.x, scale.y, 1.0f });
+	}
+
+	DrawQuad(transformMatrix, color, textureID, texCoords);
+
+}
+
+
+void Renderer2D::DrawQuad(const glm::mat4 transform, glm::vec4 color, int textureID, glm::vec2* texCoords)
 {
 	s_Data.m_RenderStats.QuadCount++;
 
@@ -163,7 +177,7 @@ void Renderer2D::Submit(Transform& transform, SpriteRender& sprite)
 	//If textureID is already in batch
 	for (unsigned int i = 0; i < s_Data.m_TextureSlotIndex; ++i)
 	{
-		if (s_Data.m_TextureSlots[i] == sprite.textureID)
+		if (s_Data.m_TextureSlots[i] == textureID)
 		{
 			//Set the textureIndex for this quad to the one already in the batch;
 			textureIndex = i;
@@ -172,7 +186,7 @@ void Renderer2D::Submit(Transform& transform, SpriteRender& sprite)
 	}
 
 	//If textureID was not in batch
-	if (textureIndex == 0 && sprite.textureID > 0)
+	if (textureIndex == 0 && textureID > 0)
 	{
 		//If all the textureSlots have been occupied, end batch
 		if (s_Data.m_TextureSlotIndex >= s_Data.s_MaxTextureSlots)
@@ -181,29 +195,30 @@ void Renderer2D::Submit(Transform& transform, SpriteRender& sprite)
 		}
 
 		textureIndex = s_Data.m_TextureSlotIndex;
-		s_Data.m_TextureSlots[s_Data.m_TextureSlotIndex] = sprite.textureID;
+		s_Data.m_TextureSlots[s_Data.m_TextureSlotIndex] = textureID;
 		s_Data.m_TextureSlotIndex++;
 	}
 
-	glm::mat4 transFormMatrix = glm::translate(glm::mat4(1.0f), transform.position)
-		* glm::rotate(glm::mat4(1.0f), glm::radians(transform.rotation.z), { 0.0f,0.0f,1.0f })
-		* glm::scale(glm::mat4(1.0f), { sprite.width * transform.scale.x, sprite.height * transform.scale.y, 1.0f });
+	int r = color.r;
+	int g = color.g;
+	int b = color.b;
+	int a = color.a;
 
+	unsigned int c = a << 24 | b << 16 | g << 8 | r;
 
 	//top right
-	s_Data.m_QuadBufferPtr->topRight = Quad::Vertex{ transFormMatrix * s_Data.m_Vertices[0], glm::vec4(sprite.color.r / 255,sprite.color.g / 255,sprite.color.b / 255, 1), sprite.texCoords[0], textureIndex };
+	s_Data.m_QuadBufferPtr->topRight = Quad::Vertex{ transform * s_Data.m_Vertices[0], c, texCoords[0], textureIndex };
 	//bottom right
-	s_Data.m_QuadBufferPtr->bottomRight = Quad::Vertex{ transFormMatrix * s_Data.m_Vertices[1], glm::vec4(sprite.color.r / 255,sprite.color.g / 255,sprite.color.b / 255, 1), sprite.texCoords[1], textureIndex };
+	s_Data.m_QuadBufferPtr->bottomRight = Quad::Vertex{ transform * s_Data.m_Vertices[1],c, texCoords[1], textureIndex };
 	//bottom left
-	s_Data.m_QuadBufferPtr->bottomLeft = Quad::Vertex{ transFormMatrix * s_Data.m_Vertices[2], glm::vec4(sprite.color.r / 255,sprite.color.g / 255,sprite.color.b / 255, 1), sprite.texCoords[2], textureIndex };
+	s_Data.m_QuadBufferPtr->bottomLeft = Quad::Vertex{ transform * s_Data.m_Vertices[2], c, texCoords[2], textureIndex };
 	//top left
-	s_Data.m_QuadBufferPtr->topLeft = Quad::Vertex{ transFormMatrix * s_Data.m_Vertices[3], glm::vec4(sprite.color.r / 255,sprite.color.g / 255,sprite.color.b, 1), sprite.texCoords[3], textureIndex };
+	s_Data.m_QuadBufferPtr->topLeft = Quad::Vertex{ transform * s_Data.m_Vertices[3],c, texCoords[3], textureIndex };
 
 	s_Data.m_QuadBufferPtr++;
 
 	s_Data.indexCount += 6;
 }
-
 
 void Renderer2D::BeginBatch()
 {

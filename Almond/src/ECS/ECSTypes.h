@@ -21,7 +21,7 @@ public:
 };
 
 typedef std::uint64_t EntityID;
-const EntityID MAX_ENTITIES = 50000;
+const EntityID MAX_ENTITIES = 100000;
 typedef std::bitset <MAX_COMPONENTS>  Signature;
 
 typedef std::uint32_t EntityIndex;

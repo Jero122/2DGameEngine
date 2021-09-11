@@ -29,7 +29,7 @@ ECSLayer::ECSLayer()
 std::default_random_engine generator;
 std::uniform_real_distribution<float> randPositionX(-8.0f, 8.0f);
 std::uniform_real_distribution<float> randPositionY(0.0f, 8.0f);
-std::uniform_real_distribution<float> randRotation(0.0f, 3.0f);
+std::uniform_real_distribution<float> randRotation(0.0f, 90.0f);
 std::uniform_real_distribution<float> randScale(0.8f, 1.5f);
 std::uniform_real_distribution<float> randGravity(-10.0f, -1.0f);
 
@@ -46,7 +46,7 @@ void ECSLayer::OnAttach()
     m_CurrentScene = std::make_shared<Scene>();
    
   
-    for (int i = 0; i < 500; ++i)
+    for (int i = 0; i < 50000; ++i)
     {
         auto entity = m_CurrentScene->CreateEntity();
         {
@@ -56,30 +56,31 @@ void ECSLayer::OnAttach()
             entity.AddComponent(Transform{ glm::vec3(pos.x,pos.y, 0),rot,scale });
             entity.AddComponent(SpriteRender{ 0.5f , 0.5f, texture1.GetTexID() });
 
-            RigidBody body(*PhysicsWorld::GetInstance(), pos.x, pos.y, BodyType::Dynamic);
+            /*RigidBody body(*PhysicsWorld::GetInstance(), pos.x, pos.y, BodyType::Dynamic);
             OrientedBox box(0.24, 0.24, 1.0f, 0.1f, 0.0f);
             body.AddBoxCollider(box);
         	
-            entity.AddComponent(body);
+            entity.AddComponent(body);*/
         }
     }
 
 
     
 	
-	Entity crate = m_CurrentScene->CreateEntity();
+
+	/*Entity crate = m_CurrentScene->CreateEntity();
     {
-        crate.AddComponent(Transform{ glm::vec3(0,0,0), glm::vec3(0,0,0),glm::vec3(1,1,1) });
+        crate.AddComponent(Transform{ glm::vec3(0,0,0), glm::vec3(0,0,20),glm::vec3(1,1,1) });
         crate.AddComponent(SpriteRender{ 0.5f , 0.5f, texture1.GetTexID() });
 
-        RigidBody body(*PhysicsWorld::GetInstance(), 0, 4.5, BodyType::Dynamic);
+        /*RigidBody body(*PhysicsWorld::GetInstance(), 0, 0, BodyType::Static);
         OrientedBox box(0.24, 0.24, 1.0f, 0.1f, 0.0f);
         body.AddBoxCollider(box);
 
-        crate.AddComponent(body);
-    }
+        crate.AddComponent(body);#1#
+    }*/
 
-	
+		/*
 
 
     Entity floor = m_CurrentScene->CreateEntity();
@@ -92,7 +93,7 @@ void ECSLayer::OnAttach()
 
         body.AddBoxCollider(box);
         floor.AddComponent(body);
-    }
+    }*/
 
 
 
