@@ -46,7 +46,7 @@ void ECSLayer::OnAttach()
     m_CurrentScene = std::make_shared<Scene>();
    
   
-    for (int i = 0; i < 100000; ++i)
+    for (int i = 0; i < 50000; ++i)
     {
         auto entity = m_CurrentScene->CreateEntity();
         {
