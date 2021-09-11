@@ -39,7 +39,15 @@ public:
 
 	void EntityDestroyed(EntityID entity)
 	{
-	
+		
+	}
+
+	~ComponentManager()
+	{
+		for (int i = 0; i < componentPools.size(); ++i)
+		{
+			delete componentPools[i];
+		}
 	}
 
 private:
