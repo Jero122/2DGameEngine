@@ -46,13 +46,13 @@ void ECSLayer::OnAttach()
     m_CurrentScene = std::make_shared<Scene>();
    
   
-    for (int i = 0; i < 50000; ++i)
+    for (int i = 0; i < 100000; ++i)
     {
         auto entity = m_CurrentScene->CreateEntity();
         {
             auto pos = glm::vec3{ randPositionX(generator),randPositionY(generator),0.0f };
-            auto rot = glm::vec3{ 0.0f,0.0f,0.0f };
-            auto scale = glm::vec3{ 1.0f,1.0f,1.0f };
+            auto rot = glm::vec3{ 0.0f,0.0f,randScale(generator) };
+            auto scale = glm::vec3{ 0.5f,0.5f,1.0f };
             entity.AddComponent(Transform{ glm::vec3(pos.x,pos.y, 0),rot,scale });
             entity.AddComponent(SpriteRender{ 0.5f , 0.5f, texture1.GetTexID() });
 
@@ -70,7 +70,7 @@ void ECSLayer::OnAttach()
 
 	/*Entity crate = m_CurrentScene->CreateEntity();
     {
-        crate.AddComponent(Transform{ glm::vec3(0,0,0), glm::vec3(0,0,20),glm::vec3(1,1,1) });
+        crate.AddComponent(Transform{ glm::vec3(0,2,0), glm::vec3(0,0,20),glm::vec3(1,1,1) });
         crate.AddComponent(SpriteRender{ 0.5f , 0.5f, texture1.GetTexID() });
 
         /*RigidBody body(*PhysicsWorld::GetInstance(), 0, 0, BodyType::Static);
