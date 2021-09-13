@@ -217,15 +217,16 @@ void Renderer2D::Submit(const glm::vec3 position, float rotation, glm::vec2 scal
 	int a = color.a;
 
 	unsigned int c = a << 24 | b << 16 | g << 8 | r;
-
+	float rot = glm::radians(rotation);
+	
 	//top right
-	s_Data.m_QuadBufferPtr->topRight = Quad::Vertex{s_Data.m_Vertices[0], position, scale,rotation, c, texCoords[0], textureIndex};
+	s_Data.m_QuadBufferPtr->topRight = Quad::Vertex{s_Data.m_Vertices[0], position, scale,rot, c, texCoords[0], textureIndex};
 	//bottom right
-	s_Data.m_QuadBufferPtr->bottomRight = Quad::Vertex{ s_Data.m_Vertices[1], position, scale,rotation, c, texCoords[1], textureIndex };
+	s_Data.m_QuadBufferPtr->bottomRight = Quad::Vertex{ s_Data.m_Vertices[1], position, scale,rot, c, texCoords[1], textureIndex };
 	//bottom left
-	s_Data.m_QuadBufferPtr->bottomLeft = Quad::Vertex{ s_Data.m_Vertices[2], position, scale,rotation, c, texCoords[2], textureIndex };;
+	s_Data.m_QuadBufferPtr->bottomLeft = Quad::Vertex{ s_Data.m_Vertices[2], position, scale,rot, c, texCoords[2], textureIndex };;
 	//top left
-	s_Data.m_QuadBufferPtr->topLeft = Quad::Vertex{ s_Data.m_Vertices[3], position, scale,rotation, c, texCoords[3], textureIndex };
+	s_Data.m_QuadBufferPtr->topLeft = Quad::Vertex{ s_Data.m_Vertices[3], position, scale,rot, c, texCoords[3], textureIndex };
 
 	s_Data.m_QuadBufferPtr++;
 
