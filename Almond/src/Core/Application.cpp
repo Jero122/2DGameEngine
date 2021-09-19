@@ -50,6 +50,8 @@ Application::Application()
 	{
 		layer->OnAttach();
 	}
+
+
 }
 
 Application::~Application()

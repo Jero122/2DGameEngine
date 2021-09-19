@@ -5,6 +5,7 @@
 #include "Camera.h"
 #include "GLCall.h"
 #include "Shader.h"
+#include "imgui/imgui.h"
 
 
 extern Camera camera;
@@ -96,12 +97,6 @@ void Renderer2D::Init()
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
 
-	glTexImage2D(
-		GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, 1600, 900, 0,
-		GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL
-	);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, texture, 0);
-	
 	//check if framebuffer is complete
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
@@ -177,8 +172,6 @@ void Renderer2D::Shutdown()
 
 void Renderer2D::BeginScene()
 {
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	glBindFramebuffer(GL_FRAMEBUFFER, s_Data.frameBuffer);
 	
@@ -191,7 +184,7 @@ void Renderer2D::EndScene()
 {
 	EndBatch();
 	Flush();
-	ResetStats();
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -253,7 +246,7 @@ void Renderer2D::Submit(const glm::vec3 position, float rotation, glm::vec2 scal
 	int a = color.a;
 
 	unsigned int c = a << 24 | b << 16 | g << 8 | r;
-	float rot = glm::radians(rotation);
+	float rot = -glm::radians(rotation);
 	
 	//top right
 	s_Data.m_QuadBufferPtr->topRight = Quad::Vertex{s_Data.m_Vertices[0], position, scale,rot, c, texCoords[0], textureIndex};
@@ -355,7 +348,7 @@ void Renderer2D::Flush()
 
 	//TODO Replace orthographic dimensions with a global aspect ratio setting
 	glm::mat4 view = camera.GetViewMatrix();
-	glm::mat4 projection = glm::ortho(-8.0f / camera.fov, 8.0f / camera.fov, -4.5f / camera.fov, 4.5f / camera.fov, -1.0f, 1.0f);
+	glm::mat4 projection = glm::ortho(-8.0f / camera.fov, 8.0f / camera.fov, 4.5f / camera.fov, -4.5f / camera.fov, -1.0f, 1.0f);
 
 	s_Data.shader.setMat4("uView", view);
 	s_Data.shader.setMat4("uProjection", projection);
