@@ -164,6 +164,9 @@ void ECSLayer::OnImGuiRender()
 	ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
 	ImGui::End();
     Renderer2D::ResetStats();
+
+    bool showDemo = true;
+    ImGui::ShowDemoWindow(&showDemo);
 }
 
 void ECSLayer::OnLateUpdate()
