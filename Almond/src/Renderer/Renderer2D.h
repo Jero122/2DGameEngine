@@ -23,6 +23,7 @@ public:
 	};
 
 	static void ResetStats();
+	static unsigned int GetFrameBuffer();
 	static RenderStats GetStats();
 
 private:

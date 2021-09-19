@@ -51,6 +51,7 @@ struct RendererData
 	unsigned int m_TextureSlotIndex = 1; //0 = white texture;
 
 	unsigned int VAO, VBO, EBO;
+	unsigned int frameBuffer;
 	Shader shader;
 	Renderer2D::RenderStats m_RenderStats;
 
@@ -60,6 +61,11 @@ struct RendererData
 
 static RendererData s_Data;
 
+
+unsigned Renderer2D::GetFrameBuffer()
+{
+	return s_Data.frameBuffer;
+}
 
 void Renderer2D::Init()
 {
@@ -76,6 +82,30 @@ void Renderer2D::Init()
 	GLCALL(glGenBuffers(1, &s_Data.VBO));
 	GLCALL(glBindBuffer(GL_ARRAY_BUFFER, s_Data.VBO));
 	GLCALL(glBufferData(GL_ARRAY_BUFFER, s_Data.MAX_VERTEX_COUNT * sizeof(Quad::Vertex), nullptr, GL_DYNAMIC_DRAW));
+
+	//FRAME BUFFER
+	GLCALL(glGenFramebuffers(1, &s_Data.frameBuffer));
+	GLCALL(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, s_Data.frameBuffer));
+	//generate frame buffer texture
+	unsigned int texture;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1600, 900, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+
+	glTexImage2D(
+		GL_TEXTURE_2D, 0, GL_DEPTH24_STENCIL8, 1600, 900, 0,
+		GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, NULL
+	);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, texture, 0);
+	
+	//check if framebuffer is complete
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 
 	// VERTEX POSITION
@@ -147,9 +177,13 @@ void Renderer2D::Shutdown()
 
 void Renderer2D::BeginScene()
 {
-	//glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+	glBindFramebuffer(GL_FRAMEBUFFER, s_Data.frameBuffer);
+	
+	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	BeginBatch();
 }
 
@@ -157,6 +191,8 @@ void Renderer2D::EndScene()
 {
 	EndBatch();
 	Flush();
+	ResetStats();
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Renderer2D::Submit(const glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, int textureID, glm::vec2* texCoords)
@@ -313,6 +349,8 @@ void Renderer2D::EndBatch()
 
 void Renderer2D::Flush()
 {
+	
+	
 	s_Data.shader.use();
 
 	//TODO Replace orthographic dimensions with a global aspect ratio setting
@@ -332,6 +370,7 @@ void Renderer2D::Flush()
 	GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s_Data.EBO));
 
 	glDrawElements(GL_TRIANGLES, s_Data.indexCount, GL_UNSIGNED_INT, 0);
+
 }
 
 
