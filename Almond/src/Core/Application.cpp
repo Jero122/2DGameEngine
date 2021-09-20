@@ -3,7 +3,7 @@
 #include "TimeStep.h"
 #include "ECS/Components/RigidBody.h"
 #include "ECS/ECS.hpp"
-#include "ECS/ECSLayer.h"
+#include "Editor/EditorLayer.h"
 #include "imgui/imgui.h"
 #include "Layers/InputLayer.h"
 #include "Physics2D/PhysicsWorld.h"
@@ -11,7 +11,6 @@
 
 Application* Application::s_Instance = nullptr;
 ECS ecs;
-Camera camera;
 int s_componentCounter = 0;
 
 Application::Application()
@@ -25,8 +24,7 @@ Application::Application()
 	ecs.CreateComponent<Transform>();
 	ecs.CreateComponent<RigidBody>();
 
-	camera = Camera();
-	camera.init(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
 	
 	PhysicsWorld::GetInstance()->SetGravity({0,-10});
 	
@@ -36,8 +34,8 @@ Application::Application()
 	m_LayerStack.PushLayer(input);
 
 	//ECS
-	ECSLayer* ECS = new ECSLayer();
-	m_LayerStack.PushLayer(ECS);
+	EditorLayer* Editor = new EditorLayer();
+	m_LayerStack.PushLayer(Editor);
 	
 
 	Renderer2D::Init();
@@ -100,9 +98,7 @@ void Application::Run()
 			layer->OnImGuiRender();
 		}
 
-		ImGui::Begin("Application Stats");
-		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-		ImGui::End();
+
 		m_ImGuiLayer->End();
 
 		for (auto layer : m_LayerStack)

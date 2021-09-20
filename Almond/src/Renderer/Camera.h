@@ -21,14 +21,23 @@ public:
     float speed = 4.5f;
     float lookSensitivity = 0.1f;
 
-    void init(glm::vec3 position, glm::vec3 front, glm::vec3 up);
+
+    Camera() = default;
+    Camera(const glm::mat4& m_projection);
+
+   
     void Move(CAMERA_MOVEMENT movement, float deltaTime);
     void MouseMovement(float deltaX, float deltaY);
     void Zoom(float value);
-    glm::mat4 GetViewMatrix();
-
 	
+    glm::mat4 GetViewMatrix();
+    glm::mat4 GetProjectionMatrix();
+    void UpdateProjectionMatrix(float width, float height);
+
+
 private:
     void updateCamera();
+    glm::mat4 m_Projection;
+	
 };
 

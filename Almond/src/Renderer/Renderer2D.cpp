@@ -5,10 +5,6 @@
 #include "Camera.h"
 #include "GLCall.h"
 #include "Shader.h"
-#include "imgui/imgui.h"
-
-
-extern Camera camera;
 
 struct Quad
 {
@@ -52,21 +48,19 @@ struct RendererData
 	unsigned int m_TextureSlotIndex = 1; //0 = white texture;
 
 	unsigned int VAO, VBO, EBO;
-	unsigned int frameBuffer;
 	Shader shader;
 	Renderer2D::RenderStats m_RenderStats;
 
 	glm::vec4 m_Vertices[4];
 	int indexCount = 0;
+
+	glm::mat4 projection;
+	glm::mat4 view;
+	float fov;
 };
 
 static RendererData s_Data;
 
-
-unsigned Renderer2D::GetFrameBuffer()
-{
-	return s_Data.frameBuffer;
-}
 
 void Renderer2D::Init()
 {
@@ -84,25 +78,7 @@ void Renderer2D::Init()
 	GLCALL(glBindBuffer(GL_ARRAY_BUFFER, s_Data.VBO));
 	GLCALL(glBufferData(GL_ARRAY_BUFFER, s_Data.MAX_VERTEX_COUNT * sizeof(Quad::Vertex), nullptr, GL_DYNAMIC_DRAW));
 
-	//FRAME BUFFER
-	GLCALL(glGenFramebuffers(1, &s_Data.frameBuffer));
-	GLCALL(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, s_Data.frameBuffer));
-	//generate frame buffer texture
-	unsigned int texture;
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 1600, 900, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
-
-	//check if framebuffer is complete
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-
+	
 	// VERTEX POSITION
 	GLCALL(glVertexAttribPointer(0, s_Data.POS_COUNT, GL_FLOAT, GL_FALSE, sizeof(Quad::Vertex), (void*)(offsetof(Quad::Vertex, Quad::Vertex::VertexPosition))));
 	GLCALL(glEnableVertexAttribArray(0));
@@ -170,10 +146,11 @@ void Renderer2D::Shutdown()
 	/*delete[] quadBuffer;*/
 }
 
-void Renderer2D::BeginScene()
+void Renderer2D::BeginScene(Camera& camera)
 {
-	
-	glBindFramebuffer(GL_FRAMEBUFFER, s_Data.frameBuffer);
+	s_Data.projection = camera.GetProjectionMatrix();
+	s_Data.view = camera.GetViewMatrix();
+
 	
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -347,11 +324,14 @@ void Renderer2D::Flush()
 	s_Data.shader.use();
 
 	//TODO Replace orthographic dimensions with a global aspect ratio setting
-	glm::mat4 view = camera.GetViewMatrix();
-	glm::mat4 projection = glm::ortho(-8.0f / camera.fov, 8.0f / camera.fov, 4.5f / camera.fov, -4.5f / camera.fov, -1.0f, 1.0f);
 
-	s_Data.shader.setMat4("uView", view);
-	s_Data.shader.setMat4("uProjection", projection);
+	
+
+	
+	
+
+	s_Data.shader.setMat4("uView", s_Data.view);
+	s_Data.shader.setMat4("uProjection", s_Data.projection);
 
 	for (unsigned int i = 1; i < s_Data.m_TextureSlotIndex; ++i)
 	{

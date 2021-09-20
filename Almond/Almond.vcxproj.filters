@@ -75,7 +75,7 @@
     <ClCompile Include="src\Platforms\Windows\WindowsWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ECS\ECSLayer.cpp">
+    <ClCompile Include="src\Editor\EditorLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Layers\ImGuiLayer.cpp">
@@ -1040,7 +1040,7 @@
     <ClInclude Include="src\Platforms\Windows\WindowsWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ECS\ECSLayer.h">
+    <ClInclude Include="src\Editor\EditorLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Layers\InputLayer.h">

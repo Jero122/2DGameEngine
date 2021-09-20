@@ -1,30 +1,32 @@
-#include "ECSLayer.h"
+#include "EditorLayer.h"
 
 #include <random>
 #include <stack>
 
-#include "Entity.h"
-#include "SceneView.h"
+#include "ECS/Entity.h"
+#include "ECS/SceneView.h"
 #include "Core/Input.h"
-#include "Components/SpriteRender.h"
-#include "Components/Transform.h"
+#include "ECS/Components/SpriteRender.h"
+#include "ECS/Components/Transform.h"
 #include "ECS/ECS.hpp"
 #include "Physics2D/Geometry2D.h"
 #include "Renderer/SpriteSheet.h"
 #include "Renderer/Texture.h"
 #include "imgui/imgui.h"
-#include "Components/RigidBody.h"
+#include "ECS/Components/RigidBody.h"
 #include "Physics2D/Physics2D.h"
 #include "Physics2D/PhysicsWorld.h"
 #include "Renderer/Camera.h"
 #include "Renderer/Renderer2D.h"
 
 
-extern Camera camera;
 
 
-ECSLayer::ECSLayer()
+EditorLayer::EditorLayer()
 {
+    m_FrameBufferSpec.width = 1280;
+    m_FrameBufferSpec.height = 720;
+    CreateFrameBuffer(m_FrameBufferSpec);
 }
 std::default_random_engine generator;
 std::uniform_real_distribution<float> randPositionX(-8.0f, 8.0f);
@@ -33,18 +35,19 @@ std::uniform_real_distribution<float> randRotation(0.0f, 90.0f);
 std::uniform_real_distribution<float> randScale(0.8f, 1.5f);
 std::uniform_real_distribution<float> randGravity(-10.0f, -1.0f);
 
-ECSLayer::~ECSLayer()
+EditorLayer::~EditorLayer()
 {
 }
 
-void ECSLayer::OnAttach()
+void EditorLayer::OnAttach()
 {
     Texture texture("resources/textures/container.jpg");
     SpriteSheet spriteSheet("resources/textures/UpArrow.png", 32, 32, 1, 1);
     Texture texture1("resources/textures/Crate.jpg");
 
     m_CurrentScene = std::make_shared<Scene>();
-   
+
+  
   
     for (int i = 0; i < 500; ++i)
     {
@@ -99,68 +102,63 @@ void ECSLayer::OnAttach()
 
 }
 
-void ECSLayer::OnDetach()
+void EditorLayer::OnDetach()
 {
 }
 
-void ECSLayer::OnUpdate(TimeStep timeStep)
+void EditorLayer::OnUpdate(TimeStep timeStep)
 {
-    m_CurrentScene->OnUpdate(timeStep);
-	
+	//Resizing
+	if (m_FrameBufferSpec.width != m_ViewportSize.x || m_FrameBufferSpec.height != m_ViewportSize.y)
+	{
+        m_FrameBufferSpec.width = m_ViewportSize.x;
+        m_FrameBufferSpec.height = m_ViewportSize.y;
+        m_CurrentScene->GetCamera().UpdateProjectionMatrix(m_ViewportSize.x, m_ViewportSize.y);
 
-	//TODO timestep
+        CreateFrameBuffer(m_FrameBufferSpec);
+	}
+
+	
+    glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBuffer);
+    glViewport(0, 0, m_ViewportSize.x, m_ViewportSize.y);
+	
+    m_CurrentScene->OnUpdate(timeStep);
+  
 	if (Input::GetInstance()->GetKey(SDL_SCANCODE_A))
 	{
-        camera.Move(LEFT, timeStep.GetSeconds());
+        m_CurrentScene->GetCamera().Move(LEFT, timeStep.GetSeconds());
 	}
     if (Input::GetInstance()->GetKey(SDL_SCANCODE_D))
     {
-        camera.Move(RIGHT, timeStep.GetSeconds());
+        m_CurrentScene->GetCamera().Move(RIGHT, timeStep.GetSeconds());
     }
     if (Input::GetInstance()->GetKey(SDL_SCANCODE_W))
     {
-        camera.Move(UP, timeStep.GetSeconds());
+        m_CurrentScene->GetCamera().Move(UP, timeStep.GetSeconds());
     }
     if (Input::GetInstance()->GetKey(SDL_SCANCODE_S))
     {
-        camera.Move(DOWN, timeStep.GetSeconds());
+        m_CurrentScene->GetCamera().Move(DOWN, timeStep.GetSeconds());
     }
 
     if (Input::GetInstance()->getWheelY() > 0)
     {
-        camera.Zoom(-1.0f);
+        m_CurrentScene->GetCamera().Zoom(1.0f);
     }
     if (Input::GetInstance()->getWheelY() < 0)
     {
-        camera.Zoom(1.0f);
+        m_CurrentScene->GetCamera().Zoom(-1.0f);
     }
 
-   
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void ECSLayer::OnImGuiRender()
+void EditorLayer::OnImGuiRender()
 {
-    /*ImGui::Begin("ECS");
-    {
-        ImGui::Text("Living Entities: %d", ecs.getEntityManager()->mLivingEntityCount);
 
-        if (ImGui::Button("Create Entity"))
-        {
-           
-        }
-
-        if (ImGui::Button("Destroy Entity"))
-        {
-           
-        }
-    }
-    ImGui::End();*/
-
-    /*
-    bool showDemo = true;
-    ImGui::ShowDemoWindow(&showDemo);
-    */
-
+   /*bool showDemo = true;
+   ImGui::ShowDemoWindow(&showDemo);*/
+	
     bool p_open = true;
     static bool opt_fullscreen = true;
     static bool opt_padding = false;
@@ -247,13 +245,63 @@ void ECSLayer::OnImGuiRender()
     ImGui::End();
     Renderer2D::ResetStats();
 
-    ImGui::Begin("Scene");
-    ImGui::Image((void*)Renderer2D::GetFrameBuffer(), {1600,900});
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+    ImGui::Begin("ViewPort");
+
+    ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+    m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
+    ImGui::Image(reinterpret_cast<void*>(m_FrameBuffer), {m_ViewportSize.x,m_ViewportSize.y});
     ImGui::End();
+    ImGui::PopStyleVar();
+
+    ImGui::Begin("Scene Hierarchy");
+    ImGui::End();
+	
+    ImGui::Begin("Properties");
+    ImGui::End();
+	
+    ImGui::Begin("Asset Browser");
+    ImGui::End();
+
+   {
+        ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
+        ImGui::SetNextWindowBgAlpha(0.35f);
+        ImGui::Begin("Application Stats", &p_open, window_flags);
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+        ImGui::End();
+   }
+
 	
     ImGui::End();
 }
 
-void ECSLayer::OnLateUpdate()
+void EditorLayer::OnLateUpdate()
 {
+}
+
+void EditorLayer::CreateFrameBuffer(FrameBufferSpec spec)
+{
+	if (m_FrameBuffer != 0)
+	{
+        glDeleteFramebuffers(1, &m_FrameBuffer);
+        glDeleteTextures(1, &m_ColourAttachment);
+	}
+	
+    //FRAME BUFFER
+    GLCALL(glGenFramebuffers(1, &m_FrameBuffer));
+    GLCALL(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_FrameBuffer));
+    //generate frame buffer texture
+
+    glGenTextures(1, &m_ColourAttachment);
+    glBindTexture(GL_TEXTURE_2D, m_ColourAttachment);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, spec.width, spec.height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_ColourAttachment, 0);
+
+    //check if framebuffer is complete
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

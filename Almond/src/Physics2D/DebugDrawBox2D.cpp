@@ -61,7 +61,7 @@ struct GLRenderLines
 		if (m_count == 0)
 			return;
 
-		m_shader.use();
+		/*m_shader.use();
 		Camera camera = Camera();
 		camera.init(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		glm::mat4 view = camera.GetViewMatrix();
@@ -77,7 +77,7 @@ struct GLRenderLines
 		glBindBuffer(GL_ARRAY_BUFFER, m_VBOs[1]);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, m_count * sizeof(b2Color), m_colors);
 
-		GLCALL(glDrawArrays(GL_LINES, 0, m_count));
+		GLCALL(glDrawArrays(GL_LINES, 0, m_count));*/
 
 		m_count = 0;
 	}
