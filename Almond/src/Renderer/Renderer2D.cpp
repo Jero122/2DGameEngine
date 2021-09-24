@@ -6,9 +6,6 @@
 #include "GLCall.h"
 #include "Shader.h"
 
-
-extern Camera camera;
-
 struct Quad
 {
 	struct Vertex
@@ -56,6 +53,10 @@ struct RendererData
 
 	glm::vec4 m_Vertices[4];
 	int indexCount = 0;
+
+	glm::mat4 projection;
+	glm::mat4 view;
+	float fov;
 };
 
 static RendererData s_Data;
@@ -77,7 +78,7 @@ void Renderer2D::Init()
 	GLCALL(glBindBuffer(GL_ARRAY_BUFFER, s_Data.VBO));
 	GLCALL(glBufferData(GL_ARRAY_BUFFER, s_Data.MAX_VERTEX_COUNT * sizeof(Quad::Vertex), nullptr, GL_DYNAMIC_DRAW));
 
-
+	
 	// VERTEX POSITION
 	GLCALL(glVertexAttribPointer(0, s_Data.POS_COUNT, GL_FLOAT, GL_FALSE, sizeof(Quad::Vertex), (void*)(offsetof(Quad::Vertex, Quad::Vertex::VertexPosition))));
 	GLCALL(glEnableVertexAttribArray(0));
@@ -145,11 +146,14 @@ void Renderer2D::Shutdown()
 	/*delete[] quadBuffer;*/
 }
 
-void Renderer2D::BeginScene()
+void Renderer2D::BeginScene(Camera& camera)
 {
-	//glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
+	s_Data.projection = camera.GetProjectionMatrix();
+	s_Data.view = camera.GetViewMatrix();
+
+	
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	BeginBatch();
 }
 
@@ -157,6 +161,8 @@ void Renderer2D::EndScene()
 {
 	EndBatch();
 	Flush();
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Renderer2D::Submit(const glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, int textureID, glm::vec2* texCoords)
@@ -217,7 +223,7 @@ void Renderer2D::Submit(const glm::vec3 position, float rotation, glm::vec2 scal
 	int a = color.a;
 
 	unsigned int c = a << 24 | b << 16 | g << 8 | r;
-	float rot = glm::radians(rotation);
+	float rot = -glm::radians(rotation);
 	
 	//top right
 	s_Data.m_QuadBufferPtr->topRight = Quad::Vertex{s_Data.m_Vertices[0], position, scale,rot, c, texCoords[0], textureIndex};
@@ -313,14 +319,19 @@ void Renderer2D::EndBatch()
 
 void Renderer2D::Flush()
 {
+	
+	
 	s_Data.shader.use();
 
 	//TODO Replace orthographic dimensions with a global aspect ratio setting
-	glm::mat4 view = camera.GetViewMatrix();
-	glm::mat4 projection = glm::ortho(-8.0f / camera.fov, 8.0f / camera.fov, -4.5f / camera.fov, 4.5f / camera.fov, -1.0f, 1.0f);
 
-	s_Data.shader.setMat4("uView", view);
-	s_Data.shader.setMat4("uProjection", projection);
+	
+
+	
+	
+
+	s_Data.shader.setMat4("uView", s_Data.view);
+	s_Data.shader.setMat4("uProjection", s_Data.projection);
 
 	for (unsigned int i = 1; i < s_Data.m_TextureSlotIndex; ++i)
 	{
@@ -332,6 +343,7 @@ void Renderer2D::Flush()
 	GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s_Data.EBO));
 
 	glDrawElements(GL_TRIANGLES, s_Data.indexCount, GL_UNSIGNED_INT, 0);
+
 }
 
 

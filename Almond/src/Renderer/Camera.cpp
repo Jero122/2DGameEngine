@@ -1,13 +1,13 @@
 #include "Camera.h"
 
 
-
-void Camera::init(glm::vec3 position, glm::vec3 front, glm::vec3 up)
+Camera::Camera(const glm::mat4& m_projection)
+	:m_Projection(m_projection)
 {
-	this->position = position;
-	this->front = front;
-	this->up = up;
-	this->right = glm::normalize(glm::cross(front, up));
+	position = glm::vec3{ 0,0,0 };
+	front = glm::vec3(0.0f, 0.0f, -1.0f);
+	up = glm::vec3(0.0f, 1.0f, 0.0f);
+	right = glm::normalize(glm::cross(front, up));
 	fov = 1.0f;
 }
 
@@ -59,6 +59,18 @@ void Camera::Zoom(float value)
 glm::mat4 Camera::GetViewMatrix()
 {
 	return glm::lookAt(position, position + front, up);
+}
+
+glm::mat4 Camera::GetProjectionMatrix()
+{
+	return m_Projection;
+}
+
+
+void Camera::UpdateProjectionMatrix(float width, float height)
+{
+	float aspectRatio = width / height;
+	m_Projection = glm::ortho(-aspectRatio, aspectRatio, 1.0f, -1.0f, -1.0f, 1.0f);
 }
 
 void Camera::updateCamera()
