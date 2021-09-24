@@ -16,7 +16,7 @@
 #include "ECS/Components/RigidBody.h"
 #include "Physics2D/Physics2D.h"
 #include "Physics2D/PhysicsWorld.h"
-#include "Renderer/Camera.h"
+#include "Renderer/OldCamera.h"
 #include "Renderer/Renderer2D.h"
 
 
@@ -26,6 +26,8 @@ EditorLayer::EditorLayer()
 {
     m_FrameBufferSpec.width = 1280;
     m_FrameBufferSpec.height = 720;
+    m_ViewportSize.x = 1280;
+    m_ViewportSize.y = 720;
     CreateFrameBuffer(m_FrameBufferSpec);
 }
 std::default_random_engine generator;
@@ -113,7 +115,7 @@ void EditorLayer::OnUpdate(TimeStep timeStep)
 	{
         m_FrameBufferSpec.width = m_ViewportSize.x;
         m_FrameBufferSpec.height = m_ViewportSize.y;
-        m_CurrentScene->GetCamera().UpdateProjectionMatrix(m_ViewportSize.x, m_ViewportSize.y);
+        m_CurrentScene->GetEditorCamera().SetViewPortSize(m_ViewportSize.x, m_ViewportSize.y);
 
         CreateFrameBuffer(m_FrameBufferSpec);
 	}
@@ -123,33 +125,7 @@ void EditorLayer::OnUpdate(TimeStep timeStep)
     glViewport(0, 0, m_ViewportSize.x, m_ViewportSize.y);
 	
     m_CurrentScene->OnUpdate(timeStep);
-  
-	if (Input::GetInstance()->GetKey(SDL_SCANCODE_A))
-	{
-        m_CurrentScene->GetCamera().Move(LEFT, timeStep.GetSeconds());
-	}
-    if (Input::GetInstance()->GetKey(SDL_SCANCODE_D))
-    {
-        m_CurrentScene->GetCamera().Move(RIGHT, timeStep.GetSeconds());
-    }
-    if (Input::GetInstance()->GetKey(SDL_SCANCODE_W))
-    {
-        m_CurrentScene->GetCamera().Move(UP, timeStep.GetSeconds());
-    }
-    if (Input::GetInstance()->GetKey(SDL_SCANCODE_S))
-    {
-        m_CurrentScene->GetCamera().Move(DOWN, timeStep.GetSeconds());
-    }
-
-    if (Input::GetInstance()->getWheelY() > 0)
-    {
-        m_CurrentScene->GetCamera().Zoom(1.0f);
-    }
-    if (Input::GetInstance()->getWheelY() < 0)
-    {
-        m_CurrentScene->GetCamera().Zoom(-1.0f);
-    }
-
+	
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 

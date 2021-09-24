@@ -2,7 +2,8 @@
 #include "ECS.hpp"
 #include "Core/TimeStep.h"
 #include "Physics2D/Physics2D.h"
-#include "Renderer/Camera.h"
+#include "Renderer/OldCamera.h"
+#include "Renderer/EditorCamera.h"
 
 class Entity;
 
@@ -15,15 +16,17 @@ public:
 	Entity CreateEntity();
 	void DestroyEntity(Entity entity);
 	void OnUpdate(TimeStep timestep);
-	Camera& GetCamera()
+
+	EditorCamera& GetEditorCamera()
 	{
-		return  m_Camera;
+		return m_EditorCamera;
 	}
 
 private:
 	ECS m_Ecs;
 	Physics2D m_Physics2D;
-	Camera m_Camera;
+
+	EditorCamera m_EditorCamera;
 	
 	
 	friend class Entity;

@@ -36,8 +36,8 @@ private:
 
 	
 
-	FrameBufferSpec m_FrameBufferSpec;
+	FrameBufferSpec m_FrameBufferSpec = {1280.0f, 720.0f};
 	unsigned int m_ColourAttachment;
-	glm::vec2 m_ViewportSize;
+	glm::vec2 m_ViewportSize = {1280.0f, 720.0f};
 };
 

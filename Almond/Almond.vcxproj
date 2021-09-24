@@ -106,6 +106,7 @@
     <ClCompile Include="src\Physics2D\Geometry2D.cpp" />
     <ClCompile Include="src\Physics2D\Physics2D.cpp" />
     <ClCompile Include="src\Physics2D\PhysicsWorld.cpp" />
+    <ClCompile Include="src\Renderer\EditorCamera.cpp" />
     <ClCompile Include="src\Renderer\SpriteSheet.cpp" />
     <ClCompile Include="src\Renderer\Texture.cpp" />
     <ClCompile Include="src\Layers\ImGuiLayer.cpp" />
@@ -115,7 +116,7 @@
     <ClCompile Include="src\Core\LayerStack.cpp" />
     <ClCompile Include="src\Core\Layer.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="src\Renderer\Camera.cpp" />
+    <ClCompile Include="src\Renderer\OldCamera.cpp" />
     <ClCompile Include="src\Renderer\Renderer2D.cpp" />
     <ClCompile Include="src\Renderer\Shader.cpp" />
     <ClCompile Include="src\Core\Window.cpp" />
@@ -141,6 +142,8 @@
     <ClInclude Include="src\Physics2D\Geometry2D.h" />
     <ClInclude Include="src\Physics2D\Physics2D.h" />
     <ClInclude Include="src\Physics2D\PhysicsWorld.h" />
+    <ClInclude Include="src\Renderer\Camera.h" />
+    <ClInclude Include="src\Renderer\EditorCamera.h" />
     <ClInclude Include="src\Renderer\SpriteSheet.h" />
     <ClInclude Include="src\Renderer\Texture.h" />
     <ClInclude Include="src\Layers\ImGuiLayer.h" />
@@ -151,7 +154,7 @@
     <ClInclude Include="src\Core\LayerStack.h" />
     <ClInclude Include="src\Core\Layer.h" />
     <ClInclude Include="src\Core\Input.h" />
-    <ClInclude Include="src\Renderer\Camera.h" />
+    <ClInclude Include="src\Renderer\OldCamera.h" />
     <ClInclude Include="src\Renderer\GLCall.h" />
     <ClInclude Include="src\Renderer\Renderer2D.h" />
     <ClInclude Include="src\ECS\Components\SpriteRender.h" />

@@ -1,5 +1,6 @@
 #pragma once
-#include "Camera.h"
+#include "OldCamera.h"
+#include "EditorCamera.h"
 #include "ECS/Components/SpriteRender.h"
 #include "ECS/Components/Transform.h"
 #include "glm/fwd.hpp"
@@ -10,7 +11,10 @@ class Renderer2D
 public:
 	static void Init();
 	static void Shutdown();
-	static void BeginScene(Camera& camera);
+
+	//TODO remove OldCamera
+	static void BeginScene(OldCamera& camera);
+	static void BeginScene(EditorCamera& camera);
 	static void EndScene();
 	static void Submit(const glm::vec3 position,float rotation, glm::vec2 scale, glm::vec4 color, int textureID, glm::vec2* texCoords);
 

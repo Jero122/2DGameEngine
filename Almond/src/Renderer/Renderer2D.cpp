@@ -2,7 +2,7 @@
 #include <array>
 
 #include "Renderer2D.h"
-#include "Camera.h"
+#include "OldCamera.h"
 #include "GLCall.h"
 #include "Shader.h"
 
@@ -146,7 +146,7 @@ void Renderer2D::Shutdown()
 	/*delete[] quadBuffer;*/
 }
 
-void Renderer2D::BeginScene(Camera& camera)
+void Renderer2D::BeginScene(OldCamera& camera)
 {
 	s_Data.projection = camera.GetProjectionMatrix();
 	s_Data.view = camera.GetViewMatrix();
@@ -156,6 +156,18 @@ void Renderer2D::BeginScene(Camera& camera)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	BeginBatch();
 }
+
+void Renderer2D::BeginScene(EditorCamera& camera)
+{
+	s_Data.projection = camera.GetProjectionMatrix();
+	s_Data.view = camera.GetViewMatrix();
+
+
+	glClearColor(62.0f/255.0f, 62.0f / 255.0f, 58.0f / 255.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	BeginBatch();
+}
+
 
 void Renderer2D::EndScene()
 {

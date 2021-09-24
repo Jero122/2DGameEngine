@@ -2,42 +2,22 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-enum CAMERA_MOVEMENT
-{
-	FORWARD, BACKWARDS, LEFT, RIGHT, UP, DOWN
-};
 
 class Camera
 {
-public: 
-    glm::vec3 position;
-    glm::vec3 front;
-    glm::vec3 up;
-    glm::vec3 right;
+public:
+	Camera() = default;
+	Camera(const glm::mat4& m_projection)
+		: m_Projection(m_projection)
+	{
+	}
 
-    float yaw = -90.0f;
-    float pitch = 0.0f;
-    float fov = 45.0f;
-    float speed = 4.5f;
-    float lookSensitivity = 0.1f;
+	virtual ~Camera() = default;
 
-
-    Camera() = default;
-    Camera(const glm::mat4& m_projection);
-
-   
-    void Move(CAMERA_MOVEMENT movement, float deltaTime);
-    void MouseMovement(float deltaX, float deltaY);
-    void Zoom(float value);
+	const glm::mat4 GetProjectionMatrix() { return  m_Projection; }
+	const glm::mat4 GetViewMatrix() { return m_ViewMatrix; }
 	
-    glm::mat4 GetViewMatrix();
-    glm::mat4 GetProjectionMatrix();
-    void UpdateProjectionMatrix(float width, float height);
-
-
-private:
-    void updateCamera();
-    glm::mat4 m_Projection;
-	
+protected:
+	glm::mat4 m_Projection = glm::mat4(1.0f);
+	glm::mat4 m_ViewMatrix = glm::mat4(1.0f);
 };
-

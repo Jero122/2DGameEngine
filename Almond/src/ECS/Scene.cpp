@@ -16,9 +16,9 @@ Scene::Scene()
 	m_Physics2D = Physics2D(&m_Ecs);
 	m_Physics2D.Init();
 
-	float aspectRatio = 1920 / 1080;
-	glm::mat4 projection = glm::ortho(-aspectRatio, aspectRatio , 1.0f, -1.0f, -1.0f, 1.0f);
-	m_Camera = Camera(projection);
+	float aspectRatio = 1920.0f / 1080.0f;
+	//glm::mat4 projection = glm::ortho(-aspectRatio, aspectRatio , 1.0f, -1.0f, -1.0f, 1.0
+	m_EditorCamera = EditorCamera(45.0f, aspectRatio, 0.1f, 1000.0f);
 }
 
 Scene::~Scene()
@@ -45,7 +45,7 @@ void Scene::OnUpdate(TimeStep timestep)
 	}
 
 	//Render
-	Renderer2D::BeginScene(m_Camera);
+	Renderer2D::BeginScene(m_EditorCamera);
 	for (EntityID ent : SceneView<Transform, SpriteRender>(m_Ecs))
 	{
 		auto transform = m_Ecs.GetComponent<Transform>(ent);
