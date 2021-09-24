@@ -58,4 +58,6 @@ void Scene::OnUpdate(TimeStep timestep)
 	
 	//Physcs
 	m_Physics2D.OnUpdate();
+
+	m_EditorCamera.OnUpdate(timestep);
 }

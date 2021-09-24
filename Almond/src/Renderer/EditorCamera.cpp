@@ -1,5 +1,9 @@
 ﻿#include "EditorCamera.h"
 
+#include <iostream>
+
+#include "Core/Input.h"
+
 EditorCamera::EditorCamera(float fov, float aspectRatio, float near, float far)
 	:m_Fov(fov), m_AspectRatio(aspectRatio), m_NearClip(near), m_FarClip(far)
 {
@@ -41,5 +45,26 @@ void EditorCamera::SetViewPortSize(float width, float height)
 
 void EditorCamera::OnUpdate(TimeStep timeStep)
 {
-	
+	float velocity = m_Speed * timeStep.GetSeconds();
+	if (Input::GetInstance()->GetKey(SDL_SCANCODE_W))
+	{
+		m_Position -= velocity * m_Front;
+
+	}
+
+	if (Input::GetInstance()->GetKey(SDL_SCANCODE_A))
+	{
+		m_Yaw += lookSensitivity * timeStep.GetSeconds();
+	}
+	if (Input::GetInstance()->GetKey(SDL_SCANCODE_S))
+	{
+		m_Position += velocity * m_Front;
+		UpdateView();
+	}
+	if (Input::GetInstance()->GetKey(SDL_SCANCODE_D))
+	{
+		m_Yaw -= lookSensitivity * timeStep.GetSeconds();
+	}
+
+	UpdateView();
 }

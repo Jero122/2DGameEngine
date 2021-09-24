@@ -23,6 +23,7 @@ private:
 	float m_AspectRatio = 1.778f;
 
 	float m_Speed = 4.5f;
+	float lookSensitivity = 10.5f;
 	float m_Yaw = -90.0f;
 	float m_Pitch = 0.0f;
 	float m_Fov = 45.0f;
