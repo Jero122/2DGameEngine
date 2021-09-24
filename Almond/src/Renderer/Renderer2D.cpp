@@ -179,22 +179,6 @@ void Renderer2D::EndScene()
 
 void Renderer2D::Submit(const glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, int textureID, glm::vec2* texCoords)
 {
-	/*glm::mat4 transformMatrix{ 1.0f };
-
-	if (rotation == 0)
-	{
-		transformMatrix = glm::translate(glm::mat4(1.0f), position)
-			* glm::scale(glm::mat4(1.0f), { scale.x, scale.y, 1.0f });
-	}
-	else
-	{
-		transformMatrix = glm::translate(glm::mat4(1.0f), position)
-			* glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f,0.0f,1.0f })
-			* glm::scale(glm::mat4(1.0f), { scale.x, scale.y, 1.0f });
-	}
-
-	DrawQuad(transformMatrix, color, textureID, texCoords);*/
-
 	s_Data.m_RenderStats.QuadCount++;
 
 	if (s_Data.indexCount >= s_Data.MAX_INDEX_COUNT)
@@ -252,64 +236,6 @@ void Renderer2D::Submit(const glm::vec3 position, float rotation, glm::vec2 scal
 
 }
 
-
-void Renderer2D::DrawQuad(const glm::mat4 transform, glm::vec4 color, int textureID, glm::vec2* texCoords)
-{
-	/*s_Data.m_RenderStats.QuadCount++;
-
-	if (s_Data.indexCount >= s_Data.MAX_INDEX_COUNT)
-	{
-		NextBatch();
-	}
-
-	float textureIndex = 0;
-
-	//If textureID is already in batch
-	for (unsigned int i = 0; i < s_Data.m_TextureSlotIndex; ++i)
-	{
-		if (s_Data.m_TextureSlots[i] == textureID)
-		{
-			//Set the textureIndex for this quad to the one already in the batch;
-			textureIndex = i;
-			break;
-		}
-	}
-
-	//If textureID was not in batch
-	if (textureIndex == 0 && textureID > 0)
-	{
-		//If all the textureSlots have been occupied, end batch
-		if (s_Data.m_TextureSlotIndex >= s_Data.s_MaxTextureSlots)
-		{
-			NextBatch();
-		}
-
-		textureIndex = s_Data.m_TextureSlotIndex;
-		s_Data.m_TextureSlots[s_Data.m_TextureSlotIndex] = textureID;
-		s_Data.m_TextureSlotIndex++;
-	}
-
-	int r = color.r;
-	int g = color.g;
-	int b = color.b;
-	int a = color.a;
-
-	unsigned int c = a << 24 | b << 16 | g << 8 | r;
-
-	//top right
-	s_Data.m_QuadBufferPtr->topRight = Quad::Vertex{ transform * s_Data.m_Vertices[0], c, texCoords[0], textureIndex };
-	//bottom right
-	s_Data.m_QuadBufferPtr->bottomRight = Quad::Vertex{ transform * s_Data.m_Vertices[1],c, texCoords[1], textureIndex };
-	//bottom left
-	s_Data.m_QuadBufferPtr->bottomLeft = Quad::Vertex{ transform * s_Data.m_Vertices[2], c, texCoords[2], textureIndex };
-	//top left
-	s_Data.m_QuadBufferPtr->topLeft = Quad::Vertex{ transform * s_Data.m_Vertices[3],c, texCoords[3], textureIndex };
-
-	s_Data.m_QuadBufferPtr++;
-
-	s_Data.indexCount += 6;*/
-}
-
 void Renderer2D::BeginBatch()
 {
 	s_Data.m_QuadBufferPtr = s_Data.m_QuadBuffer;
@@ -331,17 +257,7 @@ void Renderer2D::EndBatch()
 
 void Renderer2D::Flush()
 {
-	
-	
 	s_Data.shader.use();
-
-	//TODO Replace orthographic dimensions with a global aspect ratio setting
-
-	
-
-	
-	
-
 	s_Data.shader.setMat4("uView", s_Data.view);
 	s_Data.shader.setMat4("uProjection", s_Data.projection);
 
@@ -355,7 +271,6 @@ void Renderer2D::Flush()
 	GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s_Data.EBO));
 
 	glDrawElements(GL_TRIANGLES, s_Data.indexCount, GL_UNSIGNED_INT, 0);
-
 }
 
 
