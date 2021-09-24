@@ -45,26 +45,47 @@ void EditorCamera::SetViewPortSize(float width, float height)
 
 void EditorCamera::OnUpdate(TimeStep timeStep)
 {
-	float velocity = m_Speed * timeStep.GetSeconds();
-	if (Input::GetInstance()->GetKey(SDL_SCANCODE_W))
+	auto input = Input::GetInstance();
+	auto const lookSensitivity = m_LookSensitivity * timeStep.GetSeconds();
+	auto const panSensitivity = m_PanSensitivity * timeStep.GetSeconds();
+	
+	if (input->GetKey(SDL_SCANCODE_LALT))
 	{
-		m_Position -= velocity * m_Front;
-
+		//Yaw and Pitch
+		if (input->GetMouseButton(Input::MouseButton::left))
+		{
+			m_Yaw += input->GetMouseX() * lookSensitivity;
+			m_Pitch += input->GetMouseY() * lookSensitivity;
+		}
+		//Zoom
+		if (input->GetMouseButton(Input::MouseButton::right))
+		{
+			m_Position.z += input->GetMouseX() * m_ZoomSensitivity * timeStep.GetSeconds();
+		}
 	}
 
-	if (Input::GetInstance()->GetKey(SDL_SCANCODE_A))
+	//Pan
+	if (input->GetMouseButton(Input::MouseButton::middle))
 	{
-		m_Yaw += lookSensitivity * timeStep.GetSeconds();
-	}
-	if (Input::GetInstance()->GetKey(SDL_SCANCODE_S))
-	{
-		m_Position += velocity * m_Front;
-		UpdateView();
-	}
-	if (Input::GetInstance()->GetKey(SDL_SCANCODE_D))
-	{
-		m_Yaw -= lookSensitivity * timeStep.GetSeconds();
+		m_Position.x += input->GetMouseX() * panSensitivity;
+		m_Position.y -= input->GetMouseY() * panSensitivity;
 	}
 
+	//Zoom
+	if (input->getWheelY() > 0)
+	{
+		m_Position.z += 1.0f * m_ZoomSensitivity;
+	}
+	if (input->getWheelY() < 0)
+	{
+		m_Position.z -= 1.0f * m_ZoomSensitivity;
+	}
+	
+	if (input->GetKeyDown(SDL_SCANCODE_X))
+	{
+		m_Yaw = -90.0f;
+		m_Pitch = 0.0f;
+	}
+	
 	UpdateView();
 }
