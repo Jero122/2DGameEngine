@@ -226,7 +226,7 @@ void EditorLayer::OnImGuiRender()
 
     ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
     m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
-    ImGui::Image(reinterpret_cast<void*>(m_FrameBuffer), {m_ViewportSize.x,m_ViewportSize.y});
+    ImGui::Image(reinterpret_cast<void*>(m_FrameBuffer), {m_ViewportSize.x,m_ViewportSize.y}, {0,1}, {1,0});
     ImGui::End();
     ImGui::PopStyleVar();
 

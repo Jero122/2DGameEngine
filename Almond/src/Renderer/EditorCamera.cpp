@@ -15,9 +15,6 @@ void EditorCamera::UpdateProjection()
 {
 	m_AspectRatio = m_ViewportWidth / m_ViewportHeight;
 	m_Projection = glm::perspective(m_Fov, m_AspectRatio, m_NearClip, m_FarClip);
-
-	//PROJECTION IS FLIPPED UPSIDE DOWN
-	m_Projection = glm::scale(m_Projection, { 1,-1,1 });
 }
 
 void EditorCamera::UpdateView()
