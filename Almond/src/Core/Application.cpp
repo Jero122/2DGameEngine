@@ -1,8 +1,5 @@
 #include "Application.h"
-
 #include "TimeStep.h"
-#include "ECS/Components/RigidBody.h"
-#include "ECS/ECS.hpp"
 #include "Editor/EditorLayer.h"
 #include "imgui/imgui.h"
 #include "Layers/InputLayer.h"
@@ -10,7 +7,6 @@
 #include "Renderer/Renderer2D.h"
 
 Application* Application::s_Instance = nullptr;
-ECS ecs;
 int s_componentCounter = 0;
 
 Application::Application()
@@ -18,16 +14,7 @@ Application::Application()
 	s_Instance = this;
 	m_Window = Window::Create(WindowProps());
 
-	ecs.Init();
-
-	ecs.CreateComponent<SpriteRender>();
-	ecs.CreateComponent<Transform>();
-	ecs.CreateComponent<RigidBody>();
-
-
-	
 	PhysicsWorld::GetInstance()->SetGravity({0,-10});
-	
 	
 	//INPUT
 	InputLayer* input = new InputLayer();
@@ -37,7 +24,6 @@ Application::Application()
 	EditorLayer* Editor = new EditorLayer();
 	m_LayerStack.PushLayer(Editor);
 	
-
 	Renderer2D::Init();
 	
 	//IMGUI
@@ -48,8 +34,6 @@ Application::Application()
 	{
 		layer->OnAttach();
 	}
-
-
 }
 
 Application::~Application()

@@ -1,8 +1,12 @@
 #include "Scene.h"
+
+#include <iostream>
+
 #include "Entity.h"
 #include "SceneView.h"
 #include "Components/RigidBody.h"
 #include "Components/SpriteRender.h"
+#include "Components/TagComponent.h"
 #include "Components/Transform.h"
 #include "Renderer/Renderer2D.h"
 
@@ -12,6 +16,7 @@ Scene::Scene()
 	m_Ecs.CreateComponent<SpriteRender>();
 	m_Ecs.CreateComponent<Transform>();
 	m_Ecs.CreateComponent<RigidBody>();
+	m_Ecs.CreateComponent<TagComponent>();
 
 	m_Physics2D = Physics2D(&m_Ecs);
 	m_Physics2D.Init();
@@ -26,9 +31,16 @@ Scene::~Scene()
 
 }
 
-Entity Scene::CreateEntity()
+Entity Scene::CreateEntity(std::string name)
 {
 	Entity entity = { m_Ecs.CreateEntity(), this };
+	entity.AddComponent<Transform>({{0,0,0}, {0,0,0},{1.0f,1.0f,1.0f}});
+	TagComponent tagComponent = { name };
+	if (tagComponent.tag.empty())
+	{
+		tagComponent.tag = "Entity";
+	}
+	entity.AddComponent<TagComponent>(tagComponent);
 	return entity;
 }
 
@@ -50,7 +62,6 @@ void Scene::OnUpdate(TimeStep timestep)
 	{
 		auto transform = m_Ecs.GetComponent<Transform>(ent);
 		auto sprite = m_Ecs.GetComponent<SpriteRender>(ent);
-
 		Renderer2D::Submit(transform->position,transform->rotation.z,{transform->scale.x, transform->scale.y}, sprite->color,sprite->textureID, sprite->texCoords);
 	}
 

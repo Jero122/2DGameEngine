@@ -5,6 +5,7 @@
 #include "ECS/ECSTypes.h"
 #include "ECS/Scene.h"
 #include "glm/vec2.hpp"
+#include "Panels/SceneHierarchyPanel.h"
 
 
 class EditorLayer : public Layer
@@ -33,11 +34,10 @@ private:
 	
 	void CreateFrameBuffer(FrameBufferSpec spec);
 	unsigned int m_FrameBuffer = 0;
-
-	
-
 	FrameBufferSpec m_FrameBufferSpec = {1280.0f, 720.0f};
 	unsigned int m_ColourAttachment;
 	glm::vec2 m_ViewportSize = {1280.0f, 720.0f};
+
+	SceneHierarchyPanel m_SceneHierarchyPanel;
 };
 

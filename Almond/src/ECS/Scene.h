@@ -2,7 +2,6 @@
 #include "ECS.hpp"
 #include "Core/TimeStep.h"
 #include "Physics2D/Physics2D.h"
-#include "Renderer/OldCamera.h"
 #include "Renderer/EditorCamera.h"
 
 class Entity;
@@ -13,7 +12,7 @@ public:
 	Scene();
 	~Scene();
 	
-	Entity CreateEntity();
+	Entity CreateEntity(std::string name);
 	void DestroyEntity(Entity entity);
 	void OnUpdate(TimeStep timestep);
 
@@ -25,9 +24,7 @@ public:
 private:
 	ECS m_Ecs;
 	Physics2D m_Physics2D;
-
-	EditorCamera m_EditorCamera;
-	
-	
+	EditorCamera m_EditorCamera;	
 	friend class Entity;
+	friend class SceneHierarchyPanel;
 };

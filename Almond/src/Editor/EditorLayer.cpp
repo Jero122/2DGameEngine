@@ -48,17 +48,36 @@ void EditorLayer::OnAttach()
     Texture texture1("resources/textures/Crate.jpg");
 
     m_CurrentScene = std::make_shared<Scene>();
+    m_SceneHierarchyPanel.SetScene(m_CurrentScene);
 
-  
-  
-    for (int i = 0; i < 500; ++i)
+
+    Entity floor = m_CurrentScene->CreateEntity("Floor");
     {
-        auto entity = m_CurrentScene->CreateEntity();
+        auto transformComponent = floor.GetComponent<Transform>();
+        *transformComponent = Transform{ glm::vec3(0,-4.5,0), glm::vec3(0,0,0),glm::vec3(16,1,1) };
+
+        floor.AddComponent(SpriteRender{ 16, 1, {255,255,255,1} });
+
+        RigidBody body(*PhysicsWorld::GetInstance(), 0, -4.5, BodyType::Static);
+        OrientedBox box(8, 0.50, 0.0f, 1.0f, 0.0f);
+
+        body.AddBoxCollider(box);
+        floor.AddComponent(body);
+    }
+	
+    for (int i = 0; i < 10; ++i)
+    {
+        std::string name = "Crate ";
+        name += std::to_string(i);
+        auto entity = m_CurrentScene->CreateEntity(name);
         {
             auto pos = glm::vec3{ randPositionX(generator),randPositionY(generator),0.0f };
             auto rot = glm::vec3{ 0.0f,0.0f,0 };
             auto scale = glm::vec3{ 0.5f,0.5f,1.0f };
-            entity.AddComponent(Transform{ glm::vec3(pos.x,pos.y, 0),rot,scale });
+        	
+            auto transform = entity.GetComponent<Transform>();
+        	*transform = Transform{ glm::vec3(pos.x,pos.y, 0),rot,scale };
+        	
             entity.AddComponent(SpriteRender{ 0.5f , 0.5f, texture1.GetTexID() });
 
             RigidBody body(*PhysicsWorld::GetInstance(), pos.x, pos.y, BodyType::Dynamic);
@@ -68,40 +87,6 @@ void EditorLayer::OnAttach()
             entity.AddComponent(body);
         }
     }
-
-
-    
-	
-
-	/*Entity crate = m_CurrentScene->CreateEntity();
-    {
-        crate.AddComponent(Transform{ glm::vec3(0,2,0), glm::vec3(0,0,20),glm::vec3(1,1,1) });
-        crate.AddComponent(SpriteRender{ 0.5f , 0.5f, texture1.GetTexID() });
-
-        /*RigidBody body(*PhysicsWorld::GetInstance(), 0, 0, BodyType::Static);
-        OrientedBox box(0.24, 0.24, 1.0f, 0.1f, 0.0f);
-        body.AddBoxCollider(box);
-
-        crate.AddComponent(body);#1#
-    }*/
-
-
-
-    Entity floor = m_CurrentScene->CreateEntity();
-    {
-        floor.AddComponent(Transform{ glm::vec3(0,-4.5,0), glm::vec3(0,0,0),glm::vec3(16,1,1) });
-        floor.AddComponent(SpriteRender{ 16, 1, {255,255,255,1} });
-
-        RigidBody body(*PhysicsWorld::GetInstance(), 0, -4.5, BodyType::Static);
-        OrientedBox box(8, 0.50, 0.0f, 1.0f, 0.0f);
-
-        body.AddBoxCollider(box);
-        floor.AddComponent(body);
-    }
-
-
-
-
 }
 
 void EditorLayer::OnDetach()
@@ -230,9 +215,8 @@ void EditorLayer::OnImGuiRender()
     ImGui::End();
     ImGui::PopStyleVar();
 
-    ImGui::Begin("Scene Hierarchy");
-    ImGui::End();
-	
+    m_SceneHierarchyPanel.OnImGuiRender();
+ 
     ImGui::Begin("Properties");
     ImGui::End();
 	

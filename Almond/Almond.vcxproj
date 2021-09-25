@@ -102,6 +102,7 @@
   <ItemGroup>
     <ClCompile Include="src\ECS\ECSTypes.cpp" />
     <ClCompile Include="src\ECS\Scene.cpp" />
+    <ClCompile Include="src\Editor\Panels\SceneHierarchyPanel.cpp" />
     <ClCompile Include="src\Physics2D\DebugDrawBox2D.cpp" />
     <ClCompile Include="src\Physics2D\Geometry2D.cpp" />
     <ClCompile Include="src\Physics2D\Physics2D.cpp" />
@@ -135,9 +136,11 @@
   <ItemGroup>
     <ClInclude Include="src\Core\TimeStep.h" />
     <ClInclude Include="src\ECS\Components\RigidBody.h" />
+    <ClInclude Include="src\ECS\Components\TagComponent.h" />
     <ClInclude Include="src\ECS\Entity.h" />
     <ClInclude Include="src\ECS\Scene.h" />
     <ClInclude Include="src\ECS\SceneView.h" />
+    <ClInclude Include="src\Editor\Panels\SceneHierarchyPanel.h" />
     <ClInclude Include="src\Physics2D\DebugDrawBox2D.h" />
     <ClInclude Include="src\Physics2D\Geometry2D.h" />
     <ClInclude Include="src\Physics2D\Physics2D.h" />
