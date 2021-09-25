@@ -6,10 +6,14 @@ class SceneHierarchyPanel
 {
 public:
 	SceneHierarchyPanel() = default;
-	void SetScene(const std::shared_ptr<Scene>& scene) { m_Scene = scene; }
+	SceneHierarchyPanel(const std::shared_ptr<Scene> scene);
 	
+	void SetScene(const std::shared_ptr<Scene>& scene) { m_Scene = scene; }
 	void OnImGuiRender();
 
+private:
+	void DrawEntityNode(Entity entity);
+	
 private:
 	std::shared_ptr<Scene> m_Scene;
 };

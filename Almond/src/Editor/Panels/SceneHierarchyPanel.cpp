@@ -1,10 +1,16 @@
 #include "SceneHierarchyPanel.h"
 
 #include "ECS/SceneView.h"
+#include "ECS/Entity.h"
 #include "ECS/Components/TagComponent.h"
 #include "ECS/Components/Transform.h"
 #include "imgui/imgui.h"
 
+
+SceneHierarchyPanel::SceneHierarchyPanel(const std::shared_ptr<Scene> scene)
+	:m_Scene(scene)
+{
+}
 
 void SceneHierarchyPanel::OnImGuiRender()
 {
@@ -12,9 +18,13 @@ void SceneHierarchyPanel::OnImGuiRender()
 
 	for (auto ent : SceneView<Transform>(m_Scene->m_Ecs))
 	{
-		ImGui::Text("%s", m_Scene->m_Ecs.GetComponent<TagComponent>(ent)->tag.c_str());	
+		Entity entity{ent, m_Scene.get()};
+		DrawEntityNode(entity);
 	}
 	ImGui::End();
 }
 
-
+void SceneHierarchyPanel::DrawEntityNode(Entity entity)
+{
+	ImGui::Text("%s", entity.GetComponent<TagComponent>()->tag.c_str());
+}
