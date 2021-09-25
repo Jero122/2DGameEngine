@@ -6,10 +6,12 @@
 class Entity
 {
 public:
+	Entity() = default;
 	Entity(EntityID handle, Scene* scene)
 		:entityHandle(handle),m_Scene(scene)
 	{
 	}
+	Entity(const Entity& other) = default;
 
 	template<typename T>
 	T* AddComponent(T component)
