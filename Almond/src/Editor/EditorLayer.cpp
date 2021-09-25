@@ -1,14 +1,10 @@
-#include "EditorLayer.h"
-
 #include <random>
-#include <stack>
 
+#include "EditorLayer.h"
 #include "ECS/Entity.h"
-#include "ECS/SceneView.h"
 #include "Core/Input.h"
 #include "ECS/Components/SpriteRender.h"
 #include "ECS/Components/Transform.h"
-#include "ECS/ECS.hpp"
 #include "Physics2D/Geometry2D.h"
 #include "Renderer/SpriteSheet.h"
 #include "Renderer/Texture.h"

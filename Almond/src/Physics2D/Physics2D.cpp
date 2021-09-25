@@ -4,7 +4,7 @@
 #include "PhysicsWorld.h"
 #include "ECS/Components/RigidBody.h"
 #include "ECS/Components/Transform.h"
-#include "ECS/ECS.hpp"
+#include "ECS/ECS.h"
 #include "glm/trigonometric.hpp"
 
 #include <SDL/SDL.h>

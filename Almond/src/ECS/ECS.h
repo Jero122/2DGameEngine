@@ -2,12 +2,9 @@
 
 #include <memory>
 #include "ECSTypes.h"
-#include "EntitiyManager.hpp"
-#include "ComponentManager.hpp"
-#include "SystemManager.hpp"
-
-
-
+#include "EntitiyManager.h"
+#include "ComponentManager.h"
+#include "SystemManager.h"
 
 class ECS
 {
@@ -89,6 +86,24 @@ public:
 		return mComponentManager->GetComponent<T>(entity, componentId);
 	}
 
+	template<typename T>
+	bool HasComponent(EntityID entity) const
+	{
+		int componentId = GetId<T>();
+
+		//Ensures we are not accessing a deleted entity
+		if (mEntityManger->entities[GetEntityIndex(entity)].id != entity)
+		{
+			return false;
+		}
+
+		if (!mEntityManger->entities[GetEntityIndex(entity)].signature.test(componentId))
+		{
+			return false;
+		}
+
+		return true;
+	}
 	//SYSTEM
 	template<typename T>
 	std::shared_ptr<T> CreateSystem()

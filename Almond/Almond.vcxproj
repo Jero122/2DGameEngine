@@ -162,12 +162,12 @@
     <ClInclude Include="src\Renderer\Renderer2D.h" />
     <ClInclude Include="src\ECS\Components\SpriteRender.h" />
     <ClInclude Include="src\ECS\Components\Transform.h" />
-    <ClInclude Include="src\ECS\ComponentManager.hpp" />
+    <ClInclude Include="src\ECS\ComponentManager.h" />
     <ClInclude Include="src\ECS\PackedArray.hpp" />
-    <ClInclude Include="src\ECS\ECS.hpp" />
+    <ClInclude Include="src\ECS\ECS.h" />
     <ClInclude Include="src\ECS\ECSTypes.h" />
-    <ClInclude Include="src\ECS\EntitiyManager.hpp" />
-    <ClInclude Include="src\ECS\SystemManager.hpp" />
+    <ClInclude Include="src\ECS\EntitiyManager.h" />
+    <ClInclude Include="src\ECS\SystemManager.h" />
     <ClInclude Include="src\Renderer\Shader.h" />
     <ClInclude Include="src\Core\Window.h" />
     <ClInclude Include="src\Platforms\Windows\WindowsWindow.h" />

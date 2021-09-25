@@ -1,5 +1,5 @@
 #pragma once
-#include "ECS.hpp"
+#include "ECS.h"
 #include "Core/TimeStep.h"
 #include "Physics2D/Physics2D.h"
 #include "Renderer/EditorCamera.h"

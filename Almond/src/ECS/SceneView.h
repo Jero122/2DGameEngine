@@ -1,6 +1,6 @@
 #pragma once
-#include "EntitiyManager.hpp"
-#include "ECS/ECS.hpp"
+#include "EntitiyManager.h"
+#include "ECS/ECS.h"
 
 template<typename... ComponentTypes>
 struct SceneView

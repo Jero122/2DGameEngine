@@ -1,6 +1,6 @@
 #pragma once
 #include "ECSTypes.h"
-#include "ECS.hpp"
+#include "ECS.h"
 #include "Scene.h"
 
 class Entity
@@ -29,6 +29,12 @@ public:
 	T* GetComponent()
 	{
 		return m_Scene->m_Ecs.GetComponent<T>(entityHandle);
+	}
+
+	template<typename T>
+	bool HasComponent()
+	{
+		return m_Scene->m_Ecs.HasComponent<T>(entityHandle);
 	}
 
 	~Entity()
