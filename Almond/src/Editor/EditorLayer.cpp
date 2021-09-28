@@ -212,10 +212,7 @@ void EditorLayer::OnImGuiRender()
     ImGui::PopStyleVar();
 
     m_SceneHierarchyPanel.OnImGuiRender();
- 
-    ImGui::Begin("Properties");
-    ImGui::End();
-	
+ 	
     ImGui::Begin("Asset Browser");
     ImGui::End();
 

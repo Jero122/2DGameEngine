@@ -46,7 +46,37 @@ public:
 	{
 		return entityHandle;
 	}
+
+
+	operator uint64_t() const
+	{
+		return entityHandle;
+	}
+
+
+	bool operator==(const Entity& other)
+	{
+		return this->entityHandle == other.entityHandle
+			&& this->m_Scene == other.m_Scene;
+	}
+
+	bool operator!=(const Entity& other)
+	{
+		return !(*this == other);
+	}
+
+	bool IsValid()
+	{
+		if (entityHandle != (uint64_t)-1 && m_Scene != nullptr)
+		{
+			return true;
+		}
+		return false;
+	}
+
 private:
-	EntityID entityHandle;
+
+
+	EntityID entityHandle = -1;
 	Scene* m_Scene;
 };

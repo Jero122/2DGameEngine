@@ -1,5 +1,7 @@
 #pragma once
 #include <memory>
+
+#include "ECS/Entity.h"
 #include "ECS/Scene.h"
 
 class SceneHierarchyPanel
@@ -13,7 +15,9 @@ public:
 
 private:
 	void DrawEntityNode(Entity entity);
+	void DrawEntityProperties(Entity entity);
 	
 private:
 	std::shared_ptr<Scene> m_Scene;
+	Entity m_SelectedEntity;
 };
