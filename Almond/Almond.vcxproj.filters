@@ -1554,4 +1554,8 @@
   <ItemGroup>
     <Text Include="src\vendor\imgui\LICENSE.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <Font Include="src\Editor\Fonts\RandyGG\RandyGGRegular.ttf" />
+    <Font Include="src\Editor\Fonts\RandyGG\RandyGGBold.ttf" />
+  </ItemGroup>
 </Project>

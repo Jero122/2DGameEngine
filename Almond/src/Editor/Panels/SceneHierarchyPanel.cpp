@@ -7,6 +7,7 @@
 #include "ECS/Components/Transform.h"
 #include "glm/gtc/type_ptr.hpp"
 #include "imgui/imgui.h"
+#include "imgui/imgui_internal.h"
 
 
 SceneHierarchyPanel::SceneHierarchyPanel(const std::shared_ptr<Scene> scene)
@@ -32,6 +33,63 @@ void SceneHierarchyPanel::OnImGuiRender()
 	ImGui::ShowDemoWindow();
 }
 
+static void DrawVec3Control(const std::string label, glm::vec3& values, float resetValue = 0.0f, float columnWidth = 100.0f)
+{
+	ImGui::PushID(label.c_str());
+	
+	ImGui::Columns(2);
+	ImGui::SetColumnWidth(0, columnWidth);
+	ImGui::Text(label.c_str());
+	ImGui::NextColumn();
+
+	ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, { 0,1.0f });
+
+	float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+	ImVec2 buttonSize = { 5, lineHeight };
+
+	ImGui::PushStyleColor(ImGuiCol_Button, { 0.8f,0.1f,0.15f,1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { 0.9f,0.2f,0.2f,1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, { 0.8f,0.1f,0.15f,1.0f });
+	if (ImGui::Button("##0", buttonSize))
+		values.x = resetValue;
+	ImGui::PopStyleColor(3);
+	
+	ImGui::SameLine();
+	ImGui::DragFloat("##X", &values.x, 0.1f,0,0, "%.2f");
+	ImGui::PopItemWidth();
+	ImGui::SameLine();
+
+	ImGui::PushStyleColor(ImGuiCol_Button, { 0.2f,0.7f,0.2f,1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { 0.3f,0.8f,0.3f,1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, { 0.2f,0.7f,0.2f,1.0f });
+	if (ImGui::Button("##1", buttonSize))
+		values.y = resetValue;
+	ImGui::PopStyleColor(3);
+	
+	ImGui::SameLine();
+	ImGui::DragFloat("##Y", &values.y, 0.1f, 0, 0, "%.2f");
+	ImGui::PopItemWidth();
+	ImGui::SameLine();
+
+	ImGui::PushStyleColor(ImGuiCol_Button, { 0.1f,0.25f,0.8f,1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { 0.2f,0.35f,0.9f,1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, { 0.1f,0.25f,0.8f,1.0f });
+	if (ImGui::Button("##2", buttonSize))
+		values.z = resetValue;
+	ImGui::PopStyleColor(3);
+	
+	ImGui::SameLine();
+	ImGui::DragFloat("##Z", &values.z, 0.1f, 0, 0, "%.2f");
+	ImGui::PopItemWidth();
+
+	
+	ImGui::PopStyleVar();
+	ImGui::Columns(1);
+	ImGui::PopID();
+}
+
+
 void SceneHierarchyPanel::DrawEntityNode(Entity entity)
 {
 	auto tag = entity.GetComponent<TagComponent>()->tag;
@@ -53,7 +111,7 @@ void SceneHierarchyPanel::DrawEntityProperties(Entity entity)
 {
 	if (entity.IsValid())
 	{
-		if (entity.HasComponent<Transform>())
+		if (entity.HasComponent<TagComponent>())
 		{
 			auto& tag = entity.GetComponent<TagComponent>()->tag;
 			char buffer[256];
@@ -72,10 +130,9 @@ void SceneHierarchyPanel::DrawEntityProperties(Entity entity)
 			auto transform = entity.GetComponent<Transform>();
 			if (ImGui::TreeNodeEx((void*)typeid(Transform).hash_code(),ImGuiTreeNodeFlags_DefaultOpen, "Transform"))
 			{
-				ImGui::DragFloat3("Position", glm::value_ptr(transform->position), 0.1f);
-				ImGui::DragFloat3("Rotation", glm::value_ptr(transform->rotation), 0.1f);
-				ImGui::DragFloat3("Scale", glm::value_ptr(transform->scale), 0.1f);
-
+				DrawVec3Control("Position", transform->position);
+				DrawVec3Control("Rotation", transform->rotation);
+				DrawVec3Control("Scale", transform->scale, 1.0f);
 				ImGui::TreePop();
 			}
 			
