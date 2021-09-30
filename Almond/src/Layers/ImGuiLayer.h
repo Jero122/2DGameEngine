@@ -4,6 +4,13 @@
 class ImGuiLayer : public Layer
 {
 public:
+	enum Theme
+	{
+		Cherno,
+		Unity,
+		Unreal
+	};
+	
 	ImGuiLayer()
 	{
 		
@@ -17,6 +24,7 @@ public:
 	void OnImGuiRender() override;
 	void OnLateUpdate() override;
 
+	void SetDarkTheme(Theme theme);
 	void Begin();
 	void End();
 };

@@ -33,6 +33,28 @@ void SceneHierarchyPanel::OnImGuiRender()
 	ImGui::ShowDemoWindow();
 }
 
+template<typename T, typename UIFunction>
+static void DrawComponent(const std::string& name, Entity entity, UIFunction uiFunction)
+{
+	const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding;
+	if (entity.HasComponent<T>())
+	{
+		auto component = entity.GetComponent<T>();
+
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, { 0,3 });
+		bool open = ImGui::TreeNodeEx((void*)typeid(T).hash_code(), treeNodeFlags, name.c_str());
+		ImGui::PopStyleVar();
+		
+		if (open)
+		{
+			uiFunction(component);
+			ImGui::Separator();
+			ImGui::TreePop();
+		}
+	}
+
+}
+
 static void DrawVec3Control(const std::string label, glm::vec3& values, float resetValue = 0.0f, float columnWidth = 100.0f)
 {
 	ImGui::PushID(label.c_str());
@@ -124,54 +146,20 @@ void SceneHierarchyPanel::DrawEntityProperties(Entity entity)
 			}
 		}
 
-		if (entity.HasComponent<Transform>())
+		DrawComponent<Transform>("Transform", entity, [](auto& component)
 		{
-			//TODO change v_speed based on zoom level
-			auto transform = entity.GetComponent<Transform>();
-			if (ImGui::TreeNodeEx((void*)typeid(Transform).hash_code(),ImGuiTreeNodeFlags_DefaultOpen, "Transform"))
-			{
-				DrawVec3Control("Position", transform->position);
-				DrawVec3Control("Rotation", transform->rotation);
-				DrawVec3Control("Scale", transform->scale, 1.0f);
-				ImGui::TreePop();
-			}
-			
-		}
+			auto transform = (Transform*)component;
+			DrawVec3Control("Position", transform->position);
+			DrawVec3Control("Rotation", transform->rotation);
+			DrawVec3Control("Scale", transform->scale, 1.0f);
+		});
 
-		if (entity.HasComponent<SpriteRender>())
+		DrawComponent<SpriteRender>("Transform", entity, [](auto& component)
 		{
-			static bool ref_color = true;
-			static ImVec4 ref_color_v(1.0f, 0.0f, 1.0f, 0.5f);
-			
-			ImGuiColorEditFlags misc_flags = ImGuiColorEditFlags_AlphaPreview;
-			//TODO change v_speed based on zoom level
-			auto spriteRender = entity.GetComponent<SpriteRender>();
-			auto& color = spriteRender->color;
-			
-			if (ImGui::TreeNodeEx((void*)typeid(SpriteRender).hash_code(), ImGuiTreeNodeFlags_DefaultOpen, "Sprite Renderer"))
-			{
-				ImGui::Text("Color");
-				ImGui::SameLine();
-				bool open_popup = ImGui::ColorButton("MyColor##3b", *(ImVec4*)&color, misc_flags, { 150,20 });
-				ImGui::SameLine(0, ImGui::GetStyle().ItemInnerSpacing.x);
-				if (open_popup)
-				{
-					ImGui::OpenPopup("mypicker");
-				}
-				if (ImGui::BeginPopup("mypicker"))
-				{
-					ImGui::Text("Color");
-					ImGui::Separator();
-		
-					ImGuiColorEditFlags flags = misc_flags;
-					flags |= ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_PickerHueWheel | ImGuiColorEditFlags_AlphaPreview;
-					ImGui::ColorPicker4("MyColor##4", (float*)&color, flags, ref_color ? &ref_color_v.x : NULL);
-				}
-				ImGui::TreePop();
-			}
+			auto spriteRender = (SpriteRender*)component;
+			ImGui::ColorEdit4("Color", glm::value_ptr(spriteRender->color));
+		});
 
-		}
-		
 	}
 	
 	
