@@ -156,9 +156,9 @@ void ImGuiLayer::SetDarkTheme(Theme theme)
 		colors[ImGuiCol_HeaderActive] = ImVec4{ 62.0f / 255.0f, 62.0f / 255.0f, 62.0f / 255.0f, 1.0f };
 
 		// Buttons
-		colors[ImGuiCol_Button] = ImVec4{ 0.2f, 0.205f, 0.21f, 1.0f };
-		colors[ImGuiCol_ButtonHovered] = ImVec4{ 0.3f, 0.305f, 0.31f, 1.0f };
-		colors[ImGuiCol_ButtonActive] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
+		colors[ImGuiCol_Button] = ImVec4{ 0.34f, 0.34f, 0.34f, 1.0f };
+		colors[ImGuiCol_ButtonHovered] = ImVec4{ 0.40f, 0.40f, 0.40f, 1.0f };
+		colors[ImGuiCol_ButtonActive] = ImVec4{ 0.34f, 0.34f, 0.34f, 1.0f };
 
 		// Frame BG
 		colors[ImGuiCol_FrameBg] = ImVec4{ 42.0f / 255.0f, 42.0f / 255.0f, 42.0f / 255.0f, 1.0f };
