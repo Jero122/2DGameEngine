@@ -213,10 +213,10 @@ void Renderer2D::Submit(const glm::vec3 position, float rotation, glm::vec2 scal
 		s_Data.m_TextureSlotIndex++;
 	}
 
-	int r = color.r;
-	int g = color.g;
-	int b = color.b;
-	int a = color.a;
+	int r = color.r * 255;
+	int g = color.g * 255;
+	int b = color.b * 255;
+	int a = color.a * 255;
 
 	unsigned int c = a << 24 | b << 16 | g << 8 | r;
 	float rot = -glm::radians(rotation);

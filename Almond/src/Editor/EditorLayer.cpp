@@ -52,16 +52,32 @@ void EditorLayer::OnAttach()
         auto transformComponent = floor.GetComponent<Transform>();
         *transformComponent = Transform{ glm::vec3(0,-4.5,0), glm::vec3(0,0,0),glm::vec3(16,1,1) };
 
-        floor.AddComponent(SpriteRender{ 16, 1, {255,255,255,1} });
+        floor.AddComponent(SpriteRender{ 16, 1, {1,1,1,0.1} });
 
+        /*
         RigidBody body(*PhysicsWorld::GetInstance(), 0, -4.5, BodyType::Static);
         OrientedBox box(8, 0.50, 0.0f, 1.0f, 0.0f);
 
         body.AddBoxCollider(box);
-        floor.AddComponent(body);
+        floor.AddComponent(body);*/
+    }
+
+    Entity enttA = m_CurrentScene->CreateEntity("enttA");
+    {
+        auto transformComponent = enttA.GetComponent<Transform>();
+        *transformComponent = Transform{ glm::vec3(-2,0,-1), glm::vec3(0,0,0),glm::vec3(1,1,1) };
+
+        enttA.AddComponent(SpriteRender{ 16, 1, {1,0,0,1} });
+    }
+    Entity enttB = m_CurrentScene->CreateEntity("enttB");
+    {
+        auto transformComponent = enttB.GetComponent<Transform>();
+        *transformComponent = Transform{ glm::vec3(-2,0,0), glm::vec3(0,0,0),glm::vec3(1,1,1) };
+
+        enttB.AddComponent(SpriteRender{ 16, 1, {1,1,1,1} });
     }
 	
-    for (int i = 0; i < 10; ++i)
+    /*for (int i = 0; i < 10; ++i)
     {
         std::string name = "Crate ";
         name += std::to_string(i);
@@ -76,13 +92,13 @@ void EditorLayer::OnAttach()
         	
             entity.AddComponent(SpriteRender{ 0.5f , 0.5f, texture1.GetTexID() });
 
-            RigidBody body(*PhysicsWorld::GetInstance(), pos.x, pos.y, BodyType::Dynamic);
+            /*RigidBody body(*PhysicsWorld::GetInstance(), pos.x, pos.y, BodyType::Dynamic);
             OrientedBox box(0.24, 0.24, 1.0f, 0.1f, 0.0f);
             body.AddBoxCollider(box);
         	
-            entity.AddComponent(body);
+            entity.AddComponent(body);#1#
         }
-    }
+    }*/
 }
 
 void EditorLayer::OnDetach()
@@ -96,14 +112,20 @@ void EditorLayer::OnUpdate(TimeStep timeStep)
 	{
         m_FrameBufferSpec.width = m_ViewportSize.x;
         m_FrameBufferSpec.height = m_ViewportSize.y;
-        m_CurrentScene->GetEditorCamera().SetViewPortSize(m_ViewportSize.x, m_ViewportSize.y);
 
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+      
+        m_CurrentScene->GetEditorCamera().SetViewPortSize(m_ViewportSize.x, m_ViewportSize.y);
+        gluPerspective(45.0,  m_ViewportSize.x/ m_ViewportSize.y, -1.0f, 1000.0f);
+        glMatrixMode(GL_MODELVIEW);
         CreateFrameBuffer(m_FrameBufferSpec);
 	}
 
 	
     glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBuffer);
     glViewport(0, 0, m_ViewportSize.x, m_ViewportSize.y);
+
 	
     m_CurrentScene->OnUpdate(timeStep);
 	
@@ -253,6 +275,13 @@ void EditorLayer::CreateFrameBuffer(FrameBufferSpec spec)
     glBindTexture(GL_TEXTURE_2D, 0);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_ColourAttachment, 0);
 
+    unsigned int rbo;
+    glGenRenderbuffers(1, &rbo);
+    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, m_ViewportSize.x, m_ViewportSize.y); // use a single renderbuffer object for both a depth AND stencil buffer.
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo); // now actually attach it
+
+	
     //check if framebuffer is complete
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
