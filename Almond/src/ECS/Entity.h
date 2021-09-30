@@ -20,9 +20,9 @@ public:
 	}
 
 	template<typename T>
-	void RemoveComponent(T component)
+	void RemoveComponent()
 	{
-		m_Scene->m_Ecs.RemoveComponent<T>(entityHandle, component);
+		m_Scene->m_Ecs.RemoveComponent<T>(entityHandle);
 	}
 
 	template<typename T>

@@ -76,6 +76,10 @@ void EditorLayer::OnAttach()
 
         enttB.AddComponent(SpriteRender{ 16, 1, {1,1,1,1} });
     }
+
+    bool hasRenderer = enttB.HasComponent<SpriteRender>();
+    /*enttB.RemoveComponent(enttB.GetComponent<SpriteRender>());
+    enttB.RemoveComponent(enttB.GetComponent<SpriteRender>());*/
 	
     /*for (int i = 0; i < 10; ++i)
     {

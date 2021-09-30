@@ -13,10 +13,11 @@
 Scene::Scene()
 {
 	m_Ecs.Init();
+	m_Ecs.CreateComponent<TagComponent>();
 	m_Ecs.CreateComponent<SpriteRender>();
 	m_Ecs.CreateComponent<Transform>();
 	m_Ecs.CreateComponent<RigidBody>();
-	m_Ecs.CreateComponent<TagComponent>();
+
 
 	m_Physics2D = Physics2D(&m_Ecs);
 	m_Physics2D.Init();

@@ -55,7 +55,7 @@ public:
 	}
 	
 	template<typename T>
-	void RemoveComponent(EntityID entity, T component)
+	void RemoveComponent(EntityID entity)
 	{
 		//Ensures we are not accessing a deleted entity
 		if (mEntityManger->entities[GetEntityIndex(entity)].id != entity)

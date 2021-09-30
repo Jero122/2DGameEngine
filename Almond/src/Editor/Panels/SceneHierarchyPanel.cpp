@@ -18,7 +18,7 @@ SceneHierarchyPanel::SceneHierarchyPanel(const std::shared_ptr<Scene> scene)
 void SceneHierarchyPanel::OnImGuiRender()
 {
 	ImGui::Begin("Scene Hierarchy");
-	for (auto ent : SceneView<>(m_Scene->m_Ecs))
+	for (auto ent : SceneView<TagComponent>(m_Scene->m_Ecs))
 	{
 		Entity entity{ent, m_Scene.get()};
 		DrawEntityNode(entity);
@@ -102,7 +102,7 @@ static void DrawComponent(const std::string& name, Entity entity, UIFunction uiF
 
 		if (componentRemoved)
 		{
-			entity.RemoveComponent(component);
+			entity.RemoveComponent<T>();
 		}
 	}
 

@@ -15,7 +15,7 @@ struct SceneView
 		else
 		{
 			//Unpack template parameters
-			int componentIds[] = { 0, GetId<ComponentTypes>() ... };
+			int componentIds[] = { 0,GetId<ComponentTypes>() ... };
 			for (int i = 0; i < (sizeof...(ComponentTypes) +1); ++i)
 			{
 				signature.set(componentIds[i]);
