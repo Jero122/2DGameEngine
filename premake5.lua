@@ -21,7 +21,7 @@ include "Almond/vendor/imgui"
 
 project "Almond"
 	location "Almond"
-	kind "ConsoleApp"
+	kind "SharedLib"
 	language "C++"
 	cppdialect "C++17"
 

@@ -1,14 +1,14 @@
-#include "Application.h"
+#include "AlmondApplication.h"
 #include "TimeStep.h"
 #include "imgui.h"
 #include "Layers/InputLayer.h"
 #include "Physics2D/PhysicsWorld.h"
 #include "Renderer/Renderer2D.h"
 
-Application* Application::s_Instance = nullptr;
+AlmondApplication* AlmondApplication::s_Instance = nullptr;
 int s_componentCounter = 0;
 
-Application::Application()
+AlmondApplication::AlmondApplication()
 {
 	s_Instance = this;
 	m_Window = Window::Create(WindowProps());
@@ -31,29 +31,29 @@ Application::Application()
 	}
 }
 
-Application::~Application()
+AlmondApplication::~AlmondApplication()
 {
 	//TODO destruction of application
 }
 
-void Application::PushLayer(Layer* layer)
+void AlmondApplication::PushLayer(Layer* layer)
 {
 	m_LayerStack.PushLayer(layer);
 	layer->OnAttach();
 }
 
-void Application::PushOverlay(Layer* overlay)
+void AlmondApplication::PushOverlay(Layer* overlay)
 {
 	m_LayerStack.PopOverlay(overlay);
 	overlay->OnAttach();
 }
 
-void Application::Close()
+void AlmondApplication::Close()
 {
 	m_Running = false;
 }
 
-void Application::Run()
+void AlmondApplication::Run()
 {
 	m_Running = true;
 	while (m_Running)

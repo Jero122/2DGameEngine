@@ -4,13 +4,13 @@
 #include "Layers/ImGuiLayer.h"
 
 
-class Application
+class ALMOND_API AlmondApplication
 {
 public:
-	Application();
-	virtual ~Application();
+	AlmondApplication();
+	virtual ~AlmondApplication();
 
-	static Application& Get() { return *s_Instance; }
+	static AlmondApplication& Get() { return *s_Instance; }
 	Window& GetWindow() { return *m_Window; }
 	ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
 
@@ -22,7 +22,7 @@ public:
 	void Run();
 private:
 
-	static Application* s_Instance;
+	static AlmondApplication* s_Instance;
 
 	bool m_Running = false;
 	float m_TimeSinceLastFrame = 0.0f;

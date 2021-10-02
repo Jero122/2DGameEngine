@@ -1,6 +1,6 @@
 #include "ImGuiLayer.h"
 
-#include "Core/Application.h"
+#include "Core/AlmondApplication.h"
 #include "imgui.h"
 #include "backends/imgui_impl_sdl.h"
 #include "backends/imgui_impl_opengl3.h"
@@ -56,7 +56,7 @@ void ImGuiLayer::OnAttach()
 	io.KeyMap[ImGuiKey_Y] = SDL_SCANCODE_Y;
 	io.KeyMap[ImGuiKey_Z] = SDL_SCANCODE_Z;
 
-	Application& app = Application::Get();
+	AlmondApplication& app = AlmondApplication::Get();
 	auto* window = static_cast<SDL_Window*>(app.Get().GetWindow().GetNativeWindow());
 	const auto glContext = app.Get().GetWindow().GetGLContext();
 
@@ -87,7 +87,7 @@ void ImGuiLayer::OnLateUpdate()
 void ImGuiLayer::Begin()
 {
 	ImGui_ImplOpenGL3_NewFrame();
-	ImGui_ImplSDL2_NewFrame(static_cast<SDL_Window*>(Application::Get().GetWindow().GetNativeWindow()));
+	ImGui_ImplSDL2_NewFrame(static_cast<SDL_Window*>(AlmondApplication::Get().GetWindow().GetNativeWindow()));
 	ImGui::NewFrame();
 }
 
