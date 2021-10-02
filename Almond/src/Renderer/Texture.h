@@ -1,9 +1,8 @@
 ﻿#pragma once
 #include <cassert>
 #include <string>
-
 #include "GLCall.h"
-#include "stb/stb_image.h"
+
 
 class Texture
 {
