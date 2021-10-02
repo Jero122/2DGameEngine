@@ -1,6 +1,5 @@
 #include "Application.h"
 #include "TimeStep.h"
-#include "Editor/EditorLayer.h"
 #include "imgui/imgui.h"
 #include "Layers/InputLayer.h"
 #include "Physics2D/PhysicsWorld.h"
@@ -20,10 +19,6 @@ Application::Application()
 	InputLayer* input = new InputLayer();
 	m_LayerStack.PushLayer(input);
 
-	//ECS
-	EditorLayer* Editor = new EditorLayer();
-	m_LayerStack.PushLayer(Editor);
-	
 	Renderer2D::Init();
 	
 	//IMGUI

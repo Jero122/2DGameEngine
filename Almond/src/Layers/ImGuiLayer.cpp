@@ -16,9 +16,6 @@ void ImGuiLayer::OnAttach()
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
-
-	io.Fonts->AddFontFromFileTTF("src/Editor/Fonts/RandyGG/RandyGGBold.ttf",16.0f);
-	io.FontDefault = io.Fonts->AddFontFromFileTTF("src/Editor/Fonts/RandyGG/RandyGGRegular.ttf", 16.0f);
 	
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows

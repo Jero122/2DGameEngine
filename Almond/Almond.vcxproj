@@ -102,7 +102,6 @@
   <ItemGroup>
     <ClCompile Include="src\ECS\ECSTypes.cpp" />
     <ClCompile Include="src\ECS\Scene.cpp" />
-    <ClCompile Include="src\Editor\Panels\SceneHierarchyPanel.cpp" />
     <ClCompile Include="src\Physics2D\DebugDrawBox2D.cpp" />
     <ClCompile Include="src\Physics2D\Geometry2D.cpp" />
     <ClCompile Include="src\Physics2D\Physics2D.cpp" />
@@ -111,7 +110,6 @@
     <ClCompile Include="src\Renderer\SpriteSheet.cpp" />
     <ClCompile Include="src\Renderer\Texture.cpp" />
     <ClCompile Include="src\Layers\ImGuiLayer.cpp" />
-    <ClCompile Include="src\Editor\EditorLayer.cpp" />
     <ClCompile Include="src\Core\Application.cpp" />
     <ClCompile Include="src\Core\Input.cpp" />
     <ClCompile Include="src\Core\LayerStack.cpp" />
@@ -140,7 +138,6 @@
     <ClInclude Include="src\ECS\Entity.h" />
     <ClInclude Include="src\ECS\Scene.h" />
     <ClInclude Include="src\ECS\SceneView.h" />
-    <ClInclude Include="src\Editor\Panels\SceneHierarchyPanel.h" />
     <ClInclude Include="src\Physics2D\DebugDrawBox2D.h" />
     <ClInclude Include="src\Physics2D\Geometry2D.h" />
     <ClInclude Include="src\Physics2D\Physics2D.h" />
@@ -151,7 +148,6 @@
     <ClInclude Include="src\Renderer\Texture.h" />
     <ClInclude Include="src\Layers\ImGuiLayer.h" />
     <ClInclude Include="src\Layers\InputLayer.h" />
-    <ClInclude Include="src\Editor\EditorLayer.h" />
     <ClInclude Include="src\Core\Application.h" />
     <ClInclude Include="src\Core\Base.h" />
     <ClInclude Include="src\Core\LayerStack.h" />
