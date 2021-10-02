@@ -1,7 +1,4 @@
 ﻿#include "EditorCamera.h"
-
-#include <GL/glew.h>
-
 #include "Core/Input.h"
 
 EditorCamera::EditorCamera(float fov, float aspectRatio, float near, float far)

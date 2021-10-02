@@ -56,7 +56,7 @@ project "Almond"
 	{
 		"SDL2",
 		"SDL2main",
-		"glew32",
+		"glew32s",
 		"opengl32",
 		"ImGui",
 		"box2d",
