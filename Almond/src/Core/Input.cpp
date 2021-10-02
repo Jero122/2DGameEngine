@@ -1,6 +1,5 @@
+#include <backends/imgui_impl_sdl.h>
 #include <Core/Input.h>
-
-#include "imgui/imgui_impl_sdl.h"
 
 Input* Input::s_Instance = nullptr;
 

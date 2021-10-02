@@ -1,11 +1,10 @@
 #include "ImGuiLayer.h"
-
-#include <imgui/imgui_impl_opengl3_loader.h>
-
 #include "Core/Application.h"
-#include "imgui/imgui.h"
-#include "imgui/imgui_impl_opengl3.h"
-#include "imgui/imgui_impl_sdl.h"
+#include "imgui.h"
+#include "backends/imgui_impl_opengl3.h"
+#include "backends/imgui_impl_sdl.h"
+
+
 
 ImGuiLayer::~ImGuiLayer()
 {
