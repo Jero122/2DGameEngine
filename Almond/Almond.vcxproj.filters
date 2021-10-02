@@ -215,5 +215,7 @@
     <ClCompile Include="vendor\stb\stb_image.cpp">
       <Filter>vendor\stb</Filter>
     </ClCompile>
+    <ClCompile Include="src\Platforms\OpenGL\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="src\Platforms\OpenGL\imgui_impl_sdl.cpp" />
   </ItemGroup>
 </Project>

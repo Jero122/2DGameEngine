@@ -1,5 +1,4 @@
 #include "WindowsWindow.h"
-
 #include <GL/glew.h>
 
 WindowsWindow::WindowsWindow(const WindowProps& props)

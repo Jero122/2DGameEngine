@@ -15,7 +15,7 @@ void EditorCamera::UpdateProjection()
 {
 	m_AspectRatio = m_ViewportWidth / m_ViewportHeight;
 	m_Projection = glm::perspective(m_Fov, m_AspectRatio, m_NearClip, m_FarClip);
-	gluPerspective(m_Fov, m_AspectRatio, m_NearClip, m_FarClip);
+	//gluPerspective(m_Fov, m_AspectRatio, m_NearClip, m_FarClip);
 	/*m_Projection = glm::scale(m_Projection, { -1,1,-1 });*/
 }
 

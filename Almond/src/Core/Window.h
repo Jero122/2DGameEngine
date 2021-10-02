@@ -1,7 +1,5 @@
 #pragma once
 #include <iostream>
-#include <SDL/SDL.h>
-
 #include "Base.h"
 #include "Renderer/OldCamera.h"
 

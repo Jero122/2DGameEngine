@@ -11,6 +11,9 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
 IncludeDir["ImGui"] = "Almond/vendor/imgui"
+IncludeDir["SDL2"] = "Almond/dependencies/include/SDL"
+IncludeDir["GL"] = "Almond/dependencies/include/GL"
+IncludeDir["box2d"] = "Almond/dependencies/include/box2d"
 IncludeDir["stb"] = "Almond/vendor/stb"
 IncludeDir["glm"] = "Almond/vendor/glm"
 
@@ -43,18 +46,21 @@ project "Almond"
 		"Almond/dependencies/include",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.stb}",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.SDL}",
+		"%{IncludeDir.GL}",
+		"%{IncludeDir.box2d}"
 	}
 
 	links
 	{
-		"ImGui",
 		"SDL2",
 		"SDL2main",
 		"glew32",
 		"opengl32",
 		"ImGui",
-		"box2d"
+		"box2d",
+		"ImGui"
 	}
 
 	filter "system:windows"
