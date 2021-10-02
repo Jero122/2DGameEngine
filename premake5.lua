@@ -12,6 +12,7 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 IncludeDir = {}
 IncludeDir["ImGui"] = "Almond/vendor/imgui"
 IncludeDir["stb"] = "Almond/vendor/stb"
+IncludeDir["glm"] = "Almond/vendor/glm"
 
 include "Almond/vendor/imgui"
 
@@ -24,11 +25,15 @@ project "Almond"
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
 
+	libdirs { "Almond/dependencies/lib/%{cfg.buildcfg}"}
+
 	files
 	{
 		
 		"Almond/src/**.h",
-		"Almond/src/**.cpp"
+		"Almond/src/**.cpp",
+		"Almond/vendor/stb/**.h",
+		"Almond/vendor/stb/**.cpp"
 	}
 
 	includedirs
@@ -37,12 +42,19 @@ project "Almond"
 		"Almond/src/vendor",
 		"Almond/dependencies/include",
 		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.stb}"
+		"%{IncludeDir.stb}",
+		"%{IncludeDir.glm}"
 	}
 
 	links
 	{
-		"ImGui"
+		"ImGui",
+		"SDL2",
+		"SDL2main",
+		"glew32",
+		"opengl32",
+		"ImGui",
+		"box2d"
 	}
 
 	filter "system:windows"

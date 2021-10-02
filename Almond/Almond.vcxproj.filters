@@ -1,201 +1,219 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Core">
-      <UniqueIdentifier>{2EB4837C-1AEB-840D-C3D7-6A10AFED000F}</UniqueIdentifier>
+    <Filter Include="src">
+      <UniqueIdentifier>{2DAB880B-99B4-887C-2230-9F7C8E38947C}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ECS">
-      <UniqueIdentifier>{60E1870B-CCEA-877C-5566-9E7CC16E937C}</UniqueIdentifier>
+    <Filter Include="src\Core">
+      <UniqueIdentifier>{A5D31CCF-91A0-77DA-BAB9-6582A6E5AC68}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ECS\Components">
-      <UniqueIdentifier>{752AA906-61F8-9C0C-4A8C-0D3336F97871}</UniqueIdentifier>
+    <Filter Include="src\ECS">
+      <UniqueIdentifier>{F76D2FA9-634D-AE44-6C65-391BD8C314A6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Layers">
-      <UniqueIdentifier>{157446C0-0116-7196-EAD0-84EAD611F8E6}</UniqueIdentifier>
+    <Filter Include="src\ECS\Components">
+      <UniqueIdentifier>{AC4A8D64-982E-4EBA-018F-480DED91383C}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Physics2D">
-      <UniqueIdentifier>{3E94EAC9-AAFE-9E40-F33C-50E65FE67C95}</UniqueIdentifier>
+    <Filter Include="src\Layers">
+      <UniqueIdentifier>{4C4DA51D-3805-E76A-A10C-C0C68DE3815B}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Platforms">
-      <UniqueIdentifier>{DDACA145-4917-56BC-9255-0762FEFE3311}</UniqueIdentifier>
+    <Filter Include="src\Physics2D">
+      <UniqueIdentifier>{15F6A409-81B6-2040-4AF1-69BDB670651C}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Platforms\Windows">
-      <UniqueIdentifier>{17E40808-83FA-069E-CC71-92BF38C7D725}</UniqueIdentifier>
+    <Filter Include="src\Platforms">
+      <UniqueIdentifier>{B40E5C85-20CF-D7BB-E909-213955891C98}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Renderer">
-      <UniqueIdentifier>{7CCE658F-689B-C09A-91B4-AE427DE0F528}</UniqueIdentifier>
+    <Filter Include="src\Platforms\Windows">
+      <UniqueIdentifier>{EE2C175D-5A99-D257-238D-6AB58FB8F4BF}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ResourceManager">
-      <UniqueIdentifier>{2827463B-94B2-B3FF-9DC3-36F409CE0F00}</UniqueIdentifier>
+    <Filter Include="src\Renderer">
+      <UniqueIdentifier>{73D1DFBF-5F34-6F64-08BA-A71AF4FB3AE7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ResourceManager">
+      <UniqueIdentifier>{3F4EAE55-ABAF-8B63-341D-D215A07DC222}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor">
+      <UniqueIdentifier>{B3738122-9F15-ACF8-88D0-BF4C74113349}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\stb">
+      <UniqueIdentifier>{8BD3C5A8-778B-07F6-E092-E051CC69A2E6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Core\Application.h">
-      <Filter>Core</Filter>
+      <Filter>src\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Base.h">
-      <Filter>Core</Filter>
+      <Filter>src\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Input.h">
-      <Filter>Core</Filter>
+      <Filter>src\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Layer.h">
-      <Filter>Core</Filter>
+      <Filter>src\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\LayerStack.h">
-      <Filter>Core</Filter>
+      <Filter>src\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\TimeStep.h">
-      <Filter>Core</Filter>
+      <Filter>src\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Window.h">
-      <Filter>Core</Filter>
+      <Filter>src\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\ECS\ComponentManager.h">
-      <Filter>ECS</Filter>
+      <Filter>src\ECS</Filter>
     </ClInclude>
     <ClInclude Include="src\ECS\Components\RigidBody.h">
-      <Filter>ECS\Components</Filter>
+      <Filter>src\ECS\Components</Filter>
     </ClInclude>
     <ClInclude Include="src\ECS\Components\SpriteRender.h">
-      <Filter>ECS\Components</Filter>
+      <Filter>src\ECS\Components</Filter>
     </ClInclude>
     <ClInclude Include="src\ECS\Components\TagComponent.h">
-      <Filter>ECS\Components</Filter>
+      <Filter>src\ECS\Components</Filter>
     </ClInclude>
     <ClInclude Include="src\ECS\Components\Transform.h">
-      <Filter>ECS\Components</Filter>
+      <Filter>src\ECS\Components</Filter>
     </ClInclude>
     <ClInclude Include="src\ECS\ECS.h">
-      <Filter>ECS</Filter>
+      <Filter>src\ECS</Filter>
     </ClInclude>
     <ClInclude Include="src\ECS\ECSTypes.h">
-      <Filter>ECS</Filter>
+      <Filter>src\ECS</Filter>
     </ClInclude>
     <ClInclude Include="src\ECS\EntitiyManager.h">
-      <Filter>ECS</Filter>
+      <Filter>src\ECS</Filter>
     </ClInclude>
     <ClInclude Include="src\ECS\Entity.h">
-      <Filter>ECS</Filter>
+      <Filter>src\ECS</Filter>
     </ClInclude>
     <ClInclude Include="src\ECS\Scene.h">
-      <Filter>ECS</Filter>
+      <Filter>src\ECS</Filter>
     </ClInclude>
     <ClInclude Include="src\ECS\SceneView.h">
-      <Filter>ECS</Filter>
+      <Filter>src\ECS</Filter>
     </ClInclude>
     <ClInclude Include="src\ECS\SystemManager.h">
-      <Filter>ECS</Filter>
+      <Filter>src\ECS</Filter>
     </ClInclude>
     <ClInclude Include="src\Layers\ImGuiLayer.h">
-      <Filter>Layers</Filter>
+      <Filter>src\Layers</Filter>
     </ClInclude>
     <ClInclude Include="src\Layers\InputLayer.h">
-      <Filter>Layers</Filter>
+      <Filter>src\Layers</Filter>
     </ClInclude>
     <ClInclude Include="src\Physics2D\DebugDrawBox2D.h">
-      <Filter>Physics2D</Filter>
+      <Filter>src\Physics2D</Filter>
     </ClInclude>
     <ClInclude Include="src\Physics2D\Geometry2D.h">
-      <Filter>Physics2D</Filter>
+      <Filter>src\Physics2D</Filter>
     </ClInclude>
     <ClInclude Include="src\Physics2D\Physics2D.h">
-      <Filter>Physics2D</Filter>
+      <Filter>src\Physics2D</Filter>
     </ClInclude>
     <ClInclude Include="src\Physics2D\PhysicsWorld.h">
-      <Filter>Physics2D</Filter>
+      <Filter>src\Physics2D</Filter>
     </ClInclude>
     <ClInclude Include="src\Platforms\Windows\WindowsWindow.h">
-      <Filter>Platforms\Windows</Filter>
+      <Filter>src\Platforms\Windows</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\Camera.h">
-      <Filter>Renderer</Filter>
+      <Filter>src\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\EditorCamera.h">
-      <Filter>Renderer</Filter>
+      <Filter>src\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\GLCall.h">
-      <Filter>Renderer</Filter>
+      <Filter>src\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\OldCamera.h">
-      <Filter>Renderer</Filter>
+      <Filter>src\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\Renderer2D.h">
-      <Filter>Renderer</Filter>
+      <Filter>src\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\Shader.h">
-      <Filter>Renderer</Filter>
+      <Filter>src\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\SpriteSheet.h">
-      <Filter>Renderer</Filter>
+      <Filter>src\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\Texture.h">
-      <Filter>Renderer</Filter>
+      <Filter>src\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\ResourceManager\ResourceManager.h">
-      <Filter>ResourceManager</Filter>
+      <Filter>src\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="vendor\stb\stb_image.h">
+      <Filter>vendor\stb</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\Application.cpp">
-      <Filter>Core</Filter>
+      <Filter>src\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Input.cpp">
-      <Filter>Core</Filter>
+      <Filter>src\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Layer.cpp">
-      <Filter>Core</Filter>
+      <Filter>src\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\LayerStack.cpp">
-      <Filter>Core</Filter>
+      <Filter>src\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Window.cpp">
-      <Filter>Core</Filter>
+      <Filter>src\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\ECS\ECSTypes.cpp">
-      <Filter>ECS</Filter>
+      <Filter>src\ECS</Filter>
     </ClCompile>
     <ClCompile Include="src\ECS\Scene.cpp">
-      <Filter>ECS</Filter>
+      <Filter>src\ECS</Filter>
     </ClCompile>
     <ClCompile Include="src\Layers\ImGuiLayer.cpp">
-      <Filter>Layers</Filter>
+      <Filter>src\Layers</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Main.cpp">
+      <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\Physics2D\DebugDrawBox2D.cpp">
-      <Filter>Physics2D</Filter>
+      <Filter>src\Physics2D</Filter>
     </ClCompile>
     <ClCompile Include="src\Physics2D\Geometry2D.cpp">
-      <Filter>Physics2D</Filter>
+      <Filter>src\Physics2D</Filter>
     </ClCompile>
     <ClCompile Include="src\Physics2D\Physics2D.cpp">
-      <Filter>Physics2D</Filter>
+      <Filter>src\Physics2D</Filter>
     </ClCompile>
     <ClCompile Include="src\Physics2D\PhysicsWorld.cpp">
-      <Filter>Physics2D</Filter>
+      <Filter>src\Physics2D</Filter>
     </ClCompile>
     <ClCompile Include="src\Platforms\Windows\WindowsWindow.cpp">
-      <Filter>Platforms\Windows</Filter>
+      <Filter>src\Platforms\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\EditorCamera.cpp">
-      <Filter>Renderer</Filter>
+      <Filter>src\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\OldCamera.cpp">
-      <Filter>Renderer</Filter>
+      <Filter>src\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\Renderer2D.cpp">
-      <Filter>Renderer</Filter>
+      <Filter>src\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\Shader.cpp">
-      <Filter>Renderer</Filter>
+      <Filter>src\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\SpriteSheet.cpp">
-      <Filter>Renderer</Filter>
+      <Filter>src\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\Texture.cpp">
-      <Filter>Renderer</Filter>
+      <Filter>src\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\ResourceManager\ResourceManager.cpp">
-      <Filter>ResourceManager</Filter>
+      <Filter>src\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\stb\stb_image.cpp">
+      <Filter>vendor\stb</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
