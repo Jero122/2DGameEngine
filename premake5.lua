@@ -1,10 +1,15 @@
 workspace "Almond"
 	architecture "x64"
-		startproject "AlmondNut"
+	startproject "AlmondNut"
 	configurations
 	{
 		"Debug",
 		"Release"
+	}
+
+	flags
+	{
+		"MultiProcessorCompile"
 	}
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
@@ -21,9 +26,10 @@ include "Almond/vendor/imgui"
 
 project "Almond"
 	location "Almond"
-	kind "SharedLib"
+	kind "StaticLib"
 	language "C++"
 	cppdialect "C++17"
+	staticruntime "off"
 
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
@@ -69,13 +75,7 @@ project "Almond"
 		defines
 		{
 			"ALM_PLATFORM_WINDOWS",
-			"ALM_BUILD_DLL"
 		}
-
-	postbuildcommands
-	{
-		("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/AlmondNut")
-	}
 
 	filter "configurations:Debug"
 		defines "ALM_DEBUG"
@@ -95,6 +95,7 @@ project "AlmondNut"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
+	staticruntime "off"
 
 	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")

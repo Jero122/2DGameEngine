@@ -2,11 +2,15 @@
 #include <memory>
 
 #ifdef ALM_PLATFORM_WINDOWS
+#if ALMOND_DYNAMIC_LINK
 	#ifdef ALM_BUILD_DLL
 		#define ALMOND_API __declspec(dllexport)
 	#else
 		#define ALMOND_API __declspec(dllimport)
 	#endif
+#else
+	#define ALMOND_API
+#endif
 #else
 	#error Almond only suppors windows!
 #endif
