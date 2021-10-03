@@ -1,6 +1,6 @@
 workspace "Almond"
 	architecture "x64"
-
+		startproject "AlmondNut"
 	configurations
 	{
 		"Debug",
@@ -70,6 +70,73 @@ project "Almond"
 		{
 			"ALM_PLATFORM_WINDOWS",
 			"ALM_BUILD_DLL"
+		}
+
+	postbuildcommands
+	{
+		("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/AlmondNut")
+	}
+
+	filter "configurations:Debug"
+		defines "ALM_DEBUG"
+		runtime "Debug"
+		symbols "on"
+		
+		
+	filter "configurations:Release"
+		defines "ALM_RELEASE"
+		runtime "Release"
+		optimize "on"
+
+
+
+project "AlmondNut"
+	location "AlmondNut"
+	kind "ConsoleApp"
+	language "C++"
+	cppdialect "C++17"
+
+	targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
+	objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
+
+	libdirs { "Almond/dependencies/lib/%{cfg.buildcfg}"}
+
+	files
+	{
+		
+		"AlmondNut/src/**.h",
+		"AlmondNut/src/**.cpp",
+		"AlmondNut/vendor/stb/**.h",
+		"AlmondNut/vendor/stb/**.cpp"
+	}
+
+	includedirs
+	{
+		"Almond/src",
+		"Almond/src/vendor",
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.SDL}",
+		"%{IncludeDir.GL}"
+	}
+
+	links
+	{
+		"Almond",
+		"SDL2",
+		"SDL2main",
+		"glew32s",
+		"opengl32",
+		"ImGui",
+		"box2d",
+		"ImGui"
+	}
+
+	filter "system:windows"
+		systemversion "latest"
+
+		defines
+		{
+			"ALM_PLATFORM_WINDOWS",
 		}
 
 	filter "configurations:Debug"

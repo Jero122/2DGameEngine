@@ -72,6 +72,9 @@
       <AdditionalLibraryDirectories>dependencies\lib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>..\bin\Debug-windows-x86_64\Almond\Almond.lib</ImportLibrary>
     </Link>
+    <PostBuildEvent>
+      <Command>IF EXIST ..\bin\Debug-windows-x86_64\Almond\Almond.dll\ (xcopy /Q /E /Y /I ..\bin\Debug-windows-x86_64\Almond\Almond.dll ..\bin\Debug-windows-x86_64\AlmondNut &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Debug-windows-x86_64\Almond\Almond.dll ..\bin\Debug-windows-x86_64\AlmondNut &gt; nul)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -95,6 +98,9 @@
       <AdditionalLibraryDirectories>dependencies\lib\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>..\bin\Release-windows-x86_64\Almond\Almond.lib</ImportLibrary>
     </Link>
+    <PostBuildEvent>
+      <Command>IF EXIST ..\bin\Release-windows-x86_64\Almond\Almond.dll\ (xcopy /Q /E /Y /I ..\bin\Release-windows-x86_64\Almond\Almond.dll ..\bin\Release-windows-x86_64\AlmondNut &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Release-windows-x86_64\Almond\Almond.dll ..\bin\Release-windows-x86_64\AlmondNut &gt; nul)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\Almond.h" />

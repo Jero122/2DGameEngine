@@ -42,6 +42,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Almond.h">
+      <Filter>src</Filter>
+    </ClInclude>
     <ClInclude Include="src\Core\AlmondApplication.h">
       <Filter>src\Core</Filter>
     </ClInclude>
@@ -153,7 +156,6 @@
     <ClInclude Include="vendor\stb\stb_image.h">
       <Filter>vendor\stb</Filter>
     </ClInclude>
-    <ClInclude Include="src\Almond.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\AlmondApplication.cpp">
