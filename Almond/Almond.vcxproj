@@ -59,7 +59,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>ALM_PLATFORM_WINDOWS;ALM_BUILD_DLL;ALM_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;src\vendor;dependencies\include;vendor\imgui;vendor\stb;vendor\glm;..;dependencies\include\GL;dependencies\include\box2d;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor;dependencies\include;vendor\imgui;vendor\stb;vendor\glm;..;dependencies\include\GL;dependencies\include\box2d;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -81,7 +81,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>ALM_PLATFORM_WINDOWS;ALM_BUILD_DLL;ALM_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;src\vendor;dependencies\include;vendor\imgui;vendor\stb;vendor\glm;..;dependencies\include\GL;dependencies\include\box2d;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor;dependencies\include;vendor\imgui;vendor\stb;vendor\glm;..;dependencies\include\GL;dependencies\include\box2d;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>

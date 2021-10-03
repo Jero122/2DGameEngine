@@ -42,7 +42,7 @@ project "Almond"
 	includedirs
 	{
 		"Almond/src",
-		"Almond/src/vendor",
+		"Almond/vendor",
 		"Almond/dependencies/include",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.stb}",
@@ -113,10 +113,10 @@ project "AlmondNut"
 	includedirs
 	{
 		"Almond/src",
-		"Almond/src/vendor",
-		"%{IncludeDir.glm}",
-		"%{IncludeDir.SDL}",
-		"%{IncludeDir.GL}"
+		"Almond/vendor",
+		"%{IncludeDir.SDL2}",
+		"%{IncludeDir.GL}",
+		"%{IncludeDir.glm}"
 	}
 
 	links
