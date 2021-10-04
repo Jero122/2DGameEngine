@@ -25,10 +25,6 @@ EditorLayer::~EditorLayer()
 
 void EditorLayer::OnAttach()
 {
-    Texture texture("resources/textures/container.jpg");
-    SpriteSheet spriteSheet("resources/textures/UpArrow.png", 32, 32, 1, 1);
-    Texture texture1("resources/textures/Crate.jpg");
-
     m_CurrentScene = std::make_shared<Scene>();
     m_SceneHierarchyPanel.SetScene(m_CurrentScene);
 
