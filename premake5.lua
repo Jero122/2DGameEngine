@@ -18,11 +18,11 @@ IncludeDir = {}
 IncludeDir["ImGui"] = "Almond/vendor/imgui"
 IncludeDir["SDL2"] = "Almond/dependencies/include/SDL"
 IncludeDir["GL"] = "Almond/dependencies/include/GL"
-IncludeDir["box2d"] = "Almond/dependencies/include/box2d"
+IncludeDir["Box2D"] = "Almond/dependencies/include/box2d"
 IncludeDir["stb"] = "Almond/vendor/stb"
 IncludeDir["glm"] = "Almond/vendor/glm"
 
-include "Almond/vendor/imgui"
+include "Almond/vendor/imgui/imgui"
 
 project "Almond"
 	location "Almond"
@@ -53,9 +53,9 @@ project "Almond"
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.stb}",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.SDL}",
+		"%{IncludeDir.SDL2}",
 		"%{IncludeDir.GL}",
-		"%{IncludeDir.box2d}"
+		"%{IncludeDir.Box2D}"
 	}
 
 	links
@@ -117,7 +117,9 @@ project "AlmondNut"
 		"Almond/vendor",
 		"%{IncludeDir.SDL2}",
 		"%{IncludeDir.GL}",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.Box2D}",
+		"%{IncludeDir.ImGui}"
 	}
 
 	links
@@ -126,10 +128,10 @@ project "AlmondNut"
 		"SDL2",
 		"SDL2main",
 		"glew32s",
+		"glu32",
 		"opengl32",
 		"ImGui",
-		"box2d",
-		"ImGui"
+		"box2d"
 	}
 
 	filter "system:windows"

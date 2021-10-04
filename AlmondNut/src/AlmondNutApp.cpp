@@ -1,11 +1,14 @@
-#include "Almond.h"
+#include <Almond.h>
+
+#include "EditorLayer.h"
+#include "Core/EntryPoint.h"
 
 class AlmondNut : public AlmondApplication
 {
 public:
 	AlmondNut()
 	{
-		
+		PushLayer(new EditorLayer());
 	}
 
 	~AlmondNut()

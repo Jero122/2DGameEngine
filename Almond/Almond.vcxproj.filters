@@ -40,6 +40,9 @@
     <Filter Include="vendor\stb">
       <UniqueIdentifier>{8BD3C5A8-778B-07F6-E092-E051CC69A2E6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="vendor\stb\stb">
+      <UniqueIdentifier>{635F6677-4F2D-5A7D-38C1-CAA3242E36E2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Almond.h">
@@ -153,8 +156,8 @@
     <ClInclude Include="src\ResourceManager\ResourceManager.h">
       <Filter>src\ResourceManager</Filter>
     </ClInclude>
-    <ClInclude Include="vendor\stb\stb_image.h">
-      <Filter>vendor\stb</Filter>
+    <ClInclude Include="vendor\stb\stb\stb_image.h">
+      <Filter>vendor\stb\stb</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -224,8 +227,8 @@
     <ClCompile Include="src\ResourceManager\ResourceManager.cpp">
       <Filter>src\ResourceManager</Filter>
     </ClCompile>
-    <ClCompile Include="vendor\stb\stb_image.cpp">
-      <Filter>vendor\stb</Filter>
+    <ClCompile Include="vendor\stb\stb\stb_image.cpp">
+      <Filter>vendor\stb\stb</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

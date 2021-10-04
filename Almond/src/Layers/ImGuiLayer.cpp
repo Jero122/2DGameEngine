@@ -1,9 +1,9 @@
 #include "ImGuiLayer.h"
 
 #include "Core/AlmondApplication.h"
-#include "imgui.h"
-#include "backends/imgui_impl_sdl.h"
-#include "backends/imgui_impl_opengl3.h"
+#include "imgui/imgui.h"
+#include "imgui/backends/imgui_impl_sdl.h"
+#include "imgui/backends/imgui_impl_opengl3.h"
 #include "SDL/SDL.h"
 
 ImGuiLayer::~ImGuiLayer()

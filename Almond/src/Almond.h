@@ -1,4 +1,34 @@
 #pragma once
 #include "Core/AlmondApplication.h"
 
-#include "Core/EntryPoint.h"
+
+/// ECS ///
+#include "ECS/Components/Transform.h"
+#include "ECS/Components/TagComponent.h"
+#include "ECS/Components/SpriteRender.h"
+#include "ECS/Components/RigidBody.h"
+#include "ECS/ECS.h"
+#include "ECS/ECSTypes.h"
+//Maybe dont need these
+#include "ECS/EntitiyManager.h"
+#include "ECS/ComponentManager.h"
+#include "ECS/SystemManager.h"
+#include "ECS/Entity.h"
+#include "ECS/Scene.h"
+#include "ECS/SceneView.h"
+
+
+/// Core ///
+#include "Core/Input.h"
+#include "Core/Layer.h"
+#include "Core/TimeStep.h"
+
+/// RENDERER ///
+#include "Renderer/Renderer2D.h"
+#include "Renderer/Camera.h"
+#include "Renderer/Shader.h"
+#include "Renderer/Texture.h"
+#include "Renderer/EditorCamera.h"
+#include "Renderer/GLCall.h" //TODO GLCALL shouldnt be here
+#include "Renderer/SpriteSheet.h"
+#include "Renderer/OldCamera.h"
