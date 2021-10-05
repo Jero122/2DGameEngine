@@ -22,7 +22,7 @@ IncludeDir["Box2D"] = "Almond/dependencies/include/box2d"
 IncludeDir["stb"] = "Almond/vendor/stb"
 IncludeDir["glm"] = "Almond/vendor/glm"
 
-include "Almond/vendor/imgui/imgui"
+include "Almond/vendor/imgui"
 
 project "Almond"
 	location "Almond"
@@ -152,3 +152,4 @@ project "AlmondNut"
 		defines "ALM_RELEASE"
 		runtime "Release"
 		optimize "on"
+

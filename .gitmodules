@@ -1,5 +1,5 @@
 [submodule "Almond/vendor/imgui"]
-	path = Almond/vendor/imgui
+	path = Almond/vendor/imgui/imgui
 	url = https://github.com/Jero122/imgui.git
 [submodule "Almond/vendor/glm"]
 	path = Almond/vendor/glm
