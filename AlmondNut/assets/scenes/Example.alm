@@ -5,7 +5,7 @@ Entities:
       Tag: Floor
     Transform:
       Position: [0, -3.5, 0]
-      Rotation: [0, 0, 0]
+      Rotation: [0, 0, 10]
       Scale: [16, 1, 1]
     Sprite Renderer:
       Width: 16
@@ -15,21 +15,21 @@ Entities:
     Tag Component:
       Tag: enttA
     Transform:
-      Position: [-2, 10, 0]
-      Rotation: [0, 0, 30]
+      Position: [0, 10, 0]
+      Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     Sprite Renderer:
-      Width: 16
+      Width: 1
       Height: 1
       Color: [1, 0, 0, 1]
   - Entity: 8589934592
     Tag Component:
       Tag: enttB
     Transform:
-      Position: [-2, 0, 0]
-      Rotation: [0, 0, 0]
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 10]
       Scale: [1, 1, 1]
     Sprite Renderer:
-      Width: 16
+      Width: 1
       Height: 1
       Color: [1, 1, 1, 1]

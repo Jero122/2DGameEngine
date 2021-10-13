@@ -35,7 +35,7 @@ void EditorLayer::OnAttach()
     Entity floor = m_CurrentScene->CreateEntity("Floor");
     {
         auto transformComponent = floor.GetComponent<Transform>();
-        *transformComponent = Transform{ glm::vec3(0,-3.5,0), glm::vec3(0,0,0),glm::vec3(16,1,1) };
+        *transformComponent = Transform{ glm::vec3(0,-3.5,0), glm::vec3(0,0,10.0f),glm::vec3(16,1,1) };
 
         floor.AddComponent(SpriteRenderer{ 16, 1, {1,1,1,0.1} });
 
@@ -51,9 +51,9 @@ void EditorLayer::OnAttach()
     Entity enttA = m_CurrentScene->CreateEntity("enttA");
     {
         auto transformComponent = enttA.GetComponent<Transform>();
-        *transformComponent = Transform{ glm::vec3(-2,10,0), glm::vec3(0,0,30),glm::vec3(1,1,1) };
+        *transformComponent = Transform{ glm::vec3(0,10,0), glm::vec3(0,0,0),glm::vec3(1,1,1) };
 
-        enttA.AddComponent(SpriteRenderer{ 16, 1, {1,0,0,1} });
+        enttA.AddComponent(SpriteRenderer{ 1, 1, {1,0,0,1} });
 
         RigidBody rb = RigidBody{};
         rb.FixedRotation = false;
@@ -61,15 +61,24 @@ void EditorLayer::OnAttach()
         enttA.AddComponent(rb);
 
         BoxCollider2D collider = BoxCollider2D{ {0.0f,0.0f}, {0.5f, 0.5f} };
+        collider.Friction = 0.1f;
         enttA.AddComponent(collider);
 
     }
     Entity enttB = m_CurrentScene->CreateEntity("enttB");
     {
         auto transformComponent = enttB.GetComponent<Transform>();
-        *transformComponent = Transform{ glm::vec3(-2,0,0), glm::vec3(0,0,0),glm::vec3(1,1,1) };
+        *transformComponent = Transform{ glm::vec3(0,0,0), glm::vec3(0,0,10.0f),glm::vec3(1,1,1) };
 
-        enttB.AddComponent(SpriteRenderer{ 16, 1, {1,1,1,1} });
+        enttB.AddComponent(SpriteRenderer{ 1, 1, {1,1,1,1} });
+
+        RigidBody rb = RigidBody{};
+        rb.FixedRotation = false;
+        rb.Type = RigidBody::BodyType::Dynamic;
+        enttB.AddComponent(rb);
+
+        BoxCollider2D collider = BoxCollider2D{ {0.0f,0.0f}, {0.5f, 0.5f} };
+        enttB.AddComponent(collider);
     }
 
     SceneSerializer sceneSerializer(m_CurrentScene);

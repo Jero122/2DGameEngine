@@ -22,7 +22,7 @@ Scene::Scene()
 	m_Ecs.CreateComponent<RigidBody>();
 	m_Ecs.CreateComponent<BoxCollider2D>();
 
-	m_PhysicsWorld = new b2World({0, -9.81f});
+	m_PhysicsWorld = new b2World({0, -10.0f});
 	m_Physics2D = Physics2D(&m_Ecs, m_PhysicsWorld);
 
 	float aspectRatio = 1920.0f / 1080.0f;
@@ -80,7 +80,7 @@ void Scene::OnStart()
 		{
 			auto collider = entity.GetComponent<BoxCollider2D>();
 			b2PolygonShape shape;
-			shape.SetAsBox(collider->Size.x * transform->scale.x, collider->Size.y * transform->scale.y, {collider->Offset.x, collider->Offset.y}, transform->rotation.z);
+			shape.SetAsBox(collider->Size.x * transform->scale.x, collider->Size.y * transform->scale.y);
 			b2FixtureDef fixture;
 			fixture.shape = &shape;
 			fixture.density = collider->Density;
