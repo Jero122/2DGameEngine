@@ -110,6 +110,7 @@
     <ClInclude Include="src\Core\TimeStep.h" />
     <ClInclude Include="src\Core\Window.h" />
     <ClInclude Include="src\ECS\ComponentManager.h" />
+    <ClInclude Include="src\ECS\Components\BoxCollider2D.h" />
     <ClInclude Include="src\ECS\Components\RigidBody.h" />
     <ClInclude Include="src\ECS\Components\SpriteRenderer.h" />
     <ClInclude Include="src\ECS\Components\TagComponent.h" />
@@ -125,7 +126,6 @@
     <ClInclude Include="src\Physics2D\DebugDrawBox2D.h" />
     <ClInclude Include="src\Physics2D\Geometry2D.h" />
     <ClInclude Include="src\Physics2D\Physics2D.h" />
-    <ClInclude Include="src\Physics2D\PhysicsWorld.h" />
     <ClInclude Include="src\Platforms\Windows\WindowsWindow.h" />
     <ClInclude Include="src\Renderer\Camera.h" />
     <ClInclude Include="src\Renderer\EditorCamera.h" />
@@ -151,7 +151,6 @@
     <ClCompile Include="src\Physics2D\DebugDrawBox2D.cpp" />
     <ClCompile Include="src\Physics2D\Geometry2D.cpp" />
     <ClCompile Include="src\Physics2D\Physics2D.cpp" />
-    <ClCompile Include="src\Physics2D\PhysicsWorld.cpp" />
     <ClCompile Include="src\Platforms\OpenGL\imgui_impl_opengl3.cpp" />
     <ClCompile Include="src\Platforms\OpenGL\imgui_impl_sdl.cpp" />
     <ClCompile Include="src\Platforms\Windows\WindowsWindow.cpp" />

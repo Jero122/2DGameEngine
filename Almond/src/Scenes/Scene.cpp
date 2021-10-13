@@ -1,7 +1,13 @@
 #include "Scene.h"
 #include "ECS/Entity.h"
 #include "ECS/SceneView.h"
+
+#include <box2d/b2_polygon_shape.h>
+#include "ECS/Components/BoxCollider2D.h"
+
 #include "ECS/Components/RigidBody.h"
+
+
 #include "ECS/Components/SpriteRenderer.h"
 #include "ECS/Components/TagComponent.h"
 #include "ECS/Components/Transform.h"
@@ -14,10 +20,10 @@ Scene::Scene()
 	m_Ecs.CreateComponent<SpriteRenderer>();
 	m_Ecs.CreateComponent<Transform>();
 	m_Ecs.CreateComponent<RigidBody>();
+	m_Ecs.CreateComponent<BoxCollider2D>();
 
-
-	m_Physics2D = Physics2D(&m_Ecs);
-	m_Physics2D.Init();
+	m_PhysicsWorld = new b2World({0, -9.81f});
+	m_Physics2D = Physics2D(&m_Ecs, m_PhysicsWorld);
 
 	float aspectRatio = 1920.0f / 1080.0f;
 	//glm::mat4 projection = glm::ortho(-aspectRatio, aspectRatio , 1.0f, -1.0f, -1.0f, 1.0
@@ -26,7 +32,7 @@ Scene::Scene()
 
 Scene::~Scene()
 {
-
+	delete m_PhysicsWorld;
 }
 
 Entity Scene::CreateEntity(std::string name)
@@ -45,6 +51,45 @@ Entity Scene::CreateEntity(std::string name)
 void Scene::DestroyEntity(Entity entity)
 {
 	m_Ecs.DestroyEntity(entity.GetHandle());
+}
+
+void Scene::OnStart()
+{
+	for (auto entt : SceneView<RigidBody>(m_Ecs))
+	{
+		auto entity = Entity{ entt, this };
+		auto rb = entity.GetComponent<RigidBody>();
+
+		auto transform = entity.GetComponent<Transform>();
+
+		b2BodyDef bodyDef;
+		bodyDef.position = { transform->position.x, transform->position.y };
+		bodyDef.angle = transform->rotation.z;
+		switch (rb->Type)
+		{
+			case RigidBody::BodyType::Static: bodyDef.type = b2_staticBody;  break;
+			case RigidBody::BodyType::Dynamic: bodyDef.type = b2_dynamicBody; break;
+			case RigidBody::BodyType::Kinematic: bodyDef.type = b2_kinematicBody; break;
+		}
+
+		b2Body* body = m_PhysicsWorld->CreateBody(&bodyDef);
+		body->SetFixedRotation(rb->FixedRotation);
+		rb->Body = body;
+
+		if (entity.HasComponent<BoxCollider2D>())
+		{
+			auto collider = entity.GetComponent<BoxCollider2D>();
+			b2PolygonShape shape;
+			shape.SetAsBox(collider->Size.x * transform->scale.x, collider->Size.y * transform->scale.y, {collider->Offset.x, collider->Offset.y}, transform->rotation.z);
+			b2FixtureDef fixture;
+			fixture.shape = &shape;
+			fixture.density = collider->Density;
+			fixture.friction = collider->Friction;
+			fixture.restitution = collider->Restition;
+			fixture.restitutionThreshold = collider->RestitutionThreshold;
+			body->CreateFixture(&fixture);
+		}
+	}
 }
 
 void Scene::OnUpdate(TimeStep timestep)

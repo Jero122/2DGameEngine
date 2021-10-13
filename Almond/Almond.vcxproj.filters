@@ -123,9 +123,6 @@
     <ClInclude Include="src\Physics2D\Physics2D.h">
       <Filter>src\Physics2D</Filter>
     </ClInclude>
-    <ClInclude Include="src\Physics2D\PhysicsWorld.h">
-      <Filter>src\Physics2D</Filter>
-    </ClInclude>
     <ClInclude Include="src\Platforms\Windows\WindowsWindow.h">
       <Filter>src\Platforms\Windows</Filter>
     </ClInclude>
@@ -165,6 +162,7 @@
     <ClInclude Include="vendor\stb\stb\stb_image.h">
       <Filter>vendor\stb\stb</Filter>
     </ClInclude>
+    <ClInclude Include="src\ECS\Components\BoxCollider2D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\AlmondApplication.cpp">
@@ -195,9 +193,6 @@
       <Filter>src\Physics2D</Filter>
     </ClCompile>
     <ClCompile Include="src\Physics2D\Physics2D.cpp">
-      <Filter>src\Physics2D</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Physics2D\PhysicsWorld.cpp">
       <Filter>src\Physics2D</Filter>
     </ClCompile>
     <ClCompile Include="src\Platforms\OpenGL\imgui_impl_opengl3.cpp">

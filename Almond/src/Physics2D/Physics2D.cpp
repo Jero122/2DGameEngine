@@ -1,21 +1,24 @@
 ﻿#include "Physics2D.h"
-
 #include "DebugDrawBox2D.h"
-#include "PhysicsWorld.h"
+
+#include "ECS/ECS.h"
 #include "ECS/Components/RigidBody.h"
 #include "ECS/Components/Transform.h"
-#include "ECS/ECS.h"
-#include "glm/trigonometric.hpp"
+#include "ECS/SceneView.h"
 
+#include "glm/trigonometric.hpp"
+#include "glm/vec2.hpp"
 #include <SDL/SDL.h>
 
-#include "ECS/SceneView.h"
-#include "glm/vec2.hpp"
+
+
 
 
 DebugDrawBox2D* debugDraw;
 
-void Physics2D::Init()
+
+Physics2D::Physics2D(ECS* ecs, b2World* world)
+	: ecs(ecs), m_b2World(world)
 {
 	debugDraw = new DebugDrawBox2D();
 	debugDraw->Create();
@@ -28,8 +31,7 @@ void Physics2D::Init()
 
 	debugDraw->SetFlags(flags);
 
-	PhysicsWorld::GetInstance()->SetDebugDraw(debugDraw);
-
+	m_b2World->SetDebugDraw(debugDraw);
 }
 
 void Physics2D::OnUpdate()
@@ -41,16 +43,16 @@ void Physics2D::OnUpdate()
 
 	while (m_Accumulator >= dt)
 	{
-		PhysicsWorld::GetInstance()->Step(dt, 6, 2);
+		m_b2World->Step(dt, 6, 2);
 
 		//Copy Current State into previous states
 		for (EntityID ent : SceneView<RigidBody>(*ecs))
 		{
 			RigidBody* rb = ecs->GetComponent<RigidBody>(ent);
 
-			rb->previousPosition.x = rb->body->GetPosition().x;
-			rb->previousPosition.y = rb->body->GetPosition().y;
-			rb->previousAngle = glm::degrees(rb->body->GetAngle());
+			rb->PreviousPosition.x = rb->Body->GetPosition().x;
+			rb->PreviousPosition.y = rb->Body->GetPosition().y;
+			rb->PreviousAngle = glm::degrees(rb->Body->GetAngle());
 		}
 
 		m_Accumulator -= dt;
@@ -60,7 +62,7 @@ void Physics2D::OnUpdate()
 	float alpha = m_Accumulator / dt;
 	Interpolate(alpha);
 
-	PhysicsWorld::GetInstance()->DebugDraw();
+	m_b2World->DebugDraw();
 	debugDraw->Flush();
 }
 
@@ -74,9 +76,9 @@ void Physics2D::Interpolate(float alpha)
 		auto rb = ecs->GetComponent<RigidBody>(ent);
 		auto transform = ecs->GetComponent<Transform>(ent);
 
-		transform->position.x = rb->body->GetPosition().x * alpha + rb->previousPosition.x * oneMinusAlpha;
-		transform->position.y = rb->body->GetPosition().y * alpha + rb->previousPosition.y * oneMinusAlpha;
-		transform->rotation.z = glm::degrees(rb->body->GetAngle()) * alpha + rb->previousAngle * oneMinusAlpha;
+		transform->position.x = rb->Body->GetPosition().x * alpha + rb->PreviousPosition.x * oneMinusAlpha;
+		transform->position.y = rb->Body->GetPosition().y * alpha + rb->PreviousPosition.y * oneMinusAlpha;
+		transform->rotation.z = glm::degrees(rb->Body->GetAngle()) * alpha + rb->PreviousAngle * oneMinusAlpha;
 	}
 }
 

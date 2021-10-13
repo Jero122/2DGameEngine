@@ -4,7 +4,7 @@ Entities:
     Tag Component:
       Tag: Floor
     Transform:
-      Position: [0, -4.5, 0]
+      Position: [0, -3.5, 0]
       Rotation: [0, 0, 0]
       Scale: [16, 1, 1]
     Sprite Renderer:
@@ -15,8 +15,8 @@ Entities:
     Tag Component:
       Tag: enttA
     Transform:
-      Position: [-2, 0, -1]
-      Rotation: [0, 0, 0]
+      Position: [-2, 10, 0]
+      Rotation: [0, 0, 30]
       Scale: [1, 1, 1]
     Sprite Renderer:
       Width: 16

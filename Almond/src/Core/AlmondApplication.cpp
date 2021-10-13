@@ -1,8 +1,6 @@
 #include "AlmondApplication.h"
 #include "TimeStep.h"
-#include "imgui/imgui.h"
 #include "Layers/InputLayer.h"
-#include "Physics2D/PhysicsWorld.h"
 #include "Renderer/Renderer2D.h"
 
 AlmondApplication* AlmondApplication::s_Instance = nullptr;
@@ -12,8 +10,6 @@ AlmondApplication::AlmondApplication()
 {
 	s_Instance = this;
 	m_Window = Window::Create(WindowProps());
-
-	PhysicsWorld::GetInstance()->SetGravity({0,-10});
 	
 	//INPUT
 	InputLayer* input = new InputLayer();

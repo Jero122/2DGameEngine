@@ -2,6 +2,8 @@
 
 #include "EditorLayer.h"
 #include <GL/glew.h>
+
+#include "ECS/Components/BoxCollider2D.h"
 #include "imgui/imgui.h"
 #include "Scenes/SceneSerializer.h"
 
@@ -33,24 +35,34 @@ void EditorLayer::OnAttach()
     Entity floor = m_CurrentScene->CreateEntity("Floor");
     {
         auto transformComponent = floor.GetComponent<Transform>();
-        *transformComponent = Transform{ glm::vec3(0,-4.5,0), glm::vec3(0,0,0),glm::vec3(16,1,1) };
+        *transformComponent = Transform{ glm::vec3(0,-3.5,0), glm::vec3(0,0,0),glm::vec3(16,1,1) };
 
         floor.AddComponent(SpriteRenderer{ 16, 1, {1,1,1,0.1} });
 
-        /*
-        RigidBody body(*PhysicsWorld::GetInstance(), 0, -4.5, BodyType::Static);
-        OrientedBox box(8, 0.50, 0.0f, 1.0f, 0.0f);
+        RigidBody rb = RigidBody{};
+        rb.FixedRotation = false;
+        rb.Type = RigidBody::BodyType::Static;
+        floor.AddComponent(rb);
 
-        body.AddBoxCollider(box);
-        floor.AddComponent(body);*/
+        BoxCollider2D collider = BoxCollider2D{ {0.0f,0.0f}, {0.5f, 0.5f} };
+        floor.AddComponent(collider);
     }
 
     Entity enttA = m_CurrentScene->CreateEntity("enttA");
     {
         auto transformComponent = enttA.GetComponent<Transform>();
-        *transformComponent = Transform{ glm::vec3(-2,0,-1), glm::vec3(0,0,0),glm::vec3(1,1,1) };
+        *transformComponent = Transform{ glm::vec3(-2,10,0), glm::vec3(0,0,30),glm::vec3(1,1,1) };
 
         enttA.AddComponent(SpriteRenderer{ 16, 1, {1,0,0,1} });
+
+        RigidBody rb = RigidBody{};
+        rb.FixedRotation = false;
+        rb.Type = RigidBody::BodyType::Dynamic;
+        enttA.AddComponent(rb);
+
+        BoxCollider2D collider = BoxCollider2D{ {0.0f,0.0f}, {0.5f, 0.5f} };
+        enttA.AddComponent(collider);
+
     }
     Entity enttB = m_CurrentScene->CreateEntity("enttB");
     {
@@ -62,6 +74,8 @@ void EditorLayer::OnAttach()
 
     SceneSerializer sceneSerializer(m_CurrentScene);
     sceneSerializer.Serialize("assets/scenes/Example.alm");
+
+    m_CurrentScene->OnStart();
 }
 
 void EditorLayer::OnDetach()
