@@ -1,5 +1,5 @@
 #pragma once
-#include "ECS.h"
+#include "ECS/ECS.h"
 #include "Core/TimeStep.h"
 #include "Physics2D/Physics2D.h"
 #include "Renderer/EditorCamera.h"
@@ -24,7 +24,9 @@ public:
 private:
 	ECS m_Ecs;
 	Physics2D m_Physics2D;
-	EditorCamera m_EditorCamera;	
+	EditorCamera m_EditorCamera;
+
 	friend class Entity;
 	friend class SceneHierarchyPanel;
+	friend class SceneSerializer;
 };

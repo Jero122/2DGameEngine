@@ -21,6 +21,7 @@ IncludeDir["GL"] = "%{wks.location}/Almond/dependencies/include/GL"
 IncludeDir["Box2D"] = "%{wks.location}/Almond/dependencies/include/box2d"
 IncludeDir["stb"] = "%{wks.location}/Almond/vendor/stb"
 IncludeDir["glm"] = "%{wks.location}/Almond/vendor/glm"
+IncludeDir["yaml"] = "%{wks.location}/Almond/vendor/yaml-cpp/include"
 
 include "Almond/vendor/imgui"
 include "Almond/vendor/yaml-cpp"
@@ -57,7 +58,8 @@ project "Almond"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.SDL2}",
 		"%{IncludeDir.GL}",
-		"%{IncludeDir.Box2D}"
+		"%{IncludeDir.Box2D}",
+		"%{IncludeDir.yaml}"
 	}
 
 	links
@@ -68,7 +70,9 @@ project "Almond"
 		"opengl32",
 		"ImGui",
 		"box2d",
-		"ImGui"
+		"ImGui",
+		"yaml-cpp"
+
 	}
 
 	filter "system:windows"

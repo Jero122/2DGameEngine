@@ -5,7 +5,7 @@
 /// ECS ///
 #include "ECS/Components/Transform.h"
 #include "ECS/Components/TagComponent.h"
-#include "ECS/Components/SpriteRender.h"
+#include "ECS/Components/SpriteRenderer.h"
 #include "ECS/Components/RigidBody.h"
 #include "ECS/ECS.h"
 #include "ECS/ECSTypes.h"
@@ -14,7 +14,7 @@
 #include "ECS/ComponentManager.h"
 #include "ECS/SystemManager.h"
 #include "ECS/Entity.h"
-#include "ECS/Scene.h"
+#include "Scenes/Scene.h"
 #include "ECS/SceneView.h"
 
 

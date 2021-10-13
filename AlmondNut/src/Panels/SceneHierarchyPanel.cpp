@@ -1,7 +1,7 @@
 #include "SceneHierarchyPanel.h"
 
 #include "ECS/SceneView.h"
-#include "ECS/Components/SpriteRender.h"
+#include "ECS/Components/SpriteRenderer.h"
 #include "ECS/Components/TagComponent.h"
 #include "ECS/Components/Transform.h"
 
@@ -54,7 +54,7 @@ void SceneHierarchyPanel::OnImGuiRender()
 		{
 			if (ImGui::MenuItem("Sprite Renderer"))
 			{
-				m_SelectedEntity.AddComponent<SpriteRender>({ 50.0f,50.0f, {1,1,1,1} });
+				m_SelectedEntity.AddComponent<SpriteRenderer>({ 50.0f,50.0f, {1,1,1,1} });
 				ImGui::CloseCurrentPopup();
 			}
 			ImGui::EndPopup();
@@ -231,9 +231,9 @@ void SceneHierarchyPanel::DrawEntityProperties(Entity entity)
 			DrawVec3Control("Scale", transform->scale, 1.0f);
 		});
 
-		DrawComponent<SpriteRender>("Sprite Renderer", entity, [](auto& component)
+		DrawComponent<SpriteRenderer>("Sprite Renderer", entity, [](auto& component)
 		{
-			auto spriteRender = (SpriteRender*)component;
+			auto spriteRender = (SpriteRenderer*)component;
 			ImGui::ColorEdit4("Color", glm::value_ptr(spriteRender->color));
 		});
 	}

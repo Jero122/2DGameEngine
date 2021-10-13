@@ -1,7 +1,7 @@
 #pragma once
 #include "OldCamera.h"
 #include "EditorCamera.h"
-#include "ECS/Components/SpriteRender.h"
+#include "ECS/Components/SpriteRenderer.h"
 #include "ECS/Components/Transform.h"
 #include "glm/fwd.hpp"
 

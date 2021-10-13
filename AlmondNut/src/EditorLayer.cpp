@@ -3,6 +3,7 @@
 #include "EditorLayer.h"
 #include <GL/glew.h>
 #include "imgui/imgui.h"
+#include "Scenes/SceneSerializer.h"
 
 EditorLayer::EditorLayer()
 {
@@ -34,7 +35,7 @@ void EditorLayer::OnAttach()
         auto transformComponent = floor.GetComponent<Transform>();
         *transformComponent = Transform{ glm::vec3(0,-4.5,0), glm::vec3(0,0,0),glm::vec3(16,1,1) };
 
-        floor.AddComponent(SpriteRender{ 16, 1, {1,1,1,0.1} });
+        floor.AddComponent(SpriteRenderer{ 16, 1, {1,1,1,0.1} });
 
         /*
         RigidBody body(*PhysicsWorld::GetInstance(), 0, -4.5, BodyType::Static);
@@ -49,42 +50,18 @@ void EditorLayer::OnAttach()
         auto transformComponent = enttA.GetComponent<Transform>();
         *transformComponent = Transform{ glm::vec3(-2,0,-1), glm::vec3(0,0,0),glm::vec3(1,1,1) };
 
-        enttA.AddComponent(SpriteRender{ 16, 1, {1,0,0,1} });
+        enttA.AddComponent(SpriteRenderer{ 16, 1, {1,0,0,1} });
     }
     Entity enttB = m_CurrentScene->CreateEntity("enttB");
     {
         auto transformComponent = enttB.GetComponent<Transform>();
         *transformComponent = Transform{ glm::vec3(-2,0,0), glm::vec3(0,0,0),glm::vec3(1,1,1) };
 
-        enttB.AddComponent(SpriteRender{ 16, 1, {1,1,1,1} });
+        enttB.AddComponent(SpriteRenderer{ 16, 1, {1,1,1,1} });
     }
 
-    bool hasRenderer = enttB.HasComponent<SpriteRender>();
-    /*enttB.RemoveComponent(enttB.GetComponent<SpriteRender>());
-    enttB.RemoveComponent(enttB.GetComponent<SpriteRender>());*/
-	
-    /*for (int i = 0; i < 10; ++i)
-    {
-        std::string name = "Crate ";
-        name += std::to_string(i);
-        auto entity = m_CurrentScene->CreateEntity(name);
-        {
-            auto pos = glm::vec3{ randPositionX(generator),randPositionY(generator),0.0f };
-            auto rot = glm::vec3{ 0.0f,0.0f,0 };
-            auto scale = glm::vec3{ 0.5f,0.5f,1.0f };
-        	
-            auto transform = entity.GetComponent<Transform>();
-        	*transform = Transform{ glm::vec3(pos.x,pos.y, 0),rot,scale };
-        	
-            entity.AddComponent(SpriteRender{ 0.5f , 0.5f, texture1.GetTexID() });
-
-            /*RigidBody body(*PhysicsWorld::GetInstance(), pos.x, pos.y, BodyType::Dynamic);
-            OrientedBox box(0.24, 0.24, 1.0f, 0.1f, 0.0f);
-            body.AddBoxCollider(box);
-        	
-            entity.AddComponent(body);#1#
-        }
-    }*/
+    SceneSerializer sceneSerializer(m_CurrentScene);
+    sceneSerializer.Serialize("assets/scenes/Example.alm");
 }
 
 void EditorLayer::OnDetach()

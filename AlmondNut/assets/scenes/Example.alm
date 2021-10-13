@@ -1,0 +1,41 @@
+Scene: Untitled
+Entities:
+  - Entity: 0
+    Tag Component:
+      Tag: Floor
+    Transform:
+      Position: [0, -4.5, 0]
+      Rotation: [0, 0, 0]
+      Scale: [16, 1, 1]
+    Sprite Renderer:
+      Width: 16
+      Height: 1
+      Color: [1, 1, 1, 0.100000001]
+      TextureID: 0
+      TexCoords: true
+  - Entity: 4294967296
+    Tag Component:
+      Tag: enttA
+    Transform:
+      Position: [-2, 0, -1]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Sprite Renderer:
+      Width: 16
+      Height: 1
+      Color: [1, 0, 0, 1]
+      TextureID: 0
+      TexCoords: true
+  - Entity: 8589934592
+    Tag Component:
+      Tag: enttB
+    Transform:
+      Position: [-2, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    Sprite Renderer:
+      Width: 16
+      Height: 1
+      Color: [1, 1, 1, 1]
+      TextureID: 0
+      TexCoords: true

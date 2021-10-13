@@ -57,7 +57,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>ALM_PLATFORM_WINDOWS;ALM_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor;dependencies\include;vendor\imgui;vendor\stb;vendor\glm;dependencies\include\SDL;dependencies\include\GL;dependencies\include\box2d;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor;dependencies\include;vendor\imgui;vendor\stb;vendor\glm;dependencies\include\SDL;dependencies\include\GL;dependencies\include\box2d;vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -79,7 +79,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>ALM_PLATFORM_WINDOWS;ALM_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor;dependencies\include;vendor\imgui;vendor\stb;vendor\glm;dependencies\include\SDL;dependencies\include\GL;dependencies\include\box2d;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor;dependencies\include;vendor\imgui;vendor\stb;vendor\glm;dependencies\include\SDL;dependencies\include\GL;dependencies\include\box2d;vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -111,14 +111,13 @@
     <ClInclude Include="src\Core\Window.h" />
     <ClInclude Include="src\ECS\ComponentManager.h" />
     <ClInclude Include="src\ECS\Components\RigidBody.h" />
-    <ClInclude Include="src\ECS\Components\SpriteRender.h" />
+    <ClInclude Include="src\ECS\Components\SpriteRenderer.h" />
     <ClInclude Include="src\ECS\Components\TagComponent.h" />
     <ClInclude Include="src\ECS\Components\Transform.h" />
     <ClInclude Include="src\ECS\ECS.h" />
     <ClInclude Include="src\ECS\ECSTypes.h" />
     <ClInclude Include="src\ECS\EntitiyManager.h" />
     <ClInclude Include="src\ECS\Entity.h" />
-    <ClInclude Include="src\ECS\Scene.h" />
     <ClInclude Include="src\ECS\SceneView.h" />
     <ClInclude Include="src\ECS\SystemManager.h" />
     <ClInclude Include="src\Layers\ImGuiLayer.h" />
@@ -137,6 +136,8 @@
     <ClInclude Include="src\Renderer\SpriteSheet.h" />
     <ClInclude Include="src\Renderer\Texture.h" />
     <ClInclude Include="src\ResourceManager\ResourceManager.h" />
+    <ClInclude Include="src\Scenes\Scene.h" />
+    <ClInclude Include="src\Scenes\SceneSerializer.h" />
     <ClInclude Include="vendor\stb\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
@@ -146,7 +147,6 @@
     <ClCompile Include="src\Core\LayerStack.cpp" />
     <ClCompile Include="src\Core\Window.cpp" />
     <ClCompile Include="src\ECS\ECSTypes.cpp" />
-    <ClCompile Include="src\ECS\Scene.cpp" />
     <ClCompile Include="src\Layers\ImGuiLayer.cpp" />
     <ClCompile Include="src\Physics2D\DebugDrawBox2D.cpp" />
     <ClCompile Include="src\Physics2D\Geometry2D.cpp" />
@@ -162,11 +162,16 @@
     <ClCompile Include="src\Renderer\SpriteSheet.cpp" />
     <ClCompile Include="src\Renderer\Texture.cpp" />
     <ClCompile Include="src\ResourceManager\ResourceManager.cpp" />
+    <ClCompile Include="src\Scenes\Scene.cpp" />
+    <ClCompile Include="src\Scenes\SceneSerializer.cpp" />
     <ClCompile Include="vendor\stb\stb\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\imgui\ImGui.vcxproj">
       <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>
+    </ProjectReference>
+    <ProjectReference Include="vendor\yaml-cpp\yaml-cpp.vcxproj">
+      <Project>{88F1A057-74BE-FB62-9DD7-E90A890331F1}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

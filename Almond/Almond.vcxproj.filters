@@ -34,6 +34,9 @@
     <Filter Include="src\ResourceManager">
       <UniqueIdentifier>{3F4EAE55-ABAF-8B63-341D-D215A07DC222}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Scenes">
+      <UniqueIdentifier>{BDC7122E-A97F-547B-1287-2DD7FE5DEF6B}</UniqueIdentifier>
+    </Filter>
     <Filter Include="vendor">
       <UniqueIdentifier>{B3738122-9F15-ACF8-88D0-BF4C74113349}</UniqueIdentifier>
     </Filter>
@@ -78,7 +81,7 @@
     <ClInclude Include="src\ECS\Components\RigidBody.h">
       <Filter>src\ECS\Components</Filter>
     </ClInclude>
-    <ClInclude Include="src\ECS\Components\SpriteRender.h">
+    <ClInclude Include="src\ECS\Components\SpriteRenderer.h">
       <Filter>src\ECS\Components</Filter>
     </ClInclude>
     <ClInclude Include="src\ECS\Components\TagComponent.h">
@@ -97,9 +100,6 @@
       <Filter>src\ECS</Filter>
     </ClInclude>
     <ClInclude Include="src\ECS\Entity.h">
-      <Filter>src\ECS</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ECS\Scene.h">
       <Filter>src\ECS</Filter>
     </ClInclude>
     <ClInclude Include="src\ECS\SceneView.h">
@@ -156,6 +156,12 @@
     <ClInclude Include="src\ResourceManager\ResourceManager.h">
       <Filter>src\ResourceManager</Filter>
     </ClInclude>
+    <ClInclude Include="src\Scenes\Scene.h">
+      <Filter>src\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scenes\SceneSerializer.h">
+      <Filter>src\Scenes</Filter>
+    </ClInclude>
     <ClInclude Include="vendor\stb\stb\stb_image.h">
       <Filter>vendor\stb\stb</Filter>
     </ClInclude>
@@ -177,9 +183,6 @@
       <Filter>src\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\ECS\ECSTypes.cpp">
-      <Filter>src\ECS</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ECS\Scene.cpp">
       <Filter>src\ECS</Filter>
     </ClCompile>
     <ClCompile Include="src\Layers\ImGuiLayer.cpp">
@@ -226,6 +229,12 @@
     </ClCompile>
     <ClCompile Include="src\ResourceManager\ResourceManager.cpp">
       <Filter>src\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scenes\Scene.cpp">
+      <Filter>src\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scenes\SceneSerializer.cpp">
+      <Filter>src\Scenes</Filter>
     </ClCompile>
     <ClCompile Include="vendor\stb\stb\stb_image.cpp">
       <Filter>vendor\stb\stb</Filter>

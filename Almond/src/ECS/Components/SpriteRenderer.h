@@ -2,7 +2,7 @@
 #include "glm/vec2.hpp"
 #include "glm/vec4.hpp"
 
-struct SpriteRender
+struct SpriteRenderer
 {
 	float width;
 	float height;
@@ -10,9 +10,9 @@ struct SpriteRender
 	unsigned int textureID;
 	glm::vec2 texCoords[4];
 
-	SpriteRender() = default;
+	SpriteRenderer() = default;
 
-	SpriteRender(float width, float height, const glm::vec4& color)
+	SpriteRenderer(float width, float height, const glm::vec4& color)
 		: width(width),
 		  height(height),
 		  color(color)
@@ -20,7 +20,7 @@ struct SpriteRender
 		textureID = 0;
 	}
 
-	SpriteRender(float width, float height, unsigned texture_id, glm::vec2 topRight, glm::vec2 bottomRight, glm::vec2 bottomLeft, glm::vec2 topLeft)
+	SpriteRenderer(float width, float height, unsigned texture_id, glm::vec2 topRight, glm::vec2 bottomRight, glm::vec2 bottomLeft, glm::vec2 topLeft)
 		: width(width),
 		  height(height),
 		  textureID(texture_id)
@@ -31,7 +31,7 @@ struct SpriteRender
 		texCoords[3] = topLeft;
 	}
 
-	SpriteRender(float width, float height, unsigned texture_id)
+	SpriteRenderer(float width, float height, unsigned texture_id)
 		: width(width),
 		  height(height), color(glm::vec4{255,255,255,1}),
 		  textureID(texture_id)

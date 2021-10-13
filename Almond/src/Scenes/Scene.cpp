@@ -1,20 +1,17 @@
 #include "Scene.h"
-
-#include <iostream>
-
-#include "Entity.h"
-#include "SceneView.h"
-#include "Components/RigidBody.h"
-#include "Components/SpriteRender.h"
-#include "Components/TagComponent.h"
-#include "Components/Transform.h"
+#include "ECS/Entity.h"
+#include "ECS/SceneView.h"
+#include "ECS/Components/RigidBody.h"
+#include "ECS/Components/SpriteRenderer.h"
+#include "ECS/Components/TagComponent.h"
+#include "ECS/Components/Transform.h"
 #include "Renderer/Renderer2D.h"
 
 Scene::Scene()
 {
 	m_Ecs.Init();
 	m_Ecs.CreateComponent<TagComponent>();
-	m_Ecs.CreateComponent<SpriteRender>();
+	m_Ecs.CreateComponent<SpriteRenderer>();
 	m_Ecs.CreateComponent<Transform>();
 	m_Ecs.CreateComponent<RigidBody>();
 
@@ -59,10 +56,10 @@ void Scene::OnUpdate(TimeStep timestep)
 
 	//Render
 	Renderer2D::BeginScene(m_EditorCamera);
-	for (EntityID ent : SceneView<Transform, SpriteRender>(m_Ecs))
+	for (EntityID ent : SceneView<Transform, SpriteRenderer>(m_Ecs))
 	{
 		auto transform = m_Ecs.GetComponent<Transform>(ent);
-		auto sprite = m_Ecs.GetComponent<SpriteRender>(ent);
+		auto sprite = m_Ecs.GetComponent<SpriteRenderer>(ent);
 		Renderer2D::Submit(transform->position,transform->rotation.z,{transform->scale.x, transform->scale.y}, sprite->color,sprite->textureID, sprite->texCoords);
 	}
 
