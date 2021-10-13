@@ -11,8 +11,6 @@ Entities:
       Width: 16
       Height: 1
       Color: [1, 1, 1, 0.100000001]
-      TextureID: 0
-      TexCoords: true
   - Entity: 4294967296
     Tag Component:
       Tag: enttA
@@ -24,8 +22,6 @@ Entities:
       Width: 16
       Height: 1
       Color: [1, 0, 0, 1]
-      TextureID: 0
-      TexCoords: true
   - Entity: 8589934592
     Tag Component:
       Tag: enttB
@@ -37,5 +33,3 @@ Entities:
       Width: 16
       Height: 1
       Color: [1, 1, 1, 1]
-      TextureID: 0
-      TexCoords: true

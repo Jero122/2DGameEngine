@@ -63,10 +63,8 @@ static void SerializeEntity(YAML::Emitter& out, Entity entity)
 		out << YAML::Key << "Width" << YAML::Value << spriteRenderer->width;
 		out << YAML::Key << "Height" << YAML::Value << spriteRenderer->height;
 		out << YAML::Key << "Color" << YAML::Value << spriteRenderer->color;
-		out << YAML::Key << "TextureID" << YAML::Value << spriteRenderer->textureID;
-		out << YAML::Key << "TexCoords" << YAML::Value << spriteRenderer->texCoords;
 
-		out << YAML::EndMap; // Transform
+		out << YAML::EndMap; // Sprite Renderer
 	}
 
 
