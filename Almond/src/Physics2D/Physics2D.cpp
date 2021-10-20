@@ -60,7 +60,7 @@ void Physics2D::SyncWithComponents()
 		shape->SetAsBox(collider->Size.x * transform->scale.x, collider->Size.y * transform->scale.y);
 		fixture->SetDensity(collider->Density);
 		fixture->SetFriction(collider->Friction);
-		fixture->SetRestitution(collider->Restition);
+		fixture->SetRestitution(collider->Restitution);
 		fixture->SetRestitutionThreshold(collider->RestitutionThreshold);
 	}
 

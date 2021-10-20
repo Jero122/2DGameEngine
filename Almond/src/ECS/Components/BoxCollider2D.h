@@ -9,7 +9,7 @@ struct BoxCollider2D
 
 	float Density = 1.0f;
 	float Friction = 1.0f;
-	float Restition = 0.0f;
+	float Restitution = 0.0f;
 	float RestitutionThreshold = 0.5f;
 
 	b2Fixture* Fixture = nullptr;

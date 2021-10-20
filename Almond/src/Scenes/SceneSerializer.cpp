@@ -4,9 +4,18 @@
 #include <yaml-cpp/yaml.h>
 #include "ECS/SceneView.h"
 #include "ECS/Entity.h"
+#include "ECS/Components/BoxCollider2D.h"
+#include "ECS/Components/RigidBody.h"
 #include "ECS/Components/SpriteRenderer.h"
 #include "ECS/Components/TagComponent.h"
 #include "ECS/Components/Transform.h"
+
+YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec2& vec)
+{
+	out << YAML::Flow;
+	out << YAML::BeginSeq << vec.x << vec.y << YAML::EndSeq;
+	return out;
+}
 
 YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec3& vec)
 {
@@ -22,6 +31,32 @@ YAML::Emitter& operator<<(YAML::Emitter& out, const glm::vec4& vec)
 	return out;
 }
 
+
+static std::string RigidBodyTypeToString(RigidBody::BodyType bodyType)
+{
+	switch (bodyType)
+	{
+		case RigidBody::BodyType::Dynamic: return "Dynamic";
+		case RigidBody::BodyType::Static: return "Static";
+		case RigidBody::BodyType::Kinematic: return "Kinematic";
+	}
+}
+
+static RigidBody::BodyType RigidBodyTypeFromString(std::string bodyType)
+{
+	if (bodyType == "Dynamic")
+	{
+		return RigidBody::BodyType::Dynamic;
+	}
+	else if (bodyType == "Static")
+	{
+		return RigidBody::BodyType::Static;
+	}
+	else if (bodyType == "Kinematic")
+	{
+		return RigidBody::BodyType::Kinematic;
+	}
+}
 
 static void SerializeEntity(YAML::Emitter& out, Entity entity)
 {
@@ -65,6 +100,34 @@ static void SerializeEntity(YAML::Emitter& out, Entity entity)
 		out << YAML::Key << "Color" << YAML::Value << spriteRenderer->color;
 
 		out << YAML::EndMap; // Sprite Renderer
+	}
+	if (entity.HasComponent<RigidBody>())
+	{
+		out << YAML::Key << "Rigid Body";
+		out << YAML::BeginMap; // RigidBody
+
+		auto rb = entity.GetComponent<RigidBody>();
+
+		out << YAML::Key << "Body Type" << YAML::Value << RigidBodyTypeToString(rb->Type);
+		out << YAML::Key << "Fixed Rotation" << YAML::Value << rb->FixedRotation;
+
+		out << YAML::EndMap; // RigidBody
+	}
+	if (entity.HasComponent<BoxCollider2D>())
+	{
+		out << YAML::Key << "Box Collider2D";
+		out << YAML::BeginMap; // BoxCollider2D
+
+		auto collider = entity.GetComponent<BoxCollider2D>();
+
+		out << YAML::Key << "Offset" << YAML::Value << collider->Offset;
+		out << YAML::Key << "Size" << YAML::Value << collider->Size;
+		out << YAML::Key << "Density" << YAML::Value << collider->Density;
+		out << YAML::Key << "Friction" << YAML::Value << collider->Friction;
+		out << YAML::Key << "Restitution" << YAML::Value << collider->Restitution;
+		out << YAML::Key << "Restitution Threshold" << YAML::Value << collider->RestitutionThreshold;
+
+		out << YAML::EndMap; // BoxCollider2D
 	}
 
 

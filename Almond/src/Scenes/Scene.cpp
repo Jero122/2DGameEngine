@@ -82,7 +82,7 @@ void Scene::OnRuntimeStart()
 			fixture.shape = &shape;
 			fixture.density = collider->Density;
 			fixture.friction = collider->Friction;
-			fixture.restitution = collider->Restition;
+			fixture.restitution = collider->Restitution;
 			fixture.restitutionThreshold = collider->RestitutionThreshold;
 			body->CreateFixture(&fixture);
 		}

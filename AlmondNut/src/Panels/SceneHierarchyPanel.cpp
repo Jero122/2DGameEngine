@@ -326,7 +326,7 @@ void SceneHierarchyPanel::DrawEntityProperties(Entity entity)
 
 				ImGui::DragFloat("Density", &(collider->Density), 0.1f);
 				ImGui::DragFloat("Friction", &(collider->Friction), 0.1f, 0, 1);
-				ImGui::DragFloat("Restitution", &(collider->Restition), 0.1f, 0, 1);
+				ImGui::DragFloat("Restitution", &(collider->Restitution), 0.1f, 0, 1);
 				ImGui::DragFloat("Restitution Threshold", &(collider->RestitutionThreshold), 0.1f, 0, 1);
 			});
 	}
