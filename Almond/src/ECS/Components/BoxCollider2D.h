@@ -8,7 +8,7 @@ struct BoxCollider2D
 	glm::vec2 Size = { 0.0f, 0.0f };
 
 	float Density = 1.0f;
-	float Friction = 0.5f;
+	float Friction = 1.0f;
 	float Restition = 0.0f;
 	float RestitutionThreshold = 0.5f;
 

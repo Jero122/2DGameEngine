@@ -16,21 +16,17 @@ public:
 	Entity CreateEntity(std::string name);
 	void DestroyEntity(Entity entity);
 
-	void OnStart();
-	void OnUpdate(TimeStep timestep);
+	void OnRuntimeStart();
+	void OnRuntimeStop();
 
-	EditorCamera& GetEditorCamera()
-	{
-		return m_EditorCamera;
-	}
+	//TODO remove editor camera from runtime and use a camera component
+	void OnRuntimeUpdate(TimeStep timestep, EditorCamera& editorCamera);
+	void OnEditorUpdate(TimeStep timestep, EditorCamera& editorCamera);
 
 private:
 	ECS m_Ecs;
 	b2World* m_PhysicsWorld;
-
-	Physics2D m_Physics2D;
-
-	EditorCamera m_EditorCamera;
+	Physics2D* m_Physics2D;
 
 	friend class Entity;
 	friend class SceneHierarchyPanel;

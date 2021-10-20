@@ -8,6 +8,7 @@ public:
 	Physics2D() = default;
 	explicit Physics2D(ECS* ecs, b2World* world);
 
+	void SyncWithComponents();
 	void OnUpdate();
 	void ShutDown();
 	bool interpolate = true; //Interpolates each rigidbody for smoother movement

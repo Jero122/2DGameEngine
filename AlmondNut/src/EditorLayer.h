@@ -38,5 +38,16 @@ private:
 	glm::vec2 m_ViewportSize = {1280.0f, 720.0f};
 
 	SceneHierarchyPanel m_SceneHierarchyPanel;
+	EditorCamera m_EditorCamera;
+
+	enum class SceneState
+	{
+		Play = 0, Edit
+	};
+
+	SceneState m_SceneState = SceneState::Edit;
+	std::shared_ptr<Texture> m_PlayIcon;
+	std::shared_ptr<Texture> m_StopIcon;
+
 };
 

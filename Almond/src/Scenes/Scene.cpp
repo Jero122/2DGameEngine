@@ -21,13 +21,6 @@ Scene::Scene()
 	m_Ecs.CreateComponent<Transform>();
 	m_Ecs.CreateComponent<RigidBody>();
 	m_Ecs.CreateComponent<BoxCollider2D>();
-
-	m_PhysicsWorld = new b2World({0, -10.0f});
-	m_Physics2D = Physics2D(&m_Ecs, m_PhysicsWorld);
-
-	float aspectRatio = 1920.0f / 1080.0f;
-	//glm::mat4 projection = glm::ortho(-aspectRatio, aspectRatio , 1.0f, -1.0f, -1.0f, 1.0
-	m_EditorCamera = EditorCamera(45.0f, aspectRatio, 0.1f, 1000.0f);
 }
 
 Scene::~Scene()
@@ -53,8 +46,12 @@ void Scene::DestroyEntity(Entity entity)
 	m_Ecs.DestroyEntity(entity.GetHandle());
 }
 
-void Scene::OnStart()
+void Scene::OnRuntimeStart()
 {
+	m_PhysicsWorld = new b2World({ 0, -10.0f });
+	m_PhysicsWorld->SetAllowSleeping(false);
+	m_Physics2D = new Physics2D(&m_Ecs, m_PhysicsWorld);
+
 	for (auto entt : SceneView<RigidBody>(m_Ecs))
 	{
 		auto entity = Entity{ entt, this };
@@ -64,7 +61,7 @@ void Scene::OnStart()
 
 		b2BodyDef bodyDef;
 		bodyDef.position = { transform->position.x, transform->position.y };
-		bodyDef.angle = transform->rotation.z;
+		bodyDef.angle = (glm::radians(transform->rotation.z));
 		switch (rb->Type)
 		{
 			case RigidBody::BodyType::Static: bodyDef.type = b2_staticBody;  break;
@@ -92,7 +89,15 @@ void Scene::OnStart()
 	}
 }
 
-void Scene::OnUpdate(TimeStep timestep)
+void Scene::OnRuntimeStop()
+{
+	delete m_PhysicsWorld;
+	m_PhysicsWorld = nullptr;
+	delete m_Physics2D;
+	m_Physics2D = nullptr;
+}
+
+void Scene::OnRuntimeUpdate(TimeStep timestep, EditorCamera& editorCamera)
 {
 	for (auto system: m_Ecs)
 	{
@@ -100,7 +105,7 @@ void Scene::OnUpdate(TimeStep timestep)
 	}
 
 	//Render
-	Renderer2D::BeginScene(m_EditorCamera);
+	Renderer2D::BeginScene(editorCamera);
 	for (EntityID ent : SceneView<Transform, SpriteRenderer>(m_Ecs))
 	{
 		auto transform = m_Ecs.GetComponent<Transform>(ent);
@@ -111,7 +116,22 @@ void Scene::OnUpdate(TimeStep timestep)
 	Renderer2D::EndScene();
 	
 	//Physcs
-	m_Physics2D.OnUpdate();
+	m_Physics2D->OnUpdate();
 
-	m_EditorCamera.OnUpdate(timestep);
+	editorCamera.OnUpdate(timestep);
+}
+
+void Scene::OnEditorUpdate(TimeStep timestep, EditorCamera& editorCamera)
+{
+	//Render
+	Renderer2D::BeginScene(editorCamera);
+	for (EntityID ent : SceneView<Transform, SpriteRenderer>(m_Ecs))
+	{
+		auto transform = m_Ecs.GetComponent<Transform>(ent);
+		auto sprite = m_Ecs.GetComponent<SpriteRenderer>(ent);
+		Renderer2D::Submit(transform->position, transform->rotation.z, { transform->scale.x, transform->scale.y }, sprite->color, sprite->textureID, sprite->texCoords);
+	}
+
+	Renderer2D::EndScene();
+	editorCamera.OnUpdate(timestep);
 }

@@ -5,7 +5,7 @@
 
 struct RigidBody
 {
-	enum class BodyType { Static = 0, Dynamic, Kinematic};
+	enum class BodyType { Static = 0, Kinematic, Dynamic};
 	b2Body* Body;
 	BodyType Type = BodyType::Static;
 	bool FixedRotation = false;

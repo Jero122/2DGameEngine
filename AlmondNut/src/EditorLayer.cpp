@@ -3,6 +3,7 @@
 #include "EditorLayer.h"
 #include <GL/glew.h>
 
+#include "imgui_internal.h"
 #include "ECS/Components/BoxCollider2D.h"
 #include "imgui/imgui.h"
 #include "Scenes/SceneSerializer.h"
@@ -28,14 +29,18 @@ EditorLayer::~EditorLayer()
 
 void EditorLayer::OnAttach()
 {
+    m_EditorCamera = EditorCamera(45.0f, 1920.0f / 1080.0f, 0.1f, 1000.0f);
     m_CurrentScene = std::make_shared<Scene>();
     m_SceneHierarchyPanel.SetScene(m_CurrentScene);
+
+    m_PlayIcon = std::make_shared<Texture>("resources/textures/PlayButton.png");
+    m_StopIcon = std::make_shared<Texture>("resources/textures/StopButton.png");
 
 
     Entity floor = m_CurrentScene->CreateEntity("Floor");
     {
         auto transformComponent = floor.GetComponent<Transform>();
-        *transformComponent = Transform{ glm::vec3(0,-3.5,0), glm::vec3(0,0,10.0f),glm::vec3(16,1,1) };
+        *transformComponent = Transform{ glm::vec3(0,-3.5,0), glm::vec3(0,0,0),glm::vec3(16,1,1) };
 
         floor.AddComponent(SpriteRenderer{ 16, 1, {1,1,1,0.1} });
 
@@ -65,10 +70,10 @@ void EditorLayer::OnAttach()
         enttA.AddComponent(collider);
 
     }
-    Entity enttB = m_CurrentScene->CreateEntity("enttB");
+    /*Entity enttB = m_CurrentScene->CreateEntity("enttB");
     {
         auto transformComponent = enttB.GetComponent<Transform>();
-        *transformComponent = Transform{ glm::vec3(0,0,0), glm::vec3(0,0,10.0f),glm::vec3(1,1,1) };
+        *transformComponent = Transform{ glm::vec3(0,0,0), glm::vec3(0,0,0.0f),glm::vec3(1,1,1) };
 
         enttB.AddComponent(SpriteRenderer{ 1, 1, {1,1,1,1} });
 
@@ -79,12 +84,10 @@ void EditorLayer::OnAttach()
 
         BoxCollider2D collider = BoxCollider2D{ {0.0f,0.0f}, {0.5f, 0.5f} };
         enttB.AddComponent(collider);
-    }
+    }*/
 
     SceneSerializer sceneSerializer(m_CurrentScene);
     sceneSerializer.Serialize("assets/scenes/Example.alm");
-
-    m_CurrentScene->OnStart();
 }
 
 void EditorLayer::OnDetach()
@@ -102,7 +105,7 @@ void EditorLayer::OnUpdate(TimeStep timeStep)
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
       
-        m_CurrentScene->GetEditorCamera().SetViewPortSize(m_ViewportSize.x, m_ViewportSize.y);
+        m_EditorCamera.SetViewPortSize(m_ViewportSize.x, m_ViewportSize.y);
         gluPerspective(45.0,  m_ViewportSize.x/ m_ViewportSize.y, -1.0f, 1000.0f);
         glMatrixMode(GL_MODELVIEW);
         CreateFrameBuffer(m_FrameBufferSpec);
@@ -112,17 +115,27 @@ void EditorLayer::OnUpdate(TimeStep timeStep)
     glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBuffer);
     glViewport(0, 0, m_ViewportSize.x, m_ViewportSize.y);
 
-	
-    m_CurrentScene->OnUpdate(timeStep);
-	
+
+	switch (m_SceneState)
+	{
+		case SceneState::Play:
+	    {
+            m_CurrentScene->OnRuntimeUpdate(timeStep, m_EditorCamera);
+			break;
+	    }
+        case SceneState::Edit:
+        {
+            m_CurrentScene->OnEditorUpdate(timeStep, m_EditorCamera);
+            break;
+        }
+	}
+
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void EditorLayer::OnImGuiRender()
 {
-
-   bool showDemo = true;
-   ImGui::ShowDemoWindow(&showDemo);
+   //ImGui::ShowDemoWindow();
 	
     bool p_open = true;
     static bool opt_fullscreen = true;
@@ -200,6 +213,42 @@ void EditorLayer::OnImGuiRender()
 
         ImGui::EndMenuBar();
     }
+
+
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0,2 });
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, { 0,0 });
+
+    auto& colors = ImGui::GetStyle().Colors;
+    const auto& buttonHovered = colors[ImGuiCol_ButtonHovered];
+    const auto& buttonActive = colors[ImGuiCol_ButtonActive];
+
+    ImGui::PushStyleColor(ImGuiCol_Button,{0,0,0,0});
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{buttonHovered.x,buttonHovered.y,buttonHovered.z, 0.5f});
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ buttonActive.x,buttonActive.y,buttonActive.z, 0.5f });
+
+    ImGui::Begin("##toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+    {
+        std::shared_ptr<Texture> icon = m_SceneState == SceneState::Edit ? m_PlayIcon : m_StopIcon;
+        float size = ImGui::GetWindowHeight() - 4.0f;
+        ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
+        if (ImGui::ImageButton((ImTextureID)icon->GetTexID(), { size, size }, { 0,0 }, { 1,1 }, 0))
+	    {
+		    if (m_SceneState == SceneState::Edit)
+		    {
+                m_SceneState = SceneState::Play;
+                m_CurrentScene->OnRuntimeStart();
+		    }
+            else if (m_SceneState == SceneState::Play)
+		    {
+                m_SceneState = SceneState::Edit;
+                m_CurrentScene->OnRuntimeStop();
+		    }
+	    }
+        ImGui::End();
+    }
+
+    ImGui::PopStyleVar(2);
+    ImGui::PopStyleColor(3);
 
     auto stats = Renderer2D::GetStats();
     ImGui::Begin("Renderer Stats");

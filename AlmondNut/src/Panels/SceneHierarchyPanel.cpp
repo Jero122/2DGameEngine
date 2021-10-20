@@ -1,6 +1,8 @@
 #include "SceneHierarchyPanel.h"
 
 #include "ECS/SceneView.h"
+#include "ECS/Components/BoxCollider2D.h"
+#include "ECS/Components/RigidBody.h"
 #include "ECS/Components/SpriteRenderer.h"
 #include "ECS/Components/TagComponent.h"
 #include "ECS/Components/Transform.h"
@@ -57,6 +59,11 @@ void SceneHierarchyPanel::OnImGuiRender()
 				m_SelectedEntity.AddComponent<SpriteRenderer>({ 50.0f,50.0f, {1,1,1,1} });
 				ImGui::CloseCurrentPopup();
 			}
+			if (ImGui::MenuItem("Rigid Body"))
+			{
+				m_SelectedEntity.AddComponent<RigidBody>({});
+				ImGui::CloseCurrentPopup();
+			}
 			ImGui::EndPopup();
 		}
 	}
@@ -95,7 +102,7 @@ static void DrawComponent(const std::string& name, Entity entity, UIFunction uiF
 		
 		if (open)
 		{
-			uiFunction(component);
+			uiFunction(component, entity);
 			ImGui::Separator();
 			ImGui::TreePop();
 		}
@@ -164,6 +171,50 @@ static void DrawVec3Control(const std::string label, glm::vec3& values, float re
 	ImGui::PopID();
 }
 
+static void DrawVec2Control(const std::string label, glm::vec2& values, float resetValue = 0.0f, float columnWidth = 100.0f)
+{
+	ImGui::PushID(label.c_str());
+
+	ImGui::Columns(2);
+	ImGui::SetColumnWidth(0, columnWidth);
+	ImGui::Text(label.c_str());
+	ImGui::NextColumn();
+
+	ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
+	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, { 0,1.0f });
+
+	float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+	ImVec2 buttonSize = { 5, lineHeight };
+
+	ImGui::PushStyleColor(ImGuiCol_Button, { 0.8f,0.1f,0.15f,1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { 0.9f,0.2f,0.2f,1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, { 0.8f,0.1f,0.15f,1.0f });
+	if (ImGui::Button("##0", buttonSize))
+		values.x = resetValue;
+	ImGui::PopStyleColor(3);
+
+	ImGui::SameLine();
+	ImGui::DragFloat("##X", &values.x, 0.1f, 0, 0, "%.2f");
+	ImGui::PopItemWidth();
+	ImGui::SameLine();
+
+	ImGui::PushStyleColor(ImGuiCol_Button, { 0.2f,0.7f,0.2f,1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonHovered, { 0.3f,0.8f,0.3f,1.0f });
+	ImGui::PushStyleColor(ImGuiCol_ButtonActive, { 0.2f,0.7f,0.2f,1.0f });
+	if (ImGui::Button("##1", buttonSize))
+		values.y = resetValue;
+	ImGui::PopStyleColor(3);
+
+	ImGui::SameLine();
+	ImGui::DragFloat("##Y", &values.y, 0.1f, 0, 0, "%.2f");
+	ImGui::PopItemWidth();
+	ImGui::SameLine();
+
+	ImGui::PopStyleVar();
+	ImGui::Columns(1);
+	ImGui::PopID();
+}
+
 
 void SceneHierarchyPanel::DrawEntityNode(Entity entity)
 {
@@ -223,7 +274,7 @@ void SceneHierarchyPanel::DrawEntityProperties(Entity entity)
 			ImGui::PopFont();
 		}
 
-		DrawComponent<Transform>("Transform", entity, [](auto& component)
+		DrawComponent<Transform>("Transform", entity, [](auto& component, Entity entity)
 		{
 			auto transform = (Transform*)component;
 			DrawVec3Control("Position", transform->position);
@@ -231,11 +282,53 @@ void SceneHierarchyPanel::DrawEntityProperties(Entity entity)
 			DrawVec3Control("Scale", transform->scale, 1.0f);
 		});
 
-		DrawComponent<SpriteRenderer>("Sprite Renderer", entity, [](auto& component)
+		DrawComponent<SpriteRenderer>("Sprite Renderer", entity, [](auto& component, Entity entity)
 		{
 			auto spriteRender = (SpriteRenderer*)component;
 			ImGui::ColorEdit4("Color", glm::value_ptr(spriteRender->color));
 		});
+
+		DrawComponent<RigidBody>("RigidBody", entity, [](auto& component, Entity entity)
+		{
+			auto rb = (RigidBody*)component;
+
+			const char* BodyTypeStrings[] = {"Static","Kinematic", "Dynamic"};
+			const char* currentBodyTypeString = BodyTypeStrings[(int)rb->Type];
+
+			if (ImGui::BeginCombo("Body Type", currentBodyTypeString))
+			{
+				for (int i = 0; i < IM_ARRAYSIZE(BodyTypeStrings); i++)
+				{
+					const bool is_selected = (currentBodyTypeString == BodyTypeStrings[i]);
+					if (ImGui::Selectable(BodyTypeStrings[i], is_selected))
+					{
+						rb->Type = (RigidBody::BodyType)i;
+
+					}
+					// Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+					if (is_selected)
+						ImGui::SetItemDefaultFocus();
+				}
+				ImGui::EndCombo();
+			}
+
+			ImGui::Checkbox("Fixed Rotation", &(rb->FixedRotation));
+			
+		});
+
+		DrawComponent<BoxCollider2D>("Boxy Collider 2D", entity, [](auto& component, Entity entity)
+			{
+				auto collider = (BoxCollider2D*)component;
+				auto rb = entity.GetComponent<RigidBody>();
+
+				DrawVec2Control("Offset", collider->Offset);
+				DrawVec2Control("Size", collider->Size);
+
+				ImGui::DragFloat("Density", &(collider->Density), 0.1f);
+				ImGui::DragFloat("Friction", &(collider->Friction), 0.1f, 0, 1);
+				ImGui::DragFloat("Restitution", &(collider->Restition), 0.1f, 0, 1);
+				ImGui::DragFloat("Restitution Threshold", &(collider->RestitutionThreshold), 0.1f, 0, 1);
+			});
 	}
 	
 	
