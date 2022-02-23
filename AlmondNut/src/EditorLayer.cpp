@@ -17,8 +17,8 @@ EditorLayer::EditorLayer()
     CreateFrameBuffer(m_FrameBufferSpec);
 }
 std::default_random_engine generator;
-std::uniform_real_distribution<float> randPositionX(-8.0f, 8.0f);
-std::uniform_real_distribution<float> randPositionY(0.0f, 8.0f);
+std::uniform_real_distribution<float> randPositionX(-16.0f, 16.0f);
+std::uniform_real_distribution<float> randPositionY(0.0f, 16.0f);
 std::uniform_real_distribution<float> randRotation(0.0f, 90.0f);
 std::uniform_real_distribution<float> randScale(0.8f, 1.5f);
 std::uniform_real_distribution<float> randGravity(-10.0f, -1.0f);
@@ -70,21 +70,25 @@ void EditorLayer::OnAttach()
         enttA.AddComponent(collider);
 
     }
-    /*Entity enttB = m_CurrentScene->CreateEntity("enttB");
-    {
-        auto transformComponent = enttB.GetComponent<Transform>();
-        *transformComponent = Transform{ glm::vec3(0,0,0), glm::vec3(0,0,0.0f),glm::vec3(1,1,1) };
 
-        enttB.AddComponent(SpriteRenderer{ 1, 1, {1,1,1,1} });
 
-        RigidBody rb = RigidBody{};
-        rb.FixedRotation = false;
-        rb.Type = RigidBody::BodyType::Dynamic;
-        enttB.AddComponent(rb);
+        for (int i = 0; i < 50000; ++i)
+        {
+            auto entity = m_CurrentScene->CreateEntity("entt");
+            {
+                auto pos = glm::vec3{ randPositionX(generator),randPositionY(generator),0.0f };
+                auto rot = glm::vec3{ 0.0f,0.0f,randScale(generator) };
+                auto scale = glm::vec3{ 0.1f,0.1f,1.0f };
+                entity.AddComponent(Transform{ glm::vec3(pos.x,pos.y, 0),rot,scale });
+                entity.AddComponent(SpriteRenderer{ 1, 1, {1,0,0,1} });
 
-        BoxCollider2D collider = BoxCollider2D{ {0.0f,0.0f}, {0.5f, 0.5f} };
-        enttB.AddComponent(collider);
-    }*/
+                /*RigidBody body(*PhysicsWorld::GetInstance(), pos.x, pos.y, BodyType::Dynamic);
+                OrientedBox box(0.24, 0.24, 1.0f, 0.1f, 0.0f);
+                body.AddBoxCollider(box);
+
+                entity.AddComponent(body);*/
+            }
+        }
 
     SceneSerializer sceneSerializer(m_CurrentScene);
     sceneSerializer.Serialize("assets/scenes/Example.alm");
