@@ -1,7 +1,7 @@
 #include <GL/glew.h>
 #include <array>
 
-#include "Renderer2D.h"
+#include "GPUBatched_Renderer.h"
 #include "OldCamera.h"
 #include "GLCall.h"
 #include "Shader.h"
@@ -49,7 +49,7 @@ struct RendererData
 
 	unsigned int VAO, VBO, EBO;
 	Shader shader;
-	Renderer2D::RenderStats m_RenderStats;
+	GPUBatched_Renderer::RenderStats m_RenderStats;
 
 	glm::vec4 m_Vertices[4];
 	int indexCount = 0;
@@ -62,7 +62,7 @@ struct RendererData
 static RendererData s_Data;
 
 
-void Renderer2D::Init()
+void GPUBatched_Renderer::Init()
 {
 	std::string shaderPath("resources/shaders/Basic.glsl");
 	s_Data.shader = Shader();
@@ -141,12 +141,12 @@ void Renderer2D::Init()
 	s_Data.shader.setIntArray("uTextures", samplers, s_Data.s_MaxTextureSlots);
 }
 
-void Renderer2D::Shutdown()
+void GPUBatched_Renderer::Shutdown()
 {
 	/*delete[] quadBuffer;*/
 }
 
-void Renderer2D::BeginScene(OldCamera& camera)
+void GPUBatched_Renderer::BeginScene(OldCamera& camera)
 {
 	s_Data.projection = camera.GetProjectionMatrix();
 	s_Data.view = camera.GetViewMatrix();
@@ -157,7 +157,7 @@ void Renderer2D::BeginScene(OldCamera& camera)
 	BeginBatch();
 }
 
-void Renderer2D::BeginScene(EditorCamera& camera)
+void GPUBatched_Renderer::BeginScene(EditorCamera& camera)
 {
 	s_Data.projection = camera.GetProjectionMatrix();
 	s_Data.view = camera.GetViewMatrix();
@@ -169,7 +169,7 @@ void Renderer2D::BeginScene(EditorCamera& camera)
 }
 
 
-void Renderer2D::EndScene()
+void GPUBatched_Renderer::EndScene()
 {
 	EndBatch();
 	Flush();
@@ -177,7 +177,7 @@ void Renderer2D::EndScene()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void Renderer2D::Submit(const glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, int textureID, glm::vec2* texCoords)
+void GPUBatched_Renderer::Submit(const glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, int textureID, glm::vec2* texCoords)
 {
 	s_Data.m_RenderStats.QuadCount++;
 
@@ -236,14 +236,14 @@ void Renderer2D::Submit(const glm::vec3 position, float rotation, glm::vec2 scal
 
 }
 
-void Renderer2D::BeginBatch()
+void GPUBatched_Renderer::BeginBatch()
 {
 	s_Data.m_QuadBufferPtr = s_Data.m_QuadBuffer;
 	s_Data.indexCount = 0;
 	s_Data.m_TextureSlotIndex = 1; //Set to 1 because 0 is reserved for colored quads
 }
 
-void Renderer2D::EndBatch()
+void GPUBatched_Renderer::EndBatch()
 {
 	s_Data.m_RenderStats.DrawCalls++;
 
@@ -255,7 +255,7 @@ void Renderer2D::EndBatch()
 }
 
 
-void Renderer2D::Flush()
+void GPUBatched_Renderer::Flush()
 {
 	s_Data.shader.use();
 	s_Data.shader.setMat4("uView", s_Data.view);
@@ -274,19 +274,19 @@ void Renderer2D::Flush()
 }
 
 
-void Renderer2D::NextBatch()
+void GPUBatched_Renderer::NextBatch()
 {
 	EndBatch();
 	Flush();
 	BeginBatch();
 }
 
-void Renderer2D::ResetStats()
+void GPUBatched_Renderer::ResetStats()
 {
 	memset(&s_Data.m_RenderStats, 0, sizeof(RenderStats));
 }
 
-Renderer2D::RenderStats Renderer2D::GetStats()
+GPUBatched_Renderer::RenderStats GPUBatched_Renderer::GetStats()
 {
 	return s_Data.m_RenderStats;
 }

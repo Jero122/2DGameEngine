@@ -11,7 +11,7 @@
 #include "ECS/Components/SpriteRenderer.h"
 #include "ECS/Components/TagComponent.h"
 #include "ECS/Components/Transform.h"
-#include "Renderer/Renderer2D.h"
+#include "Renderer/GPUBatched_Renderer.h"
 
 Scene::Scene()
 {
@@ -21,6 +21,8 @@ Scene::Scene()
 	m_Ecs.CreateComponent<Transform>();
 	m_Ecs.CreateComponent<RigidBody>();
 	m_Ecs.CreateComponent<BoxCollider2D>();
+	m_Renderer = new GPUBatched_Renderer();
+	m_Renderer->Init();
 }
 
 Scene::~Scene()
@@ -105,15 +107,15 @@ void Scene::OnRuntimeUpdate(TimeStep timestep, EditorCamera& editorCamera)
 	}
 
 	//Render
-	Renderer2D::BeginScene(editorCamera);
+	m_Renderer->BeginScene(editorCamera);
 	for (EntityID ent : SceneView<Transform, SpriteRenderer>(m_Ecs))
 	{
 		auto transform = m_Ecs.GetComponent<Transform>(ent);
 		auto sprite = m_Ecs.GetComponent<SpriteRenderer>(ent);
-		Renderer2D::Submit(transform->position,transform->rotation.z,{transform->scale.x, transform->scale.y}, sprite->color,sprite->textureID, sprite->texCoords);
+		m_Renderer->Submit(transform->position,transform->rotation.z,{transform->scale.x, transform->scale.y}, sprite->color,sprite->textureID, sprite->texCoords);
 	}
 
-	Renderer2D::EndScene();
+	m_Renderer->EndScene();
 	
 	//Physcs
 	m_Physics2D->OnUpdate();
@@ -124,14 +126,14 @@ void Scene::OnRuntimeUpdate(TimeStep timestep, EditorCamera& editorCamera)
 void Scene::OnEditorUpdate(TimeStep timestep, EditorCamera& editorCamera)
 {
 	//Render
-	Renderer2D::BeginScene(editorCamera);
+	m_Renderer->BeginScene(editorCamera);
 	for (EntityID ent : SceneView<Transform, SpriteRenderer>(m_Ecs))
 	{
 		auto transform = m_Ecs.GetComponent<Transform>(ent);
 		auto sprite = m_Ecs.GetComponent<SpriteRenderer>(ent);
-		Renderer2D::Submit(transform->position, transform->rotation.z, { transform->scale.x, transform->scale.y }, sprite->color, sprite->textureID, sprite->texCoords);
+		m_Renderer->Submit(transform->position, transform->rotation.z, { transform->scale.x, transform->scale.y }, sprite->color, sprite->textureID, sprite->texCoords);
 	}
 
-	Renderer2D::EndScene();
+	m_Renderer->EndScene();
 	editorCamera.OnUpdate(timestep);
 }

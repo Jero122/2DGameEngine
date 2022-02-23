@@ -254,14 +254,14 @@ void EditorLayer::OnImGuiRender()
     ImGui::PopStyleVar(2);
     ImGui::PopStyleColor(3);
 
-    auto stats = Renderer2D::GetStats();
+    /*auto stats = GPUBatched_Renderer::GetStats();
     ImGui::Begin("Renderer Stats");
     ImGui::Text("Draw Calls: %d", stats.DrawCalls);
     ImGui::Text("Quads: %d", stats.QuadCount);
     ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
     ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
     ImGui::End();
-    Renderer2D::ResetStats();
+    GPUBatched_Renderer::ResetStats();*/
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
     ImGui::Begin("ViewPort");

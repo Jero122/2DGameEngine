@@ -24,7 +24,7 @@
 #include "Core/TimeStep.h"
 
 /// RENDERER ///
-#include "Renderer/Renderer2D.h"
+#include "Renderer/GPUBatched_Renderer.h"
 #include "Renderer/Camera.h"
 #include "Renderer/Shader.h"
 #include "Renderer/Texture.h"

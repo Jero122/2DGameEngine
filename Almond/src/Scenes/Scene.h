@@ -4,6 +4,7 @@
 #include "Physics2D/Physics2D.h"
 #include "box2d/b2_world.h"
 #include "Renderer/EditorCamera.h"
+#include "Renderer/Renderer.h"
 
 class Entity;
 
@@ -27,6 +28,7 @@ private:
 	ECS m_Ecs;
 	b2World* m_PhysicsWorld;
 	Physics2D* m_Physics2D;
+	Renderer* m_Renderer;
 
 	friend class Entity;
 	friend class SceneHierarchyPanel;

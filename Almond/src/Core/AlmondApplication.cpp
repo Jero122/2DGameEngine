@@ -1,7 +1,7 @@
 #include "AlmondApplication.h"
 #include "TimeStep.h"
 #include "Layers/InputLayer.h"
-#include "Renderer/Renderer2D.h"
+#include "Renderer/GPUBatched_Renderer.h"
 
 AlmondApplication* AlmondApplication::s_Instance = nullptr;
 int s_componentCounter = 0;
@@ -15,7 +15,6 @@ AlmondApplication::AlmondApplication()
 	InputLayer* input = new InputLayer();
 	m_LayerStack.PushLayer(input);
 
-	Renderer2D::Init();
 	
 	//IMGUI
 	m_ImGuiLayer = new ImGuiLayer();
