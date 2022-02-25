@@ -5,6 +5,7 @@
 #include "OldCamera.h"
 #include "GLCall.h"
 #include "Shader.h"
+#include "OpenGLBuffer.h"
 
 struct Quad
 {
@@ -30,27 +31,25 @@ struct RendererData
 	static const int MAX_BATCH_COUNT = 10000;
 	static const int MAX_VERTEX_COUNT = MAX_BATCH_COUNT * 4;
 	static const int MAX_INDEX_COUNT = MAX_BATCH_COUNT * 6;
-
 	static const int POS_COUNT = 3;			//XYZ
 	static const int SCALE_COUNT = 3;		//XY
 	static const int ROTATION_COUNT = 1;	//Z
-	
 	static const int COLOR_COUNT = 4;		//RGBA
 	static const int TEX_COORD_COUNT = 2;	//UV
 	static const int TEX_ID_COUNT = 1;		//TexID
 
-
 	Quad* m_QuadBuffer;
 	Quad* m_QuadBufferPtr = nullptr;
+	unsigned int VAO;
+	std::unique_ptr<OpenGLVertexBuffer> m_VertexBuffer;
+	std::unique_ptr<OpenGLIndexBuffer> m_IndexBuffer;
+	std::unique_ptr<Shader> m_Shader;
+
+	GPUBatched_Renderer::RenderStats m_RenderStats;
 
 	static const int s_MaxTextureSlots = 32;
 	std::array<int, s_MaxTextureSlots> m_TextureSlots;
 	unsigned int m_TextureSlotIndex = 1; //0 = white texture;
-
-	unsigned int VAO, VBO, EBO;
-	Shader shader;
-	GPUBatched_Renderer::RenderStats m_RenderStats;
-
 	glm::vec4 m_Vertices[4];
 	int indexCount = 0;
 
@@ -65,19 +64,16 @@ static RendererData s_Data;
 void GPUBatched_Renderer::Init()
 {
 	std::string shaderPath("resources/shaders/Basic.glsl");
-	s_Data.shader = Shader();
-	s_Data.shader.init(shaderPath);
-	s_Data.shader.use();
+	s_Data.m_Shader = std::make_unique<Shader>();
+	s_Data.m_Shader->init(shaderPath);
+	s_Data.m_Shader->use();
 
 	s_Data.m_QuadBuffer = new Quad[s_Data.MAX_BATCH_COUNT];
 
 	GLCALL(glGenVertexArrays(1, &s_Data.VAO));
 	GLCALL(glBindVertexArray(s_Data.VAO));
 
-	GLCALL(glGenBuffers(1, &s_Data.VBO));
-	GLCALL(glBindBuffer(GL_ARRAY_BUFFER, s_Data.VBO));
-	GLCALL(glBufferData(GL_ARRAY_BUFFER, s_Data.MAX_VERTEX_COUNT * sizeof(Quad::Vertex), nullptr, GL_DYNAMIC_DRAW));
-
+	s_Data.m_VertexBuffer = std::make_unique<OpenGLVertexBuffer>(nullptr, s_Data.MAX_VERTEX_COUNT * sizeof(Quad::Vertex));
 	
 	// VERTEX POSITION
 	GLCALL(glVertexAttribPointer(0, s_Data.POS_COUNT, GL_FLOAT, GL_FALSE, sizeof(Quad::Vertex), (void*)(offsetof(Quad::Vertex, Quad::Vertex::VertexPosition))));
@@ -91,7 +87,6 @@ void GPUBatched_Renderer::Init()
 	// ROTATION
 	GLCALL(glVertexAttribPointer(3, s_Data.ROTATION_COUNT, GL_FLOAT, GL_FALSE, sizeof(Quad::Vertex), (void*)(offsetof(Quad::Vertex, Quad::Vertex::rotation))));
 	GLCALL(glEnableVertexAttribArray(3));
-	
 	//RGBA COLOR
 	GLCALL(glVertexAttribPointer(4, s_Data.COLOR_COUNT, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Quad::Vertex), (void*)(offsetof(Quad::Vertex, Quad::Vertex::Color))));
 	GLCALL(glEnableVertexAttribArray(4));
@@ -122,9 +117,8 @@ void GPUBatched_Renderer::Init()
 
 	s_Data.m_QuadBufferPtr = s_Data.m_QuadBuffer;
 
-	GLCALL(glGenBuffers(1, &s_Data.EBO));
-	GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s_Data.EBO));
-	GLCALL(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
+	s_Data.m_IndexBuffer = std::make_unique<OpenGLIndexBuffer>(indices, sizeof(indices));
+
 
 	int32_t samplers[s_Data.s_MaxTextureSlots];
 	for (uint32_t i = 0; i < s_Data.s_MaxTextureSlots; ++i)
@@ -138,7 +132,7 @@ void GPUBatched_Renderer::Init()
 	s_Data.m_Vertices[3] = { -0.5f,  0.5f, 0.0f, 1.0f };   // top left 
 
 
-	s_Data.shader.setIntArray("uTextures", samplers, s_Data.s_MaxTextureSlots);
+	s_Data.m_Shader->setIntArray("uTextures", samplers, s_Data.s_MaxTextureSlots);
 }
 
 void GPUBatched_Renderer::Shutdown()
@@ -249,7 +243,9 @@ void GPUBatched_Renderer::EndBatch()
 
 	GLsizeiptr size = s_Data.m_QuadBufferPtr - s_Data.m_QuadBuffer;
 	size = size * sizeof(Quad);
-	GLCALL(glBindBuffer(GL_ARRAY_BUFFER, s_Data.VBO));
+
+	s_Data.m_VertexBuffer->bind();
+
 	/*GLCALL(glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * 4 * MAX_BATCH_COUNT, vertexBuffer, GL_DYNAMIC_DRAW));*/
 	GLCALL(glBufferSubData(GL_ARRAY_BUFFER, 0, size, s_Data.m_QuadBuffer));
 }
@@ -257,9 +253,9 @@ void GPUBatched_Renderer::EndBatch()
 
 void GPUBatched_Renderer::Flush()
 {
-	s_Data.shader.use();
-	s_Data.shader.setMat4("uView", s_Data.view);
-	s_Data.shader.setMat4("uProjection", s_Data.projection);
+	s_Data.m_Shader->use();
+	s_Data.m_Shader->setMat4("uView", s_Data.view);
+	s_Data.m_Shader->setMat4("uProjection", s_Data.projection);
 
 	for (unsigned int i = 1; i < s_Data.m_TextureSlotIndex; ++i)
 	{
@@ -268,7 +264,7 @@ void GPUBatched_Renderer::Flush()
 	}
 
 	GLCALL(glBindVertexArray(s_Data.VAO));
-	GLCALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, s_Data.EBO));
+	s_Data.m_IndexBuffer->bind();
 
 	glDrawElements(GL_TRIANGLES, s_Data.indexCount, GL_UNSIGNED_INT, 0);
 }

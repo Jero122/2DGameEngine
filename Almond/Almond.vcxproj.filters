@@ -166,6 +166,7 @@
       <Filter>vendor\stb\stb</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\Renderer.h" />
+    <ClInclude Include="src\Renderer\OpenGLBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\AlmondApplication.cpp">
@@ -237,5 +238,6 @@
     <ClCompile Include="vendor\stb\stb\stb_image.cpp">
       <Filter>vendor\stb\stb</Filter>
     </ClCompile>
+    <ClCompile Include="src\Renderer\OpenGLBuffer.cpp" />
   </ItemGroup>
 </Project>

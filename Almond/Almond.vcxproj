@@ -130,6 +130,7 @@
     <ClInclude Include="src\Renderer\Camera.h" />
     <ClInclude Include="src\Renderer\EditorCamera.h" />
     <ClInclude Include="src\Renderer\GLCall.h" />
+    <ClInclude Include="src\Renderer\OpenGLBuffer.h" />
     <ClInclude Include="src\Renderer\OldCamera.h" />
     <ClInclude Include="src\Renderer\GPUBatched_Renderer.h" />
     <ClInclude Include="src\Renderer\Renderer.h" />
@@ -158,6 +159,7 @@
     <ClCompile Include="src\Renderer\EditorCamera.cpp" />
     <ClCompile Include="src\Renderer\OldCamera.cpp" />
     <ClCompile Include="src\Renderer\GPUBatched_Renderer.cpp" />
+    <ClCompile Include="src\Renderer\OpenGLBuffer.cpp" />
     <ClCompile Include="src\Renderer\Shader.cpp" />
     <ClCompile Include="src\Renderer\SpriteSheet.cpp" />
     <ClCompile Include="src\Renderer\Texture.cpp" />
