@@ -167,6 +167,8 @@
     </ClInclude>
     <ClInclude Include="src\Renderer\Renderer.h" />
     <ClInclude Include="src\Renderer\OpenGLBuffer.h" />
+    <ClInclude Include="src\Renderer\OpenGLVertexArray.h" />
+    <ClInclude Include="src\Renderer\OpenGLRenderCommand.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\AlmondApplication.cpp">

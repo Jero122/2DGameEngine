@@ -133,6 +133,8 @@
     <ClInclude Include="src\Renderer\OpenGLBuffer.h" />
     <ClInclude Include="src\Renderer\OldCamera.h" />
     <ClInclude Include="src\Renderer\GPUBatched_Renderer.h" />
+    <ClInclude Include="src\Renderer\OpenGLRenderCommand.h" />
+    <ClInclude Include="src\Renderer\OpenGLVertexArray.h" />
     <ClInclude Include="src\Renderer\Renderer.h" />
     <ClInclude Include="src\Renderer\Shader.h" />
     <ClInclude Include="src\Renderer\SpriteSheet.h" />

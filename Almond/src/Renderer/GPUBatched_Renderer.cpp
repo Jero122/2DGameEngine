@@ -6,6 +6,7 @@
 #include "GLCall.h"
 #include "Shader.h"
 #include "OpenGLBuffer.h"
+#include "OpenGLVertexArray.h"
 
 struct Quad
 {
@@ -30,16 +31,11 @@ struct RendererData
 	static const int MAX_BATCH_COUNT = 10000;
 	static const int MAX_VERTEX_COUNT = MAX_BATCH_COUNT * 4;
 	static const int MAX_INDEX_COUNT = MAX_BATCH_COUNT * 6;
-	static const int POS_COUNT = 3;			//XYZ
-	static const int SCALE_COUNT = 3;		//XY
-	static const int ROTATION_COUNT = 1;	//Z
-	static const int COLOR_COUNT = 4;		//RGBA
-	static const int TEX_COORD_COUNT = 2;	//UV
-	static const int TEX_ID_COUNT = 1;		//TexID
 
 	Quad* m_QuadBuffer;
 	Quad* m_QuadBufferPtr = nullptr;
-	unsigned int VAO;
+
+	std::unique_ptr<OpenGLVertexArray> m_VertexArray;
 	std::unique_ptr<OpenGLVertexBuffer> m_VertexBuffer;
 	std::unique_ptr<OpenGLIndexBuffer> m_IndexBuffer;
 	std::unique_ptr<Shader> m_Shader;
@@ -68,8 +64,8 @@ GPUBatched_Renderer::GPUBatched_Renderer()
 
 	s_Data.m_QuadBuffer = new Quad[s_Data.MAX_BATCH_COUNT];
 
-	GLCALL(glGenVertexArrays(1, &s_Data.VAO));
-	GLCALL(glBindVertexArray(s_Data.VAO));
+	s_Data.m_VertexArray = std::make_unique<OpenGLVertexArray>();
+	s_Data.m_VertexArray->Bind();
 
 	s_Data.m_VertexBuffer = std::make_unique<OpenGLVertexBuffer>(nullptr, s_Data.MAX_VERTEX_COUNT * sizeof(Quad::Vertex));
 
@@ -250,7 +246,7 @@ void GPUBatched_Renderer::Flush()
 		glBindTexture(GL_TEXTURE_2D, s_Data.m_TextureSlots[i]);
 	}
 
-	GLCALL(glBindVertexArray(s_Data.VAO));
+	s_Data.m_VertexArray->Bind();
 	s_Data.m_IndexBuffer->Bind();
 
 	glDrawElements(GL_TRIANGLES, s_Data.indexCount, GL_UNSIGNED_INT, 0);
