@@ -74,14 +74,14 @@ GPUBatched_Renderer::GPUBatched_Renderer()
 	s_Data.m_VertexBuffer = std::make_unique<OpenGLVertexBuffer>(nullptr, s_Data.MAX_VERTEX_COUNT * sizeof(Quad::Vertex));
 
 	BufferLayout layout;
-	layout.addAttribute({ "aPos", BufferAttribType::Float3, false });
-	layout.addAttribute({ "aTranslate", BufferAttribType::Float3, false });
-	layout.addAttribute({ "aScale", BufferAttribType::Float2, false });
-	layout.addAttribute({ "aRotate", BufferAttribType::Float, false });
-	layout.addAttribute({ "aColor", BufferAttribType::UnsignedByte, true });
-	layout.addAttribute({ "aTexCoords", BufferAttribType::Float2, false });
-	layout.addAttribute({ "aTexId", BufferAttribType::Float, false });
-	s_Data.m_VertexBuffer->setLayout(layout);
+	layout.AddAttribute({ "aPos", BufferAttribType::Float3, false });
+	layout.AddAttribute({ "aTranslate", BufferAttribType::Float3, false });
+	layout.AddAttribute({ "aScale", BufferAttribType::Float2, false });
+	layout.AddAttribute({ "aRotate", BufferAttribType::Float, false });
+	layout.AddAttribute({ "aColor", BufferAttribType::UnsignedByte, true });
+	layout.AddAttribute({ "aTexCoords", BufferAttribType::Float2, false });
+	layout.AddAttribute({ "aTexId", BufferAttribType::Float, false });
+	s_Data.m_VertexBuffer->SetLayout(layout);
 
 
 	//EBO
@@ -231,7 +231,7 @@ void GPUBatched_Renderer::EndBatch()
 	GLsizeiptr size = s_Data.m_QuadBufferPtr - s_Data.m_QuadBuffer;
 	size = size * sizeof(Quad);
 
-	s_Data.m_VertexBuffer->bind();
+	s_Data.m_VertexBuffer->Bind();
 
 	/*GLCALL(glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * 4 * MAX_BATCH_COUNT, vertexBuffer, GL_DYNAMIC_DRAW));*/
 	GLCALL(glBufferSubData(GL_ARRAY_BUFFER, 0, size, s_Data.m_QuadBuffer));
@@ -251,7 +251,7 @@ void GPUBatched_Renderer::Flush()
 	}
 
 	GLCALL(glBindVertexArray(s_Data.VAO));
-	s_Data.m_IndexBuffer->bind();
+	s_Data.m_IndexBuffer->Bind();
 
 	glDrawElements(GL_TRIANGLES, s_Data.indexCount, GL_UNSIGNED_INT, 0);
 }

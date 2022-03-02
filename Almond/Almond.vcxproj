@@ -159,7 +159,6 @@
     <ClCompile Include="src\Renderer\EditorCamera.cpp" />
     <ClCompile Include="src\Renderer\OldCamera.cpp" />
     <ClCompile Include="src\Renderer\GPUBatched_Renderer.cpp" />
-    <ClCompile Include="src\Renderer\OpenGLBuffer.cpp" />
     <ClCompile Include="src\Renderer\Shader.cpp" />
     <ClCompile Include="src\Renderer\SpriteSheet.cpp" />
     <ClCompile Include="src\Renderer\Texture.cpp" />

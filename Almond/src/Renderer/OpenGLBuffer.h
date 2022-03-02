@@ -83,7 +83,7 @@ struct BufferAttribute
 class BufferLayout
 {
 public:
-	void addAttribute(BufferAttribute attribute)
+	void AddAttribute(BufferAttribute attribute)
 	{
 		attribute.Offset = m_tempOffset;
 		m_tempOffset += attribute.Size;
@@ -105,12 +105,26 @@ private:
 class OpenGLVertexBuffer
 {
 public:
-	OpenGLVertexBuffer(float* vertices, uint32_t size);
+	OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, uint32_t size)
+	{
+		glGenBuffers(1, &ID);
+		glBindBuffer(GL_ARRAY_BUFFER, ID);
+		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_DYNAMIC_DRAW);
+	}
+
 	virtual ~OpenGLVertexBuffer(){}
 
-	void bind() const;
-	void unbind() const;
-	void setLayout(const BufferLayout& bufferLayout)
+	void OpenGLVertexBuffer::Bind() const
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, ID);
+	}
+
+	void OpenGLVertexBuffer::Unbind() const
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+	}
+
+	void SetLayout(const BufferLayout& bufferLayout)
 	{
 		int index = 0;
 		m_BufferLayout = bufferLayout;
@@ -122,7 +136,7 @@ public:
 		}
 	}
 
-	BufferLayout getLayout()
+	BufferLayout GetLayout()
 	{
 		return m_BufferLayout;
 	}
@@ -136,11 +150,24 @@ private:
 class OpenGLIndexBuffer
 {
 public:
-	OpenGLIndexBuffer(const void* indices, uint32_t size);
+
+	OpenGLIndexBuffer::OpenGLIndexBuffer(const void* indices, uint32_t size)
+	{
+		glGenBuffers(1, &ID);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, GL_STATIC_DRAW);
+	}
+
 	virtual ~OpenGLIndexBuffer() {}
 
-	void bind() const;
-	void unbind() const;
+	void OpenGLIndexBuffer::Bind() const
+	{
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
+	}
+
+	void OpenGLIndexBuffer::UnBind() const
+	{
+	}
 
 private:
 	unsigned int ID;

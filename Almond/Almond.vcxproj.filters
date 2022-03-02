@@ -238,6 +238,5 @@
     <ClCompile Include="vendor\stb\stb\stb_image.cpp">
       <Filter>vendor\stb\stb</Filter>
     </ClCompile>
-    <ClCompile Include="src\Renderer\OpenGLBuffer.cpp" />
   </ItemGroup>
 </Project>
