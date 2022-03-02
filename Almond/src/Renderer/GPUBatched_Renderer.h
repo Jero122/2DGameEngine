@@ -16,7 +16,7 @@ private:
 	static void Flush();
 	static void DrawQuad(const glm::mat4 transform, glm::vec4 color, int textureID, glm::vec2* texCoords);
 public:
-	void Init() override;
+	GPUBatched_Renderer();
 	void Shutdown() override;
 	void BeginScene(OldCamera& camera) override;
 	void BeginScene(EditorCamera& camera) override;

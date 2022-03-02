@@ -9,7 +9,7 @@ class Renderer
 {
 public:
 	virtual ~Renderer() = default;
-	virtual void Init() = 0;
+	Renderer() = default;
 	virtual void Shutdown() = 0;
 
 	//TODO remove OldCamera

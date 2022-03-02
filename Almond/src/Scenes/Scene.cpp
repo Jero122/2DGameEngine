@@ -22,7 +22,6 @@ Scene::Scene()
 	m_Ecs.CreateComponent<RigidBody>();
 	m_Ecs.CreateComponent<BoxCollider2D>();
 	m_Renderer = new GPUBatched_Renderer();
-	m_Renderer->Init();
 }
 
 Scene::~Scene()

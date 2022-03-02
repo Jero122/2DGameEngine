@@ -15,7 +15,6 @@ struct Quad
 		glm::vec3 Position;
 		glm::vec2 Scale;
 		float rotation;
-		
 		unsigned int Color;
 		glm::vec2 TexCoord;
 		float TexID;
@@ -60,8 +59,7 @@ struct RendererData
 
 static RendererData s_Data;
 
-
-void GPUBatched_Renderer::Init()
+GPUBatched_Renderer::GPUBatched_Renderer()
 {
 	std::string shaderPath("resources/shaders/Basic.glsl");
 	s_Data.m_Shader = std::make_unique<Shader>();
@@ -74,28 +72,16 @@ void GPUBatched_Renderer::Init()
 	GLCALL(glBindVertexArray(s_Data.VAO));
 
 	s_Data.m_VertexBuffer = std::make_unique<OpenGLVertexBuffer>(nullptr, s_Data.MAX_VERTEX_COUNT * sizeof(Quad::Vertex));
-	
-	// VERTEX POSITION
-	GLCALL(glVertexAttribPointer(0, s_Data.POS_COUNT, GL_FLOAT, GL_FALSE, sizeof(Quad::Vertex), (void*)(offsetof(Quad::Vertex, Quad::Vertex::VertexPosition))));
-	GLCALL(glEnableVertexAttribArray(0));
-	// POSITION
-	GLCALL(glVertexAttribPointer(1, s_Data.POS_COUNT, GL_FLOAT, GL_FALSE, sizeof(Quad::Vertex), (void*)(offsetof(Quad::Vertex, Quad::Vertex::Position))));
-	GLCALL(glEnableVertexAttribArray(1));
-	// SCALE
-	GLCALL(glVertexAttribPointer(2, s_Data.SCALE_COUNT, GL_FLOAT, GL_FALSE, sizeof(Quad::Vertex), (void*)(offsetof(Quad::Vertex, Quad::Vertex::Scale))));
-	GLCALL(glEnableVertexAttribArray(2));
-	// ROTATION
-	GLCALL(glVertexAttribPointer(3, s_Data.ROTATION_COUNT, GL_FLOAT, GL_FALSE, sizeof(Quad::Vertex), (void*)(offsetof(Quad::Vertex, Quad::Vertex::rotation))));
-	GLCALL(glEnableVertexAttribArray(3));
-	//RGBA COLOR
-	GLCALL(glVertexAttribPointer(4, s_Data.COLOR_COUNT, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Quad::Vertex), (void*)(offsetof(Quad::Vertex, Quad::Vertex::Color))));
-	GLCALL(glEnableVertexAttribArray(4));
-	//TEX UV
-	GLCALL(glVertexAttribPointer(5, s_Data.TEX_COORD_COUNT, GL_FLOAT, GL_FALSE, sizeof(Quad::Vertex), (void*)(offsetof(Quad::Vertex, Quad::Vertex::TexCoord))));
-	GLCALL(glEnableVertexAttribArray(5));
-	//TEX ID
-	GLCALL(glVertexAttribPointer(6, s_Data.TEX_ID_COUNT, GL_FLOAT, GL_FALSE, sizeof(Quad::Vertex), (void*)(offsetof(Quad::Vertex, Quad::Vertex::TexID))));
-	GLCALL(glEnableVertexAttribArray(6));
+
+	BufferLayout layout;
+	layout.addAttribute({ "aPos", BufferAttribType::Float3, false });
+	layout.addAttribute({ "aTranslate", BufferAttribType::Float3, false });
+	layout.addAttribute({ "aScale", BufferAttribType::Float2, false });
+	layout.addAttribute({ "aRotate", BufferAttribType::Float, false });
+	layout.addAttribute({ "aColor", BufferAttribType::UnsignedByte, true });
+	layout.addAttribute({ "aTexCoords", BufferAttribType::Float2, false });
+	layout.addAttribute({ "aTexId", BufferAttribType::Float, false });
+	s_Data.m_VertexBuffer->setLayout(layout);
 
 
 	//EBO
@@ -134,6 +120,7 @@ void GPUBatched_Renderer::Init()
 
 	s_Data.m_Shader->setIntArray("uTextures", samplers, s_Data.s_MaxTextureSlots);
 }
+
 
 void GPUBatched_Renderer::Shutdown()
 {
