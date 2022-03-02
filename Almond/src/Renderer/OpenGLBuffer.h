@@ -141,6 +141,11 @@ public:
 		return m_BufferLayout;
 	}
 
+	void RedefineDataStore(uint32_t offset, uint32_t size, const void* data)
+	{
+		glBufferSubData(GL_ARRAY_BUFFER, (GLsizeiptr)offset, (GLsizeiptr)size, data);
+	}
+
 private:
 	BufferLayout m_BufferLayout;
 	unsigned int ID;
