@@ -1,12 +1,9 @@
 #pragma once
 #include <array>
 
-#include "OldCamera.h"
 #include "EditorCamera.h"
 #include "Renderer.h"
 #include "glm/fwd.hpp"
-
-
 
 class GPUBatched_Renderer: public Renderer
 {
@@ -37,7 +34,6 @@ private:
 public:
 	GPUBatched_Renderer();
 	void Shutdown() override;
-	void BeginScene(OldCamera& camera) override;
 	void BeginScene(EditorCamera& camera) override;
 	void EndScene() override;
 	void Submit(const glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, int textureID,

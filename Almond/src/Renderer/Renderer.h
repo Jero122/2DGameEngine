@@ -2,7 +2,6 @@
 #pragma once
 #include <memory>
 
-#include "OldCamera.h"
 #include "EditorCamera.h"
 #include "Shader.h"
 #include "OpenGLBuffer.h"
@@ -42,9 +41,6 @@ public:
 	virtual ~Renderer() = default;
 	Renderer() = default;
 	virtual void Shutdown() = 0;
-
-	//TODO remove OldCamera
-	virtual void BeginScene(OldCamera& camera) = 0;
 	virtual void BeginScene(EditorCamera& camera) = 0;
 	virtual void EndScene() = 0;
 	virtual void Submit(const glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, int textureID, glm::vec2* texCoords) = 0;

@@ -1,7 +1,6 @@
 #pragma once
 #include <iostream>
 #include "Base.h"
-#include "Renderer/OldCamera.h"
 
 
 struct WindowProps

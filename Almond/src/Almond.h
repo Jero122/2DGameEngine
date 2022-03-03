@@ -31,4 +31,3 @@
 #include "Renderer/EditorCamera.h"
 #include "Renderer/GLCall.h" //TODO GLCALL shouldnt be here
 #include "Renderer/SpriteSheet.h"
-#include "Renderer/OldCamera.h"

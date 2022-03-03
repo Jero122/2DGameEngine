@@ -1,7 +1,6 @@
 #include <array>
 
 #include "GPUBatched_Renderer.h"
-#include "OldCamera.h"
 #include "OpenGLRenderCommand.h"
 
 GPUBatched_Renderer::GPUBatched_Renderer()
@@ -72,15 +71,6 @@ void GPUBatched_Renderer::Shutdown()
 	/*delete[] quadBuffer;*/
 }
 
-void GPUBatched_Renderer::BeginScene(OldCamera& camera)
-{
-	projection = camera.GetProjectionMatrix();
-	view = camera.GetViewMatrix();
-
-	OpenGLRenderCommand::ClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-	OpenGLRenderCommand::Clear();
-	BeginBatch();
-}
 
 void GPUBatched_Renderer::BeginScene(EditorCamera& camera)
 {

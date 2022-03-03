@@ -138,9 +138,6 @@
     <ClInclude Include="src\Renderer\GLCall.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\Renderer\OldCamera.h">
-      <Filter>src\Renderer</Filter>
-    </ClInclude>
     <ClInclude Include="src\Renderer\GPUBatched_Renderer.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
@@ -211,9 +208,6 @@
       <Filter>src\Platforms\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\EditorCamera.cpp">
-      <Filter>src\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Renderer\OldCamera.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\GPUBatched_Renderer.cpp">

@@ -88,6 +88,7 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <DisableSpecificWarnings>%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -131,7 +132,6 @@
     <ClInclude Include="src\Renderer\EditorCamera.h" />
     <ClInclude Include="src\Renderer\GLCall.h" />
     <ClInclude Include="src\Renderer\OpenGLBuffer.h" />
-    <ClInclude Include="src\Renderer\OldCamera.h" />
     <ClInclude Include="src\Renderer\GPUBatched_Renderer.h" />
     <ClInclude Include="src\Renderer\OpenGLRenderCommand.h" />
     <ClInclude Include="src\Renderer\OpenGLVertexArray.h" />
@@ -159,7 +159,6 @@
     <ClCompile Include="src\Platforms\OpenGL\imgui_impl_sdl.cpp" />
     <ClCompile Include="src\Platforms\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\Renderer\EditorCamera.cpp" />
-    <ClCompile Include="src\Renderer\OldCamera.cpp" />
     <ClCompile Include="src\Renderer\GPUBatched_Renderer.cpp" />
     <ClCompile Include="src\Renderer\Shader.cpp" />
     <ClCompile Include="src\Renderer\SpriteSheet.cpp" />
