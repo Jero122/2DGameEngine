@@ -3,36 +3,13 @@
 
 #include "OldCamera.h"
 #include "EditorCamera.h"
-#include "OpenGLBuffer.h"
-#include "OpenGLVertexArray.h"
 #include "Renderer.h"
-#include "Shader.h"
-#include "ECS/Components/SpriteRenderer.h"
-#include "ECS/Components/Transform.h"
 #include "glm/fwd.hpp"
 
 
 
 class GPUBatched_Renderer: public Renderer
 {
-	struct Quad
-	{
-		struct Vertex
-		{
-			glm::vec3 VertexPosition;
-			glm::vec3 Position;
-			glm::vec2 Scale;
-			float rotation;
-			unsigned int Color;
-			glm::vec2 TexCoord;
-			float TexID;
-		};
-		Vertex topRight;
-		Vertex bottomRight;
-		Vertex bottomLeft;
-		Vertex topLeft;
-	};
-
 private:
 	void BeginBatch();
 	void EndBatch();
@@ -46,12 +23,6 @@ private:
 
 	Quad* m_QuadBuffer;
 	Quad* m_QuadBufferPtr = nullptr;
-
-	std::unique_ptr<OpenGLVertexArray> m_VertexArray;
-	std::unique_ptr<OpenGLVertexBuffer> m_VertexBuffer;
-	std::unique_ptr<OpenGLIndexBuffer> m_IndexBuffer;
-	std::unique_ptr<Shader> m_Shader;
-
 	RenderStats m_RenderStats;
 
 	static const int s_MaxTextureSlots = 32;

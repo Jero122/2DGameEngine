@@ -6,7 +6,7 @@
 
 GPUBatched_Renderer::GPUBatched_Renderer()
 {
-	std::string shaderPath("resources/shaders/Basic.glsl");
+	std::string shaderPath("resources/shaders/BasicShader_GPUMatrices.glsl");
 	m_Shader = std::make_unique<Shader>();
 	m_Shader->init(shaderPath);
 	m_Shader->use();

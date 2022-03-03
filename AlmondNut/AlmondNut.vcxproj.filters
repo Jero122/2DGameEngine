@@ -18,4 +18,7 @@
       <Filter>Panels</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\shaders\BasicShader_CPUMatrices.glsl" />
+  </ItemGroup>
 </Project>
