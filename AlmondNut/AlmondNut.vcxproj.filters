@@ -20,5 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\BasicShader_CPUMatrices.glsl" />
+    <None Include="resources\shaders\BasicShader_GPUMatrices.glsl" />
   </ItemGroup>
 </Project>

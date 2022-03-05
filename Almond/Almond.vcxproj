@@ -129,6 +129,7 @@
     <ClInclude Include="src\Physics2D\Physics2D.h" />
     <ClInclude Include="src\Platforms\Windows\WindowsWindow.h" />
     <ClInclude Include="src\Renderer\Camera.h" />
+    <ClInclude Include="src\Renderer\CPUBatched_Renderer.h" />
     <ClInclude Include="src\Renderer\EditorCamera.h" />
     <ClInclude Include="src\Renderer\GLCall.h" />
     <ClInclude Include="src\Renderer\OpenGLBuffer.h" />
@@ -158,6 +159,7 @@
     <ClCompile Include="src\Platforms\OpenGL\imgui_impl_opengl3.cpp" />
     <ClCompile Include="src\Platforms\OpenGL\imgui_impl_sdl.cpp" />
     <ClCompile Include="src\Platforms\Windows\WindowsWindow.cpp" />
+    <ClCompile Include="src\Renderer\CPUBatched_Renderer.cpp" />
     <ClCompile Include="src\Renderer\EditorCamera.cpp" />
     <ClCompile Include="src\Renderer\GPUBatched_Renderer.cpp" />
     <ClCompile Include="src\Renderer\Shader.cpp" />

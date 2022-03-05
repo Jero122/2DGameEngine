@@ -1,21 +1,18 @@
 #pragma once
 #include <array>
-
 #include "EditorCamera.h"
 #include "Renderer.h"
 #include "glm/fwd.hpp"
 
-class GPUBatched_Renderer: public Renderer
+
+class CPUBatched_Renderer: public Renderer
 {
 private:
 	struct Quad
 	{
 		struct Vertex
 		{
-			glm::vec3 VertexPosition;
 			glm::vec3 Position;
-			glm::vec2 Scale;
-			float rotation;
 			unsigned int Color;
 			glm::vec2 TexCoord;
 			float TexID;
@@ -46,7 +43,7 @@ private:
 	glm::vec4 m_Vertices[4];
 	int indexCount = 0;
 public:
-	GPUBatched_Renderer();
+	CPUBatched_Renderer();
 	void Shutdown() override;
 	void BeginScene(EditorCamera& camera) override;
 	void EndScene() override;

@@ -22,6 +22,9 @@ std::uniform_real_distribution<float> randPositionY(0.0f, 16.0f);
 std::uniform_real_distribution<float> randRotation(0.0f, 90.0f);
 std::uniform_real_distribution<float> randScale(0.8f, 1.5f);
 std::uniform_real_distribution<float> randGravity(-10.0f, -1.0f);
+std::uniform_real_distribution<float> randR(0,1.0f);
+std::uniform_real_distribution<float> randG(0, 1.0f);
+std::uniform_real_distribution<float> randB(0, 1.0f);
 
 EditorLayer::~EditorLayer()
 {
@@ -72,21 +75,15 @@ void EditorLayer::OnAttach()
     }
 
 
-        for (int i = 0; i < 50000; ++i)
+        for (int i = 0; i < 10000; ++i)
         {
             auto entity = m_CurrentScene->CreateEntity("entt");
             {
                 auto pos = glm::vec3{ randPositionX(generator),randPositionY(generator),0.0f };
-                auto rot = glm::vec3{ 0.0f,0.0f,randScale(generator) };
+                auto rot = glm::vec3{ 0.0f,0.0f,randRotation(generator) };
                 auto scale = glm::vec3{ 0.1f,0.1f,1.0f };
                 entity.AddComponent(Transform{ glm::vec3(pos.x,pos.y, 0),rot,scale });
-                entity.AddComponent(SpriteRenderer{ 1, 1, {1,0,0,1} });
-
-                /*RigidBody body(*PhysicsWorld::GetInstance(), pos.x, pos.y, BodyType::Dynamic);
-                OrientedBox box(0.24, 0.24, 1.0f, 0.1f, 0.0f);
-                body.AddBoxCollider(box);
-
-                entity.AddComponent(body);*/
+                entity.AddComponent(SpriteRenderer{ 1, 1, {randR(generator),randG(generator),randB(generator),1} });
             }
         }
 

@@ -17,24 +17,9 @@ protected:
 	std::unique_ptr<OpenGLIndexBuffer> m_IndexBuffer;
 	std::unique_ptr<Shader> m_Shader;
 
-	struct Quad
-	{
-		struct Vertex
-		{
-			glm::vec3 VertexPosition;
-			glm::vec3 Position;
-			glm::vec2 Scale;
-			float rotation;
-			unsigned int Color;
-			glm::vec2 TexCoord;
-			float TexID;
-		};
-		Vertex topRight;
-		Vertex bottomRight;
-		Vertex bottomLeft;
-		Vertex topLeft;
-	};
-
+	glm::mat4 m_ProjectionMatrix;
+	glm::mat4 m_ViewMatrix;
+	float fov;
 public:
 
 

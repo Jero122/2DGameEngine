@@ -1,11 +1,11 @@
 #include <array>
 
-#include "GPUBatched_Renderer.h"
+#include "CPUBatched_Renderer.h"
 #include "OpenGLRenderCommand.h"
 
-GPUBatched_Renderer::GPUBatched_Renderer()
+CPUBatched_Renderer::CPUBatched_Renderer()
 {
-	std::string shaderPath("resources/shaders/BasicShader_GPUMatrices.glsl");
+	std::string shaderPath("resources/shaders/BasicShader_CPUMatrices.glsl");
 	m_Shader = std::make_unique<Shader>();
 	m_Shader->init(shaderPath);
 	m_Shader->use();
@@ -19,9 +19,6 @@ GPUBatched_Renderer::GPUBatched_Renderer()
 
 	BufferLayout layout;
 	layout.AddAttribute({ "aPos", BufferAttribType::Float3, false });
-	layout.AddAttribute({ "aTranslate", BufferAttribType::Float3, false });
-	layout.AddAttribute({ "aScale", BufferAttribType::Float2, false });
-	layout.AddAttribute({ "aRotate", BufferAttribType::Float, false });
 	layout.AddAttribute({ "aColor", BufferAttribType::UnsignedByte, true });
 	layout.AddAttribute({ "aTexCoords", BufferAttribType::Float2, false });
 	layout.AddAttribute({ "aTexId", BufferAttribType::Float, false });
@@ -49,7 +46,6 @@ GPUBatched_Renderer::GPUBatched_Renderer()
 
 	m_IndexBuffer = std::make_unique<OpenGLIndexBuffer>(indices, sizeof(indices));
 
-
 	int32_t samplers[s_MaxTextureSlots];
 	for (uint32_t i = 0; i < s_MaxTextureSlots; ++i)
 	{
@@ -61,18 +57,15 @@ GPUBatched_Renderer::GPUBatched_Renderer()
 	m_Vertices[2] = { -0.5f, -0.5f, 0.0f, 1.0f };  // bottom left
 	m_Vertices[3] = { -0.5f,  0.5f, 0.0f, 1.0f };   // top left 
 
-
 	m_Shader->setIntArray("uTextures", samplers, s_MaxTextureSlots);
 }
 
-
-void GPUBatched_Renderer::Shutdown()
+void CPUBatched_Renderer::Shutdown()
 {
 	/*delete[] quadBuffer;*/
 }
 
-
-void GPUBatched_Renderer::BeginScene(EditorCamera& camera)
+void CPUBatched_Renderer::BeginScene(EditorCamera& camera)
 {
 	m_ProjectionMatrix = camera.GetProjectionMatrix();
 	m_ViewMatrix = camera.GetViewMatrix();
@@ -82,15 +75,35 @@ void GPUBatched_Renderer::BeginScene(EditorCamera& camera)
 	BeginBatch();
 }
 
-
-void GPUBatched_Renderer::EndScene()
+void CPUBatched_Renderer::EndScene()
 {
 	EndBatch();
 	Flush();
 	OpenGLRenderCommand::UnbindFrameBuffer();
 }
 
-void GPUBatched_Renderer::Submit(const glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, int textureID, glm::vec2* texCoords)
+void CPUBatched_Renderer::Submit(const glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, int textureID, glm::vec2* texCoords)
+{
+	glm::mat4 transformMatrix{ 1.0f };
+
+	if (rotation == 0)
+	{
+		transformMatrix = glm::translate(glm::mat4(1.0f), position)
+			* glm::scale(glm::mat4(1.0f), { scale.x, scale.y, 1.0f });
+	}
+	else
+	{
+		transformMatrix = glm::translate(glm::mat4(1.0f), position)
+			* glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f,0.0f,1.0f })
+			* glm::scale(glm::mat4(1.0f), { scale.x, scale.y, 1.0f });
+	}
+
+	DrawQuad(transformMatrix, color, textureID, texCoords);
+
+}
+
+
+void CPUBatched_Renderer::DrawQuad(const glm::mat4 transform, glm::vec4 color, int textureID, glm::vec2* texCoords)
 {
 	m_RenderStats.QuadCount++;
 
@@ -133,31 +146,29 @@ void GPUBatched_Renderer::Submit(const glm::vec3 position, float rotation, glm::
 	int a = color.a * 255;
 
 	unsigned int c = a << 24 | b << 16 | g << 8 | r;
-	float rot = -glm::radians(rotation);
-	
+
 	//top right
-	m_QuadBufferPtr->topRight = Quad::Vertex{m_Vertices[0], position, scale,rot, c, texCoords[0], textureIndex};
+	m_QuadBufferPtr->topRight = Quad::Vertex{ transform * m_Vertices[0], c, texCoords[0], textureIndex };
 	//bottom right
-	m_QuadBufferPtr->bottomRight = Quad::Vertex{ m_Vertices[1], position, scale,rot, c, texCoords[1], textureIndex };
+	m_QuadBufferPtr->bottomRight = Quad::Vertex{ transform * m_Vertices[1],c, texCoords[1], textureIndex };
 	//bottom left
-	m_QuadBufferPtr->bottomLeft = Quad::Vertex{ m_Vertices[2], position, scale,rot, c, texCoords[2], textureIndex };;
+	m_QuadBufferPtr->bottomLeft = Quad::Vertex{ transform * m_Vertices[2], c, texCoords[2], textureIndex };
 	//top left
-	m_QuadBufferPtr->topLeft = Quad::Vertex{ m_Vertices[3], position, scale,rot, c, texCoords[3], textureIndex };
+	m_QuadBufferPtr->topLeft = Quad::Vertex{ transform * m_Vertices[3],c, texCoords[3], textureIndex };
 
 	m_QuadBufferPtr++;
 
 	indexCount += 6;
-
 }
 
-void GPUBatched_Renderer::BeginBatch()
+void CPUBatched_Renderer::BeginBatch()
 {
 	m_QuadBufferPtr = m_QuadBuffer;
 	indexCount = 0;
 	m_TextureSlotIndex = 1; //Set to 1 because 0 is reserved for colored quads
 }
 
-void GPUBatched_Renderer::EndBatch()
+void CPUBatched_Renderer::EndBatch()
 {
 	m_RenderStats.DrawCalls++;
 	uint32_t size = (m_QuadBufferPtr - m_QuadBuffer) * sizeof(Quad);
@@ -166,12 +177,12 @@ void GPUBatched_Renderer::EndBatch()
 }
 
 
-void GPUBatched_Renderer::Flush()
+void CPUBatched_Renderer::Flush()
 {
 	m_Shader->use();
 	m_Shader->setMat4("uView", m_ViewMatrix);
 	m_Shader->setMat4("uProjection", m_ProjectionMatrix);
-
+	 
 	for (unsigned int i = 1; i < m_TextureSlotIndex; ++i)
 	{
 		OpenGLRenderCommand::BindTexture(m_TextureSlots[i], i);
@@ -184,19 +195,19 @@ void GPUBatched_Renderer::Flush()
 }
 
 
-void GPUBatched_Renderer::NextBatch()
+void CPUBatched_Renderer::NextBatch()
 {
 	EndBatch();
 	Flush();
 	BeginBatch();
 }
 
-void GPUBatched_Renderer::ResetStats()
+void CPUBatched_Renderer::ResetStats()
 {
 	memset(&m_RenderStats, 0, sizeof(RenderStats));
 }
 
-GPUBatched_Renderer::RenderStats GPUBatched_Renderer::GetStats()
+CPUBatched_Renderer::RenderStats CPUBatched_Renderer::GetStats()
 {
 	return m_RenderStats;
 }

@@ -166,6 +166,7 @@
     <ClInclude Include="src\Renderer\OpenGLBuffer.h" />
     <ClInclude Include="src\Renderer\OpenGLVertexArray.h" />
     <ClInclude Include="src\Renderer\OpenGLRenderCommand.h" />
+    <ClInclude Include="src\Renderer\CPUBatched_Renderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\AlmondApplication.cpp">
@@ -234,5 +235,6 @@
     <ClCompile Include="vendor\stb\stb\stb_image.cpp">
       <Filter>vendor\stb\stb</Filter>
     </ClCompile>
+    <ClCompile Include="src\Renderer\CPUBatched_Renderer.cpp" />
   </ItemGroup>
 </Project>
