@@ -23,11 +23,49 @@ private:
 		Vertex topLeft;
 	};
 
+	struct Batch
+	{
+		struct BatchQuad
+		{
+			glm::vec3 Position;
+			float Rotation;
+			glm::vec2 Scale;
+			glm::vec4 Color;
+			int TextureID;
+			glm::vec2* TexCoords;
+		};
+
+		int QuadCount = 0;
+		std::vector<BatchQuad> Quads;
+
+		Batch()
+		{
+			Quads.reserve(10000);
+		}
+
+		void AddQuad(const glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, int textureID,
+			glm::vec2* texCoords)
+		{
+			Quads.push_back({ position,rotation,scale,color,textureID,texCoords });
+			QuadCount++;
+		}
+
+		void Clear()
+		{
+			Quads.clear();
+			QuadCount = 0;
+		}
+	};
+
+	std::vector<Batch> m_Batches;
+	Batch m_CurrentBatch;
+
 	void BeginBatch();
 	void EndBatch();
 	void NextBatch();
 	void Flush();
 	void DrawQuad(const glm::mat4 transform, glm::vec4 color, int textureID, glm::vec2* texCoords);
+	void ProcessBatch(Batch batch);
 
 	static const int MAX_BATCH_COUNT = 10000;
 	static const int MAX_VERTEX_COUNT = MAX_BATCH_COUNT * 4;
@@ -46,6 +84,7 @@ public:
 	CPUBatched_Renderer();
 	void Shutdown() override;
 	void BeginScene(EditorCamera& camera) override;
+
 	void EndScene() override;
 	void Submit(const glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, int textureID,
 		glm::vec2* texCoords) override;

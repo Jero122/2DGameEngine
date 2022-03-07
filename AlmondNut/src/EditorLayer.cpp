@@ -269,7 +269,7 @@ void EditorLayer::OnImGuiRender()
     ImGui::End();
     ImGui::PopStyleVar();
 
-    m_SceneHierarchyPanel.OnImGuiRender();
+    //m_SceneHierarchyPanel.OnImGuiRender();
  	
     ImGui::Begin("Asset Browser");
     ImGui::End();
