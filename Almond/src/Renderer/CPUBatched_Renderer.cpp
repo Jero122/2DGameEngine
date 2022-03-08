@@ -13,11 +13,8 @@ CPUBatched_Renderer::CPUBatched_Renderer()
 	m_Shader->init(shaderPath);
 	m_Shader->use();
 
-	m_QuadBuffer = new Quad[MAX_BATCH_COUNT];
-
 	m_VertexArray = std::make_unique<OpenGLVertexArray>();
 	m_VertexArray->Bind();
-
 	m_VertexBuffer = std::make_unique<OpenGLVertexBuffer>(nullptr, MAX_VERTEX_COUNT * sizeof(Quad::Vertex));
 
 	BufferLayout layout;
@@ -26,7 +23,6 @@ CPUBatched_Renderer::CPUBatched_Renderer()
 	layout.AddAttribute({ "aTexCoords", BufferAttribType::Float2, false });
 	layout.AddAttribute({ "aTexId", BufferAttribType::Float, false });
 	m_VertexBuffer->SetLayout(layout);
-
 
 	//EBO
 	//Populates INDICES array as that will remain the same
@@ -45,12 +41,10 @@ CPUBatched_Renderer::CPUBatched_Renderer()
 		offset += 4;
 	}
 
-	m_QuadBufferPtr = m_QuadBuffer;
-
 	m_IndexBuffer = std::make_unique<OpenGLIndexBuffer>(indices, sizeof(indices));
 
-	int32_t samplers[s_MaxTextureSlots];
-	for (uint32_t i = 0; i < s_MaxTextureSlots; ++i)
+	int32_t samplers[MAX_TEXTURE_SLOTS];
+	for (uint32_t i = 0; i < MAX_TEXTURE_SLOTS; ++i)
 	{
 		samplers[i] = i;
 	}
@@ -60,19 +54,18 @@ CPUBatched_Renderer::CPUBatched_Renderer()
 	m_Vertices[2] = { -0.5f, -0.5f, 0.0f, 1.0f };  // bottom left
 	m_Vertices[3] = { -0.5f,  0.5f, 0.0f, 1.0f };   // top left 
 
-	m_Shader->setIntArray("uTextures", samplers, s_MaxTextureSlots);
+	m_Shader->setIntArray("uTextures", samplers, MAX_TEXTURE_SLOTS);
 }
 
 void CPUBatched_Renderer::Shutdown()
 {
-	/*delete[] quadBuffer;*/
+
 }
 
 void CPUBatched_Renderer::BeginScene(EditorCamera& camera)
 {
 	m_ProjectionMatrix = camera.GetProjectionMatrix();
 	m_ViewMatrix = camera.GetViewMatrix();
-
 
 	OpenGLRenderCommand::ClearColor(62.0f / 255.0f, 62.0f / 255.0f, 58.0f / 255.0f, 1.0f);
 	OpenGLRenderCommand::Clear();
@@ -82,29 +75,74 @@ void CPUBatched_Renderer::EndScene()
 {
 	m_Batches.push_back(m_CurrentBatch);
 	//loop through each batch
+	//do matrix calculations
 	for (auto batch : m_Batches)
 	{
-		BeginBatch();
-		ProcessBatch(batch);
-		EndBatch();
-		Flush();
+		ProcessBatch(&m_BatchBufferData, batch);
 	}
-	//do matrix calculations
-	//add to quadbufferptr
+
+
+	for (auto bufferData : m_BatchBufferData)
+	{
+		uint32_t size = (bufferData->QuadBufferPtr - bufferData->QuadBuffer) * sizeof(Quad);
+		m_VertexBuffer->Bind();
+		m_VertexBuffer->RedefineDataStore(0, size, bufferData->QuadBuffer);
+
+		m_Shader->use();
+		m_Shader->setMat4("uView", m_ViewMatrix);
+		m_Shader->setMat4("uProjection", m_ProjectionMatrix);
+
+		for (unsigned int i = 1; i < bufferData->CurrentTextureSlotIndex; ++i)
+		{
+			OpenGLRenderCommand::BindTexture(bufferData->TextureSlots[i], i);
+		}
+
+		m_VertexArray->Bind();
+		m_IndexBuffer->Bind();
+
+		OpenGLRenderCommand::DrawElementsTriangle(bufferData->IndexCount, 0);
+	}
+
 	OpenGLRenderCommand::UnbindFrameBuffer();
 
-	for (auto batch : m_Batches)
-	{
-		batch.Clear();
-	}
+	//clear current batch
 	m_CurrentBatch.Clear();
+	//clear batches vector
 	m_Batches.clear();
+	//delete bufferData
+	for (auto bufferData : m_BatchBufferData)
+	{
+		//free memory
+		delete bufferData;
+	}
+	//clear bufferdata vector
+	m_BatchBufferData.clear();
 }
 
 void CPUBatched_Renderer::Submit(const glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, int textureID, glm::vec2* texCoords)
 {
+	float textureIndex = 0;
+	//If textureID is already in batch
+	for (unsigned int i = 0; i < m_CurrentBatch.TextureSlotIndex; ++i)
+	{
+		if (m_CurrentBatch.TextureSlots[i] == textureID)
+		{
+			//Set the textureIndex for this quad to the one already in the batch;
+			textureIndex = i;
+			break;
+		}
+	}
+
+	//If textureID was not in batch
+	if (textureIndex == 0 && textureID > 0)
+	{
+		textureIndex = m_CurrentBatch.TextureSlotIndex;
+		m_CurrentBatch.TextureSlots[m_CurrentBatch.TextureSlotIndex] = textureID;
+		m_CurrentBatch.TextureSlotIndex++;
+	}
+
 	m_CurrentBatch.AddQuad(position,rotation,scale,color,textureID,texCoords);
-	if (m_CurrentBatch.QuadCount >= MAX_BATCH_COUNT)
+	if (m_CurrentBatch.QuadCount >= MAX_BATCH_COUNT || m_CurrentBatch.TextureSlotIndex >= MAX_TEXTURE_SLOTS)
 	{
 		m_Batches.push_back(m_CurrentBatch);
 		m_CurrentBatch = Batch();
@@ -114,8 +152,9 @@ void CPUBatched_Renderer::Submit(const glm::vec3 position, float rotation, glm::
 }
 
 
-void CPUBatched_Renderer::ProcessBatch(Batch batch)
+void CPUBatched_Renderer::ProcessBatch(std::vector<BatchBuffer*>* buffers, Batch batch)
 {
+	BatchBuffer* buffer = new BatchBuffer();
 	for (auto quad : batch.Quads)
 	{
 		glm::mat4 transformMatrix{ 1.0f };
@@ -131,16 +170,12 @@ void CPUBatched_Renderer::ProcessBatch(Batch batch)
 				* glm::scale(glm::mat4(1.0f), { quad.Scale.x, quad.Scale.y, 1.0f });
 		}
 
-		////////////SHARED RESOURCE////////////
-		m_RenderStats.QuadCount++;
-		////////////////////////////////////
 
 		float textureIndex = 0;
-
 		//If textureID is already in batch
-		for (unsigned int i = 0; i < m_TextureSlotIndex; ++i)
+		for (unsigned int i = 0; i < batch.TextureSlotIndex; ++i)
 		{
-			if (m_TextureSlots[i] == quad.TextureID)
+			if (batch.TextureSlots[i] == quad.TextureID)
 			{
 				//Set the textureIndex for this quad to the one already in the batch;
 				textureIndex = i;
@@ -151,9 +186,9 @@ void CPUBatched_Renderer::ProcessBatch(Batch batch)
 		//If textureID was not in batch
 		if (textureIndex == 0 && quad.TextureID > 0)
 		{
-			textureIndex = m_TextureSlotIndex;
-			m_TextureSlots[m_TextureSlotIndex] = quad.TextureID;
-			m_TextureSlotIndex++;
+			textureIndex = batch.TextureSlotIndex;
+			batch.TextureSlots[batch.TextureSlotIndex] = quad.TextureID;
+			batch.TextureSlotIndex++;
 		}
 
 		//encoding rgba colour into a single unsigned byte
@@ -164,65 +199,23 @@ void CPUBatched_Renderer::ProcessBatch(Batch batch)
 
 		unsigned int c = a << 24 | b << 16 | g << 8 | r;
 
-		////////////SHARED RESOURCE////////////
-		//top right
-		m_QuadBufferPtr->topRight = Quad::Vertex{ transformMatrix * m_Vertices[0], c, quad.TexCoords[0], textureIndex };
+		buffer->QuadBufferPtr->topRight = Quad::Vertex{ transformMatrix * m_Vertices[0], c, quad.TexCoords[0], textureIndex };
 		//bottom right
-		m_QuadBufferPtr->bottomRight = Quad::Vertex{ transformMatrix * m_Vertices[1],c, quad.TexCoords[1], textureIndex };
+		buffer->QuadBufferPtr->bottomRight = Quad::Vertex{ transformMatrix * m_Vertices[1],c, quad.TexCoords[1], textureIndex };
 		//bottom left
-		m_QuadBufferPtr->bottomLeft = Quad::Vertex{ transformMatrix * m_Vertices[2], c, quad.TexCoords[2], textureIndex };
+		buffer->QuadBufferPtr->bottomLeft = Quad::Vertex{ transformMatrix * m_Vertices[2], c, quad.TexCoords[2], textureIndex };
 		//top left
-		m_QuadBufferPtr->topLeft = Quad::Vertex{ transformMatrix * m_Vertices[3],c, quad.TexCoords[3], textureIndex };
-
-		m_QuadBufferPtr++;
-
-		indexCount += 6;
-		////////////////////////////////////
-
-
-	}
-}
-
-void CPUBatched_Renderer::BeginBatch()
-{
-	m_QuadBufferPtr = m_QuadBuffer;
-	indexCount = 0;
-	m_TextureSlotIndex = 1; //Set to 1 because 0 is reserved for colored quads
-}
-
-void CPUBatched_Renderer::EndBatch()
-{
-	m_RenderStats.DrawCalls++;
-	uint32_t size = (m_QuadBufferPtr - m_QuadBuffer) * sizeof(Quad);
-	m_VertexBuffer->Bind();
-	m_VertexBuffer->RedefineDataStore(0, size, m_QuadBuffer);
-}
-
-
-void CPUBatched_Renderer::Flush()
-{
-	m_Shader->use();
-	m_Shader->setMat4("uView", m_ViewMatrix);
-	m_Shader->setMat4("uProjection", m_ProjectionMatrix);
-	 
-	for (unsigned int i = 1; i < m_TextureSlotIndex; ++i)
-	{
-		OpenGLRenderCommand::BindTexture(m_TextureSlots[i], i);
+		buffer->QuadBufferPtr->topLeft = Quad::Vertex{ transformMatrix * m_Vertices[3],c, quad.TexCoords[3], textureIndex };
+		buffer->QuadBufferPtr++;
+		buffer->IndexCount += 6;
 	}
 
-	m_VertexArray->Bind();
-	m_IndexBuffer->Bind();
-
-	OpenGLRenderCommand::DrawElementsTriangle(indexCount, 0);
+	//SHARED RESOURCE//
+	buffer->TextureSlots = batch.TextureSlots;
+	
+	buffers->push_back(buffer);
 }
 
-
-void CPUBatched_Renderer::NextBatch()
-{
-	EndBatch();
-	Flush();
-	BeginBatch();
-}
 
 void CPUBatched_Renderer::ResetStats()
 {
