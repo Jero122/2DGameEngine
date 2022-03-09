@@ -31,7 +31,7 @@ Entities:
     Sprite Renderer:
       Width: 1
       Height: 1
-      Color: [1, 0, 0, 1]
+      Color: [255, 255, 255, 1]
     Rigid Body:
       Body Type: Dynamic
       Fixed Rotation: false

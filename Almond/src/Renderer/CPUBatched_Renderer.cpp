@@ -175,7 +175,7 @@ void CPUBatched_Renderer::ProcessBatch(std::vector<BatchBuffer*>* buffers, Batch
 		//If textureID is already in batch
 		for (unsigned int i = 0; i < batch.TextureSlotIndex; ++i)
 		{
-			if (batch.TextureSlots[i] == quad.TextureID)
+			if (buffer->TextureSlots[i] == quad.TextureID)
 			{
 				//Set the textureIndex for this quad to the one already in the batch;
 				textureIndex = i;
@@ -186,9 +186,9 @@ void CPUBatched_Renderer::ProcessBatch(std::vector<BatchBuffer*>* buffers, Batch
 		//If textureID was not in batch
 		if (textureIndex == 0 && quad.TextureID > 0)
 		{
-			textureIndex = batch.TextureSlotIndex;
-			batch.TextureSlots[batch.TextureSlotIndex] = quad.TextureID;
-			batch.TextureSlotIndex++;
+			textureIndex = buffer->CurrentTextureSlotIndex;
+			buffer->TextureSlots[buffer->CurrentTextureSlotIndex] = quad.TextureID;
+			buffer->CurrentTextureSlotIndex++;
 		}
 
 		//encoding rgba colour into a single unsigned byte

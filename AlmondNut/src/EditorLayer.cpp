@@ -38,6 +38,7 @@ void EditorLayer::OnAttach()
 
     m_PlayIcon = std::make_shared<Texture>("resources/textures/PlayButton.png");
     m_StopIcon = std::make_shared<Texture>("resources/textures/StopButton.png");
+    std::shared_ptr<Texture> Crate = std::make_shared<Texture>("resources/textures/Crate.jpg");
 
 
     Entity floor = m_CurrentScene->CreateEntity("Floor");
@@ -61,7 +62,7 @@ void EditorLayer::OnAttach()
         auto transformComponent = enttA.GetComponent<Transform>();
         *transformComponent = Transform{ glm::vec3(0,10,0), glm::vec3(0,0,0),glm::vec3(1,1,1) };
 
-        enttA.AddComponent(SpriteRenderer{ 1, 1, {1,0,0,1} });
+        enttA.AddComponent(SpriteRenderer{ 1, 1, Crate->GetTexID() });
 
         RigidBody rb = RigidBody{};
         rb.FixedRotation = false;
