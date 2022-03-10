@@ -76,20 +76,20 @@ void EditorLayer::OnAttach()
     }
 
 
-        for (int i = 0; i < 1000; ++i)
+        for (int i = 0; i < 10000; ++i)
         {
             auto entity = m_CurrentScene->CreateEntity("entt");
             {
-                auto pos = glm::vec3{ randPositionX(generator),randPositionY(generator),0.0f };
+                auto pos = glm::vec3{ randPositionX(generator),randPositionY(generator),randPositionZ(generator)};
                 auto rot = glm::vec3{ 0.0f,0.0f,randRotation(generator) };
                 auto scale = glm::vec3{ 0.1f,0.1f,1.0f };
-                entity.AddComponent(Transform{ glm::vec3(pos.x,pos.y, 0),rot,scale });
+                entity.AddComponent(Transform{ glm::vec3(pos.x,pos.y, pos.z),rot,scale });
                 entity.AddComponent(SpriteRenderer{ 1, 1, {randR(generator),randG(generator),randB(generator),1} });
             }
         }
 
-    SceneSerializer sceneSerializer(m_CurrentScene);
-    sceneSerializer.Serialize("assets/scenes/Example.alm");
+    /*SceneSerializer sceneSerializer(m_CurrentScene);
+    sceneSerializer.Serialize("assets/scenes/Example.alm");*/
 }
 
 void EditorLayer::OnDetach()
@@ -142,6 +142,7 @@ void EditorLayer::OnImGuiRender()
     bool p_open = true;
     static bool opt_fullscreen = true;
     static bool opt_padding = false;
+    static bool show_sceneHierarchy = false;
     static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
 
     // We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
@@ -197,6 +198,7 @@ void EditorLayer::OnImGuiRender()
         {
             // Disabling fullscreen would allow the window to be moved to the front of other windows,
             // which we can't undo at the moment without finer window depth/z control.
+            ImGui::MenuItem("Scene Hierarchy", NULL, &show_sceneHierarchy);
             ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen);
             ImGui::MenuItem("Padding", NULL, &opt_padding);
             ImGui::Separator();
@@ -270,8 +272,11 @@ void EditorLayer::OnImGuiRender()
     ImGui::End();
     ImGui::PopStyleVar();
 
-    //m_SceneHierarchyPanel.OnImGuiRender();
- 	
+   if (show_sceneHierarchy)
+   {
+       m_SceneHierarchyPanel.OnImGuiRender();
+   }
+
     ImGui::Begin("Asset Browser");
     ImGui::End();
 
