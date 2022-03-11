@@ -18,6 +18,10 @@ struct SpriteRenderer
 		  color(color)
 	{
 		textureID = 0;
+		texCoords[0] = glm::vec2(1, 1);
+		texCoords[1] = glm::vec2(1, 0);
+		texCoords[2] = glm::vec2(0, 0);
+		texCoords[3] = glm::vec2(0, 1);
 	}
 
 	SpriteRenderer(float width, float height, unsigned texture_id, glm::vec2 topRight, glm::vec2 bottomRight, glm::vec2 bottomLeft, glm::vec2 topLeft)

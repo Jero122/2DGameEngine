@@ -19,6 +19,7 @@ EditorLayer::EditorLayer()
 std::default_random_engine generator;
 std::uniform_real_distribution<float> randPositionX(-16.0f, 16.0f);
 std::uniform_real_distribution<float> randPositionY(0.0f, 16.0f);
+std::uniform_real_distribution<float> randPositionZ(-1.0f, 1.0f);
 std::uniform_real_distribution<float> randRotation(0.0f, 90.0f);
 std::uniform_real_distribution<float> randScale(0.8f, 1.5f);
 std::uniform_real_distribution<float> randGravity(-10.0f, -1.0f);
@@ -76,7 +77,7 @@ void EditorLayer::OnAttach()
     }
 
 
-        for (int i = 0; i < 10000; ++i)
+        for (int i = 0; i < 100000; ++i)
         {
             auto entity = m_CurrentScene->CreateEntity("entt");
             {

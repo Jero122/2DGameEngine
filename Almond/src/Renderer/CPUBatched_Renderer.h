@@ -1,5 +1,6 @@
 #pragma once
 #include <array>
+#include <future>
 #include "EditorCamera.h"
 #include "Renderer.h"
 #include "glm/fwd.hpp"
@@ -80,13 +81,27 @@ private:
 
 	};
 
-	std::vector<Batch> m_Batches;
-	Batch m_CurrentBatch;
-	inline static std::vector<BatchBuffer*> m_BatchBufferData;
+
+	std::vector<std::future<void>> m_Futures;
+	inline static std::mutex mutex;
+
+	Batch* m_CurrentBatch;
+
+	inline static auto m_BatchBufferData = std::make_shared<std::vector<BatchBuffer*>>();
+	inline static auto m_Batches = std::make_shared<std::vector<Batch*>>();
+
+
 	inline static glm::vec4 m_Vertices[4];
 
 	void DrawQuad(const glm::mat4 transform, glm::vec4 color, int textureID, glm::vec2* texCoords);
-	static void ProcessBatch(std::vector<BatchBuffer*>* buffers,Batch batch);
+	static void ProcessBatch(std::shared_ptr<std::vector<BatchBuffer*>> buffers, Batch* batch);
+	static void ProcessBatches(std::shared_ptr<std::vector<BatchBuffer*>> buffers, std::shared_ptr<std::vector<Batch*>> m_Batches)
+	{
+		for (auto batch : *m_Batches)
+		{
+			ProcessBatch(buffers, batch);
+		}
+	}
 
 	static const int MAX_BATCH_COUNT = 10000;
 	static const int MAX_VERTEX_COUNT = MAX_BATCH_COUNT * 4;
