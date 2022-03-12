@@ -1,7 +1,6 @@
 # Binaries
 **/bin/
 bin-int/
-build
 
 # Visual Studio files and folder
 .vs/
