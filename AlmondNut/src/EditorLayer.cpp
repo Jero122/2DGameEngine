@@ -47,7 +47,7 @@ void EditorLayer::OnAttach()
         auto transformComponent = floor.GetComponent<Transform>();
         *transformComponent = Transform{ glm::vec3(0,-3.5,0), glm::vec3(0,0,0),glm::vec3(16,1,1) };
 
-        floor.AddComponent(SpriteRenderer{ 16, 1, {1,1,1,0.1} });
+        floor.AddComponent(SpriteRenderer{ 16, 1, {1,1,1,1.0f} });
 
         RigidBody rb = RigidBody{};
         rb.FixedRotation = false;
@@ -139,7 +139,6 @@ void EditorLayer::OnUpdate(TimeStep timeStep)
 void EditorLayer::OnImGuiRender()
 {
    //ImGui::ShowDemoWindow();
-	
     bool p_open = true;
     static bool opt_fullscreen = true;
     static bool opt_padding = false;
@@ -285,7 +284,16 @@ void EditorLayer::OnImGuiRender()
         ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
         ImGui::SetNextWindowBgAlpha(0.35f);
         ImGui::Begin("Application Stats", &p_open, window_flags);
-        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+        m_TotalFPS += ImGui::GetIO().Framerate / 2.0f;
+        m_TotalFrames++;
+        m_ElapsedTime += ImGui::GetIO().DeltaTime;
+
+        float currentFPS = 1.0f / ImGui::GetIO().DeltaTime;
+        float currentFrameTime = 1000.0f / currentFPS;
+
+        ImGui::Text("Application current %.3f ms/frame (%.1f FPS)", currentFrameTime ,currentFPS);
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate , ImGui::GetIO().Framerate);
+        ImGui::Text("Elapsed Time: %.3f s", m_ElapsedTime);
         ImGui::End();
    }
 

@@ -9,6 +9,14 @@
 class CPUBatched_Renderer: public Renderer
 {
 private:
+	/*
+	 * Measure these batch counts:
+	 * 1000,2000,3000,4000,5000,10000,20000,40000
+	 */
+	static const uint32_t MAX_BATCH_COUNT = 1000;
+	static const uint32_t MAX_VERTEX_COUNT = MAX_BATCH_COUNT * 4;
+	static const uint32_t MAX_INDEX_COUNT = MAX_BATCH_COUNT * 6;
+	static const uint32_t MAX_TEXTURE_SLOTS = 32;
 	struct Quad
 	{
 		struct Vertex
@@ -43,7 +51,7 @@ private:
 
 		Batch()
 		{
-			Quads.reserve(10000);
+			Quads.reserve(MAX_BATCH_COUNT);
 		}
 
 		void AddQuad(const glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, int textureID,
@@ -102,11 +110,6 @@ private:
 			ProcessBatch(buffers, batch);
 		}
 	}
-
-	static const int MAX_BATCH_COUNT = 10000;
-	static const int MAX_VERTEX_COUNT = MAX_BATCH_COUNT * 4;
-	static const int MAX_INDEX_COUNT = MAX_BATCH_COUNT * 6;
-	static const int MAX_TEXTURE_SLOTS = 32;
 
 	RenderStats m_RenderStats;
 

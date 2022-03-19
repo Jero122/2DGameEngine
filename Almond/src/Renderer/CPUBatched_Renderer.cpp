@@ -115,7 +115,6 @@ void CPUBatched_Renderer::EndScene()
 	OpenGLRenderCommand::UnbindFrameBuffer();
 
 
-
 	//clear all batches
 	for (auto batch : *m_Batches)
 	{

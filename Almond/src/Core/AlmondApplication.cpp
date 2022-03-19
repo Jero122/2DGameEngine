@@ -59,7 +59,11 @@ void AlmondApplication::Run()
 
 		float fps = 1.0f / (time.GetSeconds());
 
-		std::cout << "FrameTime: " << time.GetMilliseconds() << " | FPS: " << fps << std::endl;
+		//std::cout << "FrameTime: " << time.GetMilliseconds() << " | FPS: " << fps << std::endl;
+
+		std::string output = "\rFrameTime: " + std::to_string(time.GetMilliseconds()) + " | FPS: " + std::to_string(fps);
+		std::cout << output;
+
 	
 		for (auto layer : m_LayerStack)
 		{

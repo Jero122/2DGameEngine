@@ -1,18 +1,15 @@
 #include "Scene.h"
 #include "ECS/Entity.h"
 #include "ECS/SceneView.h"
-
 #include <box2d/b2_polygon_shape.h>
 #include "ECS/Components/BoxCollider2D.h"
-
 #include "ECS/Components/RigidBody.h"
-
-
 #include "ECS/Components/SpriteRenderer.h"
 #include "ECS/Components/TagComponent.h"
 #include "ECS/Components/Transform.h"
 #include "Renderer/CPUBatched_Renderer.h"
 #include "Renderer/GPUBatched_Renderer.h"
+
 
 Scene::Scene()
 {

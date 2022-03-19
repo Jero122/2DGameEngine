@@ -8,6 +8,14 @@
 class GPUBatched_Renderer: public Renderer
 {
 private:
+	/*
+	 * Measure these batch counts:
+	 * 1000,2000,3000,4000,5000,10000,20000,40000
+	 */
+	static const int MAX_BATCH_COUNT = 40000;
+	static const int MAX_VERTEX_COUNT = MAX_BATCH_COUNT * 4;
+	static const int MAX_INDEX_COUNT = MAX_BATCH_COUNT * 6;
+
 	struct Quad
 	{
 		struct Vertex
@@ -31,10 +39,6 @@ private:
 	void NextBatch();
 	void Flush();
 	void DrawQuad(const glm::mat4 transform, glm::vec4 color, int textureID, glm::vec2* texCoords);
-
-	static const int MAX_BATCH_COUNT = 10000;
-	static const int MAX_VERTEX_COUNT = MAX_BATCH_COUNT * 4;
-	static const int MAX_INDEX_COUNT = MAX_BATCH_COUNT * 6;
 
 	Quad* m_QuadBuffer;
 	Quad* m_QuadBufferPtr = nullptr;
