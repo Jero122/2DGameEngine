@@ -290,9 +290,16 @@ void EditorLayer::OnImGuiRender()
 
         float currentFPS = 1.0f / ImGui::GetIO().DeltaTime;
         float currentFrameTime = 1000.0f / currentFPS;
+        float avgFPS = ImGui::GetIO().Framerate;
+        float avgFrameTime = 1000.0f / ImGui::GetIO().Framerate;
 
-        ImGui::Text("Application current %.3f ms/frame (%.1f FPS)", currentFrameTime ,currentFPS);
-        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate , ImGui::GetIO().Framerate);
+        if (m_ElapsedTime >= 15.0f)
+        {
+            m_ElapsedTime = 0.0f;
+        }
+
+        ImGui::Text("Application current %.3f ms/frame (%.1f FPS)", currentFrameTime, currentFPS);
+        ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", avgFrameTime, avgFPS);
         ImGui::Text("Elapsed Time: %.3f s", m_ElapsedTime);
         ImGui::End();
    }
