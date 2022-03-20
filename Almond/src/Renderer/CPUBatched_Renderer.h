@@ -13,7 +13,7 @@ private:
 	 * Measure these batch counts:
 	 * 1000,2000,3000,4000,5000,10000,20000,40000
 	 */
-	static const uint32_t MAX_BATCH_COUNT = 1000;
+	static const uint32_t MAX_BATCH_COUNT = 4000;
 	static const uint32_t MAX_VERTEX_COUNT = MAX_BATCH_COUNT * 4;
 	static const uint32_t MAX_INDEX_COUNT = MAX_BATCH_COUNT * 6;
 	static const uint32_t MAX_TEXTURE_SLOTS = 32;

@@ -12,7 +12,7 @@ private:
 	 * Measure these batch counts:
 	 * 1000,2000,3000,4000,5000,10000,20000,40000
 	 */
-	static const int MAX_BATCH_COUNT = 40000;
+	static const int MAX_BATCH_COUNT = 4000;
 	static const int MAX_VERTEX_COUNT = MAX_BATCH_COUNT * 4;
 	static const int MAX_INDEX_COUNT = MAX_BATCH_COUNT * 6;
 
