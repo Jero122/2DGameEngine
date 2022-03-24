@@ -1,4 +1,4 @@
-#include "ImGuiLayer.h"
+#include "ImGuiSystem.h"
 
 #include "Core/AlmondApplication.h"
 #include "imgui/imgui.h"
@@ -6,11 +6,11 @@
 #include "imgui/backends/imgui_impl_opengl3.h"
 #include "SDL/SDL.h"
 
-ImGuiLayer::~ImGuiLayer()
+ImGuiSystem::~ImGuiSystem()
 {
 }
 
-void ImGuiLayer::OnAttach()
+void ImGuiSystem::OnStart()
 {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -65,33 +65,33 @@ void ImGuiLayer::OnAttach()
 
 }
 
-void ImGuiLayer::OnDetach()
+void ImGuiSystem::OnEnd()
 {
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
 }
 
-void ImGuiLayer::OnUpdate(TimeStep timeStep)
+void ImGuiSystem::OnUpdate(TimeStep timeStep)
 {
 }
 
-void ImGuiLayer::OnImGuiRender()
+void ImGuiSystem::OnImGuiRender()
 {
 }
 
-void ImGuiLayer::OnLateUpdate()
+void ImGuiSystem::OnLateUpdate()
 {
 }
 
-void ImGuiLayer::Begin()
+void ImGuiSystem::Begin()
 {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(static_cast<SDL_Window*>(AlmondApplication::Get().GetWindow().GetNativeWindow()));
 	ImGui::NewFrame();
 }
 
-void ImGuiLayer::End()
+void ImGuiSystem::End()
 {
 	ImGui::Render();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -109,7 +109,7 @@ void ImGuiLayer::End()
     }
 }
 
-void ImGuiLayer::SetDarkTheme(Theme theme)
+void ImGuiSystem::SetDarkTheme(Theme theme)
 {
 	auto& colors = ImGui::GetStyle().Colors;
 	switch (theme)
@@ -175,7 +175,7 @@ void ImGuiLayer::SetDarkTheme(Theme theme)
 
 		//Seperator
 
-		colors[ImGuiCol_Separator] = ImVec4{ 0.10f,0.10f,0.10,1 };
+		colors[ImGuiCol_Separator] = ImVec4{ 0.10f,0.10f,0.10f,1 };
 		break;
 	case Unreal:
 		break;

@@ -111,7 +111,6 @@ void Scene::OnRuntimeUpdate(TimeStep timestep, EditorCamera& editorCamera)
 		auto sprite = m_Ecs.GetComponent<SpriteRenderer>(ent);
 		m_Renderer->Submit(transform->position,transform->rotation.z,{transform->scale.x, transform->scale.y}, sprite->color,sprite->textureID, sprite->texCoords);
 	}
-
 	m_Renderer->EndScene();
 	
 	//Physcs

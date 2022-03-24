@@ -69,7 +69,7 @@ void Physics2D::SyncWithComponents()
 
 void Physics2D::OnUpdate()
 {
-	/*float newTime = SDL_GetTicks() / 1000.0f;
+	float newTime = SDL_GetTicks() / 1000.0f;
 	float frameTime = newTime - m_CurrentTime;
 	m_CurrentTime = newTime;
 	m_Accumulator += frameTime;
@@ -93,9 +93,9 @@ void Physics2D::OnUpdate()
 	}
 
 	float alpha = m_Accumulator / dt;
-	Interpolate(alpha);*/
+	Interpolate(alpha);
 
-	m_b2World->Step(dt, 6, 2);
+	/*m_b2World->Step(dt, 6, 2);
 
 	//Copy Current State into previous states
 	for (EntityID ent : SceneView<Transform, RigidBody>(*ecs))
@@ -106,7 +106,7 @@ void Physics2D::OnUpdate()
 		transform->position.x = rb->Body->GetPosition().x;
 		transform->position.y = rb->Body->GetPosition().y;
 		transform->rotation.z = glm::degrees(rb->Body->GetAngle());
-	}
+	}*/
 
 	//SyncWithComponents();
 	//TODO if editor

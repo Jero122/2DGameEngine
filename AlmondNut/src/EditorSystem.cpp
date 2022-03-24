@@ -1,6 +1,6 @@
 #include <random>
 
-#include "EditorLayer.h"
+#include "EditorSystem.h"
 #include <GL/glew.h>
 
 #include "imgui_internal.h"
@@ -8,7 +8,7 @@
 #include "imgui/imgui.h"
 #include "Scenes/SceneSerializer.h"
 
-EditorLayer::EditorLayer()
+EditorSystem::EditorSystem()
 {
     m_FrameBufferSpec.width = 1280;
     m_FrameBufferSpec.height = 720;
@@ -27,11 +27,11 @@ std::uniform_real_distribution<float> randR(0,1.0f);
 std::uniform_real_distribution<float> randG(0, 1.0f);
 std::uniform_real_distribution<float> randB(0, 1.0f);
 
-EditorLayer::~EditorLayer()
+EditorSystem::~EditorSystem()
 {
 }
 
-void EditorLayer::OnAttach()
+void EditorSystem::OnStart()
 {
     m_EditorCamera = EditorCamera(45.0f, 1920.0f / 1080.0f, 0.1f, 1000.0f);
     m_CurrentScene = std::make_shared<Scene>();
@@ -40,6 +40,7 @@ void EditorLayer::OnAttach()
     m_PlayIcon = std::make_shared<Texture>("resources/textures/PlayButton.png");
     m_StopIcon = std::make_shared<Texture>("resources/textures/StopButton.png");
     std::shared_ptr<Texture> Crate = std::make_shared<Texture>("resources/textures/Crate.jpg");
+
 
 
     Entity floor = m_CurrentScene->CreateEntity("Floor");
@@ -76,28 +77,53 @@ void EditorLayer::OnAttach()
 
     }
 
-
-        for (int i = 0; i < 100000; ++i)
+    /*//Syncing observation test
+    for (int i = 0; i < 1000; ++i)
+    {
+        auto entity = m_CurrentScene->CreateEntity("entt");
         {
-            auto entity = m_CurrentScene->CreateEntity("entt");
-            {
-                auto pos = glm::vec3{ randPositionX(generator),randPositionY(generator),randPositionZ(generator)};
-                auto rot = glm::vec3{ 0.0f,0.0f,randRotation(generator) };
-                auto scale = glm::vec3{ 0.1f,0.1f,1.0f };
-                entity.AddComponent(Transform{ glm::vec3(pos.x,pos.y, pos.z),rot,scale });
-                entity.AddComponent(SpriteRenderer{ 1, 1, {randR(generator),randG(generator),randB(generator),1} });
-            }
+            auto pos = glm::vec3{ randPositionX(generator),randPositionY(generator),0};
+            auto rot = glm::vec3{ 0.0f,0.0f,randRotation(generator) };
+            auto scale = glm::vec3{ 0.1f,0.1f,1.0f };
+            entity.AddComponent(Transform{ glm::vec3(pos.x,pos.y, pos.z),rot,scale });
+            entity.AddComponent(SpriteRenderer{ 1, 1, {randR(generator),randG(generator),randB(generator),1} });
+
+            RigidBody rb = RigidBody{};
+            rb.FixedRotation = false;
+            rb.Type = RigidBody::BodyType::Dynamic;
+            entity.AddComponent(rb);
+
+            BoxCollider2D collider = BoxCollider2D{ {0.0f,0.0f}, {0.5f, 0.5f} };
+            collider.Friction = 0.1f;
+            entity.AddComponent(collider);
         }
+    }*/
+
+	//Rendering stress test
+    for (int i = 0; i < 100000; ++i)
+    {
+        auto entity = m_CurrentScene->CreateEntity("entt");
+        {
+            auto pos = glm::vec3{ randPositionX(generator),randPositionY(generator),randPositionZ(generator)};
+            auto rot = glm::vec3{ 0.0f,0.0f,randRotation(generator) };
+            auto scale = glm::vec3{ 0.1f,0.1f,1.0f };
+            entity.AddComponent(Transform{ glm::vec3(pos.x,pos.y, pos.z),rot,scale });
+            entity.AddComponent(SpriteRenderer{ 1, 1, {randR(generator),randG(generator),randB(generator),1} });
+        }
+    }
 
     /*SceneSerializer sceneSerializer(m_CurrentScene);
     sceneSerializer.Serialize("assets/scenes/Example.alm");*/
+
+    m_SceneState = SceneState::Play;
+    m_CurrentScene->OnRuntimeStart();
 }
 
-void EditorLayer::OnDetach()
+void EditorSystem::OnEnd()
 {
 }
 
-void EditorLayer::OnUpdate(TimeStep timeStep)
+void EditorSystem::OnUpdate(TimeStep timeStep)
 {
 	//Resizing
 	if (m_FrameBufferSpec.width != m_ViewportSize.x || m_FrameBufferSpec.height != m_ViewportSize.y)
@@ -136,7 +162,7 @@ void EditorLayer::OnUpdate(TimeStep timeStep)
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void EditorLayer::OnImGuiRender()
+void EditorSystem::OnImGuiRender()
 {
    //ImGui::ShowDemoWindow();
     bool p_open = true;
@@ -308,11 +334,11 @@ void EditorLayer::OnImGuiRender()
     ImGui::End();
 }
 
-void EditorLayer::OnLateUpdate()
+void EditorSystem::OnLateUpdate()
 {
 }
 
-void EditorLayer::CreateFrameBuffer(FrameBufferSpec spec)
+void EditorSystem::CreateFrameBuffer(FrameBufferSpec spec)
 {
 	if (m_FrameBuffer != 0)
 	{

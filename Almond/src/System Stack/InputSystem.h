@@ -1,16 +1,16 @@
 #pragma once
 #include "Core/Input.h"
-#include "Core/Layer.h"
+#include "Core/GameSystem.h"
 
-class InputLayer : public Layer
+class InputSystem : public GameSystem
 {
 public:
-	InputLayer()
+	InputSystem()
 	{
 		
 	}
 	
-	~InputLayer() override
+	~InputSystem() override
 	{
 		
 	}

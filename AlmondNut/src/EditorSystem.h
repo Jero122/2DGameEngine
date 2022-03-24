@@ -6,14 +6,14 @@
 #include "Panels/SceneHierarchyPanel.h"
 
 
-class EditorLayer : public Layer
+class EditorSystem : public GameSystem
 {
 public:
-	EditorLayer();
-	~EditorLayer() override;
+	EditorSystem();
+	~EditorSystem() override;
 	
-	void OnAttach() override;
-	void OnDetach() override;
+	void OnStart() override;
+	void OnEnd() override;
 	void OnUpdate(TimeStep timeStep) override;
 	
 	void OnImGuiRender() override;

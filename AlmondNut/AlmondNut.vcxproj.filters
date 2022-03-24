@@ -6,14 +6,14 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\EditorLayer.h" />
+    <ClInclude Include="src\EditorSystem.h" />
     <ClInclude Include="src\Panels\SceneHierarchyPanel.h">
       <Filter>Panels</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AlmondNutApp.cpp" />
-    <ClCompile Include="src\EditorLayer.cpp" />
+    <ClCompile Include="src\EditorSystem.cpp" />
     <ClCompile Include="src\Panels\SceneHierarchyPanel.cpp">
       <Filter>Panels</Filter>
     </ClCompile>

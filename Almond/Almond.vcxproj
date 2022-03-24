@@ -105,8 +105,8 @@
     <ClInclude Include="src\Core\Base.h" />
     <ClInclude Include="src\Core\EntryPoint.h" />
     <ClInclude Include="src\Core\Input.h" />
-    <ClInclude Include="src\Core\Layer.h" />
-    <ClInclude Include="src\Core\LayerStack.h" />
+    <ClInclude Include="src\Core\GameSystem.h" />
+    <ClInclude Include="src\Core\SystemStack.h" />
     <ClInclude Include="src\Core\TimeStep.h" />
     <ClInclude Include="src\Core\Window.h" />
     <ClInclude Include="src\ECS\ComponentManager.h" />
@@ -121,8 +121,8 @@
     <ClInclude Include="src\ECS\Entity.h" />
     <ClInclude Include="src\ECS\SceneView.h" />
     <ClInclude Include="src\ECS\SystemManager.h" />
-    <ClInclude Include="src\Layers\ImGuiLayer.h" />
-    <ClInclude Include="src\Layers\InputLayer.h" />
+    <ClInclude Include="src\System Stack\ImGuiSystem.h" />
+    <ClInclude Include="src\System Stack\InputSystem.h" />
     <ClInclude Include="src\Physics2D\DebugDrawBox2D.h" />
     <ClInclude Include="src\Physics2D\Geometry2D.h" />
     <ClInclude Include="src\Physics2D\Physics2D.h" />
@@ -147,11 +147,10 @@
   <ItemGroup>
     <ClCompile Include="src\Core\AlmondApplication.cpp" />
     <ClCompile Include="src\Core\Input.cpp" />
-    <ClCompile Include="src\Core\Layer.cpp" />
-    <ClCompile Include="src\Core\LayerStack.cpp" />
+    <ClCompile Include="src\Core\SystemStack.cpp" />
     <ClCompile Include="src\Core\Window.cpp" />
     <ClCompile Include="src\ECS\ECSTypes.cpp" />
-    <ClCompile Include="src\Layers\ImGuiLayer.cpp" />
+    <ClCompile Include="src\System Stack\ImGuiSystem.cpp" />
     <ClCompile Include="src\Physics2D\DebugDrawBox2D.cpp" />
     <ClCompile Include="src\Physics2D\Geometry2D.cpp" />
     <ClCompile Include="src\Physics2D\Physics2D.cpp" />

@@ -1,7 +1,7 @@
 #pragma once
-#include "Core/Layer.h"
+#include "Core/GameSystem.h"
 
-class ImGuiLayer : public Layer
+class ImGuiSystem : public GameSystem
 {
 public:
 	enum Theme
@@ -11,15 +11,15 @@ public:
 		Unreal
 	};
 	
-	ImGuiLayer()
+	ImGuiSystem()
 	{
 		
 	}
 
-	~ImGuiLayer() override;
-	void OnAttach() override;
+	~ImGuiSystem() override;
+	void OnStart() override;
 	
-	void OnDetach() override;
+	void OnEnd() override;
 	void OnUpdate(TimeStep timeStep) override;
 	void OnImGuiRender() override;
 	void OnLateUpdate() override;

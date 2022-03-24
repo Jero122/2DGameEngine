@@ -20,7 +20,7 @@
 
 /// Core ///
 #include "Core/Input.h"
-#include "Core/Layer.h"
+#include "Core/GameSystem.h"
 #include "Core/TimeStep.h"
 
 /// RENDERER ///

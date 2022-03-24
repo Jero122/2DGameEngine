@@ -80,16 +80,16 @@ void CPUBatched_Renderer::EndScene()
 	/*//APPROACH 1: PROCESS ALL BATCHES IN MAIN THREAD
 	ProcessBatches(m_BatchBufferData, m_Batches);*/
 
-	//APPROACH 2: CREATE ASYNC THREAD WITH ALL BATCHES
+	/*//APPROACH 2: CREATE ASYNC THREAD WITH ALL BATCHES
 	auto future = std::async(std::launch::async, ProcessBatches, m_BatchBufferData, m_Batches);
-	future.get();
+	future.get();*/
 
-	/*//APPROACH 3: CREATE ASYNC THREAD FOR EACH BATCH AND WAIT UNTIL THEY ARE ALL DONE
+	//APPROACH 3: CREATE ASYNC THREAD FOR EACH BATCH AND WAIT UNTIL THEY ARE ALL DONE
 	for (auto batch : *m_Batches)
 	{
 		m_Futures.push_back(std::async(std::launch::async, ProcessBatch, m_BatchBufferData, batch));
 	}
-	for_each(m_Futures.begin(), m_Futures.end(), [](std::future<void>& x) {x.get() ; });*/
+	for_each(m_Futures.begin(), m_Futures.end(), [](std::future<void>& x) {x.get() ; });
 
 
 	//As the BufferData list gets populated, render the batches

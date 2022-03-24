@@ -1,6 +1,6 @@
 #include <Almond.h>
 
-#include "EditorLayer.h"
+#include "EditorSystem.h"
 #include "Core/EntryPoint.h"
 
 class AlmondNut : public AlmondApplication
@@ -8,7 +8,7 @@ class AlmondNut : public AlmondApplication
 public:
 	AlmondNut()
 	{
-		PushLayer(new EditorLayer());
+		PushSystem(new EditorSystem());
 	}
 
 	~AlmondNut()

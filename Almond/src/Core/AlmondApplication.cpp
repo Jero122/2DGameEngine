@@ -1,7 +1,8 @@
 #include "AlmondApplication.h"
 #include "TimeStep.h"
-#include "Layers/InputLayer.h"
 #include "Renderer/GPUBatched_Renderer.h"
+#include "System Stack/ImGuiSystem.h"
+#include "System Stack/InputSystem.h"
 
 AlmondApplication* AlmondApplication::s_Instance = nullptr;
 int s_componentCounter = 0;
@@ -12,17 +13,17 @@ AlmondApplication::AlmondApplication()
 	m_Window = Window::Create(WindowProps());
 	
 	//INPUT
-	InputLayer* input = new InputLayer();
-	m_LayerStack.PushLayer(input);
+	InputSystem* input = new InputSystem();
+	m_SystemStack.PushSystem(input);
 
 	
 	//IMGUI
-	m_ImGuiLayer = new ImGuiLayer();
-	m_LayerStack.PushOverLay(m_ImGuiLayer);
+	m_ImGuiSystem = new ImGuiSystem();
+	m_SystemStack.PushOverLay(m_ImGuiSystem);
 
-	for (auto layer : m_LayerStack)
+	for (auto system : m_SystemStack)
 	{
-		layer->OnAttach();
+		system->OnStart();
 	}
 }
 
@@ -31,16 +32,16 @@ AlmondApplication::~AlmondApplication()
 	//TODO destruction of application
 }
 
-void AlmondApplication::PushLayer(Layer* layer)
+void AlmondApplication::PushSystem(GameSystem* system)
 {
-	m_LayerStack.PushLayer(layer);
-	layer->OnAttach();
+	m_SystemStack.PushSystem(system);
+	system->OnStart();
 }
 
-void AlmondApplication::PushOverlay(Layer* overlay)
+void AlmondApplication::PushOverlay(GameSystem* overlay)
 {
-	m_LayerStack.PopOverlay(overlay);
-	overlay->OnAttach();
+	m_SystemStack.PopOverlay(overlay);
+	overlay->OnStart();
 }
 
 void AlmondApplication::Close()
@@ -65,23 +66,22 @@ void AlmondApplication::Run()
 		std::cout << output;
 
 	
-		for (auto layer : m_LayerStack)
+		for (auto system : m_SystemStack)
 		{
-			layer->OnUpdate(time);
+			system->OnUpdate(time);
 		}
 
-		m_ImGuiLayer->Begin();
-		for (auto layer : m_LayerStack)
+		m_ImGuiSystem->Begin();
+		for (auto system : m_SystemStack)
 		{
-			layer->OnImGuiRender();
+			system->OnImGuiRender();
 		}
 
+		m_ImGuiSystem->End();
 
-		m_ImGuiLayer->End();
-
-		for (auto layer : m_LayerStack)
+		for (auto system : m_SystemStack)
 		{
-			layer->OnLateUpdate();
+			system->OnLateUpdate();
 		}
 		m_Window->OnUpdate();
 		
