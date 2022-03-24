@@ -34,6 +34,9 @@
     <Filter Include="src\Scenes">
       <UniqueIdentifier>{BDC7122E-A97F-547B-1287-2DD7FE5DEF6B}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\System Stack">
+      <UniqueIdentifier>{17EAE739-03E3-068C-2C15-EC10186DE697}</UniqueIdentifier>
+    </Filter>
     <Filter Include="vendor">
       <UniqueIdentifier>{B3738122-9F15-ACF8-88D0-BF4C74113349}</UniqueIdentifier>
     </Filter>
@@ -42,9 +45,6 @@
     </Filter>
     <Filter Include="vendor\stb\stb">
       <UniqueIdentifier>{635F6677-4F2D-5A7D-38C1-CAA3242E36E2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\System Stack">
-      <UniqueIdentifier>{4C4DA51D-3805-E76A-A10C-C0C68DE3815B}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -60,10 +60,10 @@
     <ClInclude Include="src\Core\EntryPoint.h">
       <Filter>src\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Input.h">
+    <ClInclude Include="src\Core\GameSystem.h">
       <Filter>src\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\GameSystem.h">
+    <ClInclude Include="src\Core\Input.h">
       <Filter>src\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\SystemStack.h">
@@ -110,12 +110,6 @@
     </ClInclude>
     <ClInclude Include="src\ECS\SystemManager.h">
       <Filter>src\ECS</Filter>
-    </ClInclude>
-    <ClInclude Include="src\System Stack\ImGuiSystem.h">
-      <Filter>src\System Stack</Filter>
-    </ClInclude>
-    <ClInclude Include="src\System Stack\InputSystem.h">
-      <Filter>src\System Stack</Filter>
     </ClInclude>
     <ClInclude Include="src\Physics2D\DebugDrawBox2D.h">
       <Filter>src\Physics2D</Filter>
@@ -174,6 +168,12 @@
     <ClInclude Include="src\Scenes\SceneSerializer.h">
       <Filter>src\Scenes</Filter>
     </ClInclude>
+    <ClInclude Include="src\System Stack\ImGuiSystem.h">
+      <Filter>src\System Stack</Filter>
+    </ClInclude>
+    <ClInclude Include="src\System Stack\InputSystem.h">
+      <Filter>src\System Stack</Filter>
+    </ClInclude>
     <ClInclude Include="vendor\stb\stb\stb_image.h">
       <Filter>vendor\stb\stb</Filter>
     </ClInclude>
@@ -193,9 +193,6 @@
     </ClCompile>
     <ClCompile Include="src\ECS\ECSTypes.cpp">
       <Filter>src\ECS</Filter>
-    </ClCompile>
-    <ClCompile Include="src\System Stack\ImGuiSystem.cpp">
-      <Filter>src\System Stack</Filter>
     </ClCompile>
     <ClCompile Include="src\Physics2D\DebugDrawBox2D.cpp">
       <Filter>src\Physics2D</Filter>
@@ -241,6 +238,9 @@
     </ClCompile>
     <ClCompile Include="src\Scenes\SceneSerializer.cpp">
       <Filter>src\Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\System Stack\ImGuiSystem.cpp">
+      <Filter>src\System Stack</Filter>
     </ClCompile>
     <ClCompile Include="vendor\stb\stb\stb_image.cpp">
       <Filter>vendor\stb\stb</Filter>

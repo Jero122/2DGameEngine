@@ -104,8 +104,8 @@
     <ClInclude Include="src\Core\AlmondApplication.h" />
     <ClInclude Include="src\Core\Base.h" />
     <ClInclude Include="src\Core\EntryPoint.h" />
-    <ClInclude Include="src\Core\Input.h" />
     <ClInclude Include="src\Core\GameSystem.h" />
+    <ClInclude Include="src\Core\Input.h" />
     <ClInclude Include="src\Core\SystemStack.h" />
     <ClInclude Include="src\Core\TimeStep.h" />
     <ClInclude Include="src\Core\Window.h" />
@@ -121,8 +121,6 @@
     <ClInclude Include="src\ECS\Entity.h" />
     <ClInclude Include="src\ECS\SceneView.h" />
     <ClInclude Include="src\ECS\SystemManager.h" />
-    <ClInclude Include="src\System Stack\ImGuiSystem.h" />
-    <ClInclude Include="src\System Stack\InputSystem.h" />
     <ClInclude Include="src\Physics2D\DebugDrawBox2D.h" />
     <ClInclude Include="src\Physics2D\Geometry2D.h" />
     <ClInclude Include="src\Physics2D\Physics2D.h" />
@@ -142,6 +140,8 @@
     <ClInclude Include="src\ResourceManager\ResourceManager.h" />
     <ClInclude Include="src\Scenes\Scene.h" />
     <ClInclude Include="src\Scenes\SceneSerializer.h" />
+    <ClInclude Include="src\System Stack\ImGuiSystem.h" />
+    <ClInclude Include="src\System Stack\InputSystem.h" />
     <ClInclude Include="vendor\stb\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
@@ -150,7 +150,6 @@
     <ClCompile Include="src\Core\SystemStack.cpp" />
     <ClCompile Include="src\Core\Window.cpp" />
     <ClCompile Include="src\ECS\ECSTypes.cpp" />
-    <ClCompile Include="src\System Stack\ImGuiSystem.cpp" />
     <ClCompile Include="src\Physics2D\DebugDrawBox2D.cpp" />
     <ClCompile Include="src\Physics2D\Geometry2D.cpp" />
     <ClCompile Include="src\Physics2D\Physics2D.cpp" />
@@ -166,6 +165,7 @@
     <ClCompile Include="src\ResourceManager\ResourceManager.cpp" />
     <ClCompile Include="src\Scenes\Scene.cpp" />
     <ClCompile Include="src\Scenes\SceneSerializer.cpp" />
+    <ClCompile Include="src\System Stack\ImGuiSystem.cpp" />
     <ClCompile Include="vendor\stb\stb\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
