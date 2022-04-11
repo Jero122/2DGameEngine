@@ -3,6 +3,7 @@
 #include "ECS/SceneView.h"
 #include <box2d/b2_polygon_shape.h>
 #include "ECS/Components/BoxCollider2D.h"
+#include "ECS/Components/MovementComponent.h"
 #include "ECS/Components/RigidBody.h"
 #include "ECS/Components/SpriteRenderer.h"
 #include "ECS/Components/TagComponent.h"
@@ -19,6 +20,7 @@ Scene::Scene()
 	m_Ecs.CreateComponent<Transform>();
 	m_Ecs.CreateComponent<RigidBody>();
 	m_Ecs.CreateComponent<BoxCollider2D>();
+	m_Ecs.CreateComponent<MovementComponent>();
 	m_Renderer = new CPUBatched_Renderer();
 }
 
@@ -101,6 +103,13 @@ void Scene::OnRuntimeUpdate(TimeStep timestep, EditorCamera& editorCamera)
 	for (auto system: m_Ecs)
 	{
 		system->OnUpdate();
+	}
+
+	for (EntityID ent : SceneView<Transform, MovementComponent>(m_Ecs))
+	{
+		auto transform = m_Ecs.GetComponent<Transform>(ent);
+		auto move = m_Ecs.GetComponent<MovementComponent>(ent);
+		transform->position.y -= move->speed * timestep.GetSeconds();
 	}
 
 	//Render

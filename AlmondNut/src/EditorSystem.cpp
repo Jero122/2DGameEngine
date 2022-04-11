@@ -5,6 +5,7 @@
 
 #include "imgui_internal.h"
 #include "ECS/Components/BoxCollider2D.h"
+#include "ECS/Components/MovementComponent.h"
 #include "imgui/imgui.h"
 #include "Scenes/SceneSerializer.h"
 
@@ -17,7 +18,8 @@ EditorSystem::EditorSystem()
     CreateFrameBuffer(m_FrameBufferSpec);
 }
 std::default_random_engine generator;
-std::uniform_real_distribution<float> randPositionX(-16.0f, 16.0f);
+std::uniform_real_distribution<float> randSpeed(0.1f, 1.0f);
+std::uniform_real_distribution<float> randPositionX(-8.0f, 8.0f);
 std::uniform_real_distribution<float> randPositionY(0.0f, 16.0f);
 std::uniform_real_distribution<float> randPositionZ(-1.0f, 1.0f);
 std::uniform_real_distribution<float> randRotation(0.0f, 90.0f);
@@ -105,10 +107,11 @@ void EditorSystem::OnStart()
         auto entity = m_CurrentScene->CreateEntity("entt");
         {
             auto pos = glm::vec3{ randPositionX(generator),randPositionY(generator),randPositionZ(generator)};
-            auto rot = glm::vec3{ 0.0f,0.0f,randRotation(generator) };
+            auto rot = glm::vec3{ 0.0f,0.0f,0.0f };
             auto scale = glm::vec3{ 0.1f,0.1f,1.0f };
             entity.AddComponent(Transform{ glm::vec3(pos.x,pos.y, pos.z),rot,scale });
             entity.AddComponent(SpriteRenderer{ 1, 1, {randR(generator),randG(generator),randB(generator),1} });
+            entity.AddComponent(MovementComponent{ randSpeed(generator) });
         }
     }
 
@@ -319,10 +322,10 @@ void EditorSystem::OnImGuiRender()
         float avgFPS = ImGui::GetIO().Framerate;
         float avgFrameTime = 1000.0f / ImGui::GetIO().Framerate;
 
-        if (m_ElapsedTime >= 15.0f)
+        /*if (m_ElapsedTime >= 15.0f)
         {
             m_ElapsedTime = 0.0f;
-        }
+        }*/
 
         ImGui::Text("Application current %.3f ms/frame (%.1f FPS)", currentFrameTime, currentFPS);
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", avgFrameTime, avgFPS);

@@ -23,8 +23,7 @@ void EditorCamera::UpdateView()
 	direction.y = sin(glm::radians(m_Pitch));
 	direction.z = sin(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
 	m_Front = glm::normalize(direction);
-	
-	m_Right = glm::normalize(glm::cross(m_Front, m_Up));
+
 	auto centre = m_Position - m_Front;
 
 	m_ViewMatrix = glm::inverse(glm::lookAt(m_Position, centre, m_Up));
