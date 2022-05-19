@@ -81,6 +81,9 @@
     <ClInclude Include="src\ECS\Components\BoxCollider2D.h">
       <Filter>src\ECS\Components</Filter>
     </ClInclude>
+    <ClInclude Include="src\ECS\Components\MovementComponent.h">
+      <Filter>src\ECS\Components</Filter>
+    </ClInclude>
     <ClInclude Include="src\ECS\Components\RigidBody.h">
       <Filter>src\ECS\Components</Filter>
     </ClInclude>
@@ -177,7 +180,6 @@
     <ClInclude Include="vendor\stb\stb\stb_image.h">
       <Filter>vendor\stb\stb</Filter>
     </ClInclude>
-    <ClInclude Include="src\ECS\Components\MovementComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\AlmondApplication.cpp">

@@ -8,7 +8,6 @@
 #include "OpenGLVertexArray.h"
 #include "glm/fwd.hpp"
 
-
 class Renderer
 {
 protected:

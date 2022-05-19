@@ -61,7 +61,7 @@ void EditorSystem::OnStart()
         floor.AddComponent(collider);
     }
 
-    Entity enttA = m_CurrentScene->CreateEntity("enttA");
+    Entity enttA = m_CurrentScene->CreateEntity("crate");
     {
         auto transformComponent = enttA.GetComponent<Transform>();
         *transformComponent = Transform{ glm::vec3(0,10,0), glm::vec3(0,0,0),glm::vec3(1,1,1) };
@@ -77,42 +77,6 @@ void EditorSystem::OnStart()
         collider.Friction = 0.1f;
         enttA.AddComponent(collider);
 
-    }
-
-    /*//Syncing observation test
-    for (int i = 0; i < 1000; ++i)
-    {
-        auto entity = m_CurrentScene->CreateEntity("entt");
-        {
-            auto pos = glm::vec3{ randPositionX(generator),randPositionY(generator),0};
-            auto rot = glm::vec3{ 0.0f,0.0f,randRotation(generator) };
-            auto scale = glm::vec3{ 0.1f,0.1f,1.0f };
-            entity.AddComponent(Transform{ glm::vec3(pos.x,pos.y, pos.z),rot,scale });
-            entity.AddComponent(SpriteRenderer{ 1, 1, {randR(generator),randG(generator),randB(generator),1} });
-
-            RigidBody rb = RigidBody{};
-            rb.FixedRotation = false;
-            rb.Type = RigidBody::BodyType::Dynamic;
-            entity.AddComponent(rb);
-
-            BoxCollider2D collider = BoxCollider2D{ {0.0f,0.0f}, {0.5f, 0.5f} };
-            collider.Friction = 0.1f;
-            entity.AddComponent(collider);
-        }
-    }*/
-
-	//Rendering stress test
-    for (int i = 0; i < 100000; ++i)
-    {
-        auto entity = m_CurrentScene->CreateEntity("entt");
-        {
-            auto pos = glm::vec3{ randPositionX(generator),randPositionY(generator),randPositionZ(generator)};
-            auto rot = glm::vec3{ 0.0f,0.0f,0.0f };
-            auto scale = glm::vec3{ 0.1f,0.1f,1.0f };
-            entity.AddComponent(Transform{ glm::vec3(pos.x,pos.y, pos.z),rot,scale });
-            entity.AddComponent(SpriteRenderer{ 1, 1, {randR(generator),randG(generator),randB(generator),1} });
-            entity.AddComponent(MovementComponent{ randSpeed(generator) });
-        }
     }
 
     /*SceneSerializer sceneSerializer(m_CurrentScene);

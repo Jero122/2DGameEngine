@@ -57,7 +57,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>ALM_PLATFORM_WINDOWS;ALM_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor;dependencies\include;vendor\imgui;vendor\stb;vendor\glm;dependencies\include\SDL;dependencies\include\GL;dependencies\include\box2d;vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor;dependencies\include;vendor\imgui;vendor\stb;vendor\glm;dependencies\include\SDL;dependencies\include\GL;dependencies\include\box2d;vendor\yaml-cpp\include;dependencies\assimp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -70,7 +70,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;glew32s.lib;opengl32.lib;box2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;glew32s.lib;opengl32.lib;box2d.lib;assimp-vc142-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>dependencies\lib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
@@ -79,7 +79,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>ALM_PLATFORM_WINDOWS;ALM_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor;dependencies\include;vendor\imgui;vendor\stb;vendor\glm;dependencies\include\SDL;dependencies\include\GL;dependencies\include\box2d;vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor;dependencies\include;vendor\imgui;vendor\stb;vendor\glm;dependencies\include\SDL;dependencies\include\GL;dependencies\include\box2d;vendor\yaml-cpp\include;dependencies\assimp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -95,12 +95,11 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;glew32s.lib;opengl32.lib;box2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;glew32s.lib;opengl32.lib;box2d.lib;assimp-vc142-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>dependencies\lib\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\ECS\Components\MovementComponent.h" />
     <ClInclude Include="src\Almond.h" />
     <ClInclude Include="src\Core\AlmondApplication.h" />
     <ClInclude Include="src\Core\Base.h" />
@@ -112,6 +111,7 @@
     <ClInclude Include="src\Core\Window.h" />
     <ClInclude Include="src\ECS\ComponentManager.h" />
     <ClInclude Include="src\ECS\Components\BoxCollider2D.h" />
+    <ClInclude Include="src\ECS\Components\MovementComponent.h" />
     <ClInclude Include="src\ECS\Components\RigidBody.h" />
     <ClInclude Include="src\ECS\Components\SpriteRenderer.h" />
     <ClInclude Include="src\ECS\Components\TagComponent.h" />
