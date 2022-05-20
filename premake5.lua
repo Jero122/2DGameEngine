@@ -22,7 +22,7 @@ IncludeDir["Box2D"] = "%{wks.location}/Almond/dependencies/include/box2d"
 IncludeDir["stb"] = "%{wks.location}/Almond/vendor/stb"
 IncludeDir["glm"] = "%{wks.location}/Almond/vendor/glm"
 IncludeDir["yaml"] = "%{wks.location}/Almond/vendor/yaml-cpp/include"
-IncludeDir["assimp"] = "%{wks.location}/Almond/dependencies/assimp"
+IncludeDir["assimp"] = "%{wks.location}/Almond/dependencies/include/assimp"
 
 include "Almond/vendor/imgui"
 include "Almond/vendor/yaml-cpp"
@@ -75,7 +75,6 @@ project "Almond"
 		"ImGui",
 		"yaml-cpp",
 		"assimp-vc142-mt"
-
 	}
 
 	filter "system:windows"

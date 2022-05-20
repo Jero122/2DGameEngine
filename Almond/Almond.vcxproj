@@ -57,7 +57,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>ALM_PLATFORM_WINDOWS;ALM_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor;dependencies\include;vendor\imgui;vendor\stb;vendor\glm;dependencies\include\SDL;dependencies\include\GL;dependencies\include\box2d;vendor\yaml-cpp\include;dependencies\assimp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor;dependencies\include;vendor\imgui;vendor\stb;vendor\glm;dependencies\include\SDL;dependencies\include\GL;dependencies\include\box2d;vendor\yaml-cpp\include;dependencies\include\assimp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -79,7 +79,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>ALM_PLATFORM_WINDOWS;ALM_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor;dependencies\include;vendor\imgui;vendor\stb;vendor\glm;dependencies\include\SDL;dependencies\include\GL;dependencies\include\box2d;vendor\yaml-cpp\include;dependencies\assimp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor;dependencies\include;vendor\imgui;vendor\stb;vendor\glm;dependencies\include\SDL;dependencies\include\GL;dependencies\include\box2d;vendor\yaml-cpp\include;dependencies\include\assimp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -131,10 +131,13 @@
     <ClInclude Include="src\Renderer\EditorCamera.h" />
     <ClInclude Include="src\Renderer\GLCall.h" />
     <ClInclude Include="src\Renderer\GPUBatched_Renderer.h" />
+    <ClInclude Include="src\Renderer\Mesh.h" />
+    <ClInclude Include="src\Renderer\Model.h" />
     <ClInclude Include="src\Renderer\OpenGLBuffer.h" />
     <ClInclude Include="src\Renderer\OpenGLRenderCommand.h" />
     <ClInclude Include="src\Renderer\OpenGLVertexArray.h" />
     <ClInclude Include="src\Renderer\Renderer.h" />
+    <ClInclude Include="src\Renderer\Renderer3D.h" />
     <ClInclude Include="src\Renderer\Shader.h" />
     <ClInclude Include="src\Renderer\SpriteSheet.h" />
     <ClInclude Include="src\Renderer\Texture.h" />
@@ -160,6 +163,7 @@
     <ClCompile Include="src\Renderer\CPUBatched_Renderer.cpp" />
     <ClCompile Include="src\Renderer\EditorCamera.cpp" />
     <ClCompile Include="src\Renderer\GPUBatched_Renderer.cpp" />
+    <ClCompile Include="src\Renderer\Renderer3D.cpp" />
     <ClCompile Include="src\Renderer\Shader.cpp" />
     <ClCompile Include="src\Renderer\SpriteSheet.cpp" />
     <ClCompile Include="src\Renderer\Texture.cpp" />

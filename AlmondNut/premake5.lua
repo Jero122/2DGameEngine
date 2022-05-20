@@ -27,7 +27,8 @@ project "AlmondNut"
 		"%{IncludeDir.GL}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.Box2D}",
-		"%{IncludeDir.ImGui}"
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.assimp}"
 	}
 
 	links
