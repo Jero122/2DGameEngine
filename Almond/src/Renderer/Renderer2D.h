@@ -6,7 +6,7 @@
 #include "glm/fwd.hpp"
 
 
-class CPUBatched_Renderer: public Renderer
+class Renderer2D: public Renderer
 {
 private:
 	/*
@@ -111,16 +111,17 @@ private:
 		}
 	}
 
-	RenderStats m_RenderStats;
+
 
 public:
-	CPUBatched_Renderer();
+	Renderer2D();
 	void Shutdown() override;
 	void BeginScene(EditorCamera& camera) override;
 
 	void EndScene() override;
 	void Submit(const glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, int textureID,
 		glm::vec2* texCoords) override;
+	void Submit(std::shared_ptr<Model> model) override;
 	void ResetStats() override;
 	RenderStats GetStats() override;
 };

@@ -1,12 +1,11 @@
 #pragma once
-#pragma once
 #include <memory>
-
 #include "EditorCamera.h"
 #include "Shader.h"
 #include "OpenGLBuffer.h"
 #include "OpenGLVertexArray.h"
 #include "glm/fwd.hpp"
+#include "Model.h"
 
 class Renderer
 {
@@ -18,16 +17,17 @@ protected:
 
 	glm::mat4 m_ProjectionMatrix;
 	glm::mat4 m_ViewMatrix;
+	glm::vec3 m_ViewPosition;
 	float fov;
 public:
-
-
 	virtual ~Renderer() = default;
 	Renderer() = default;
 	virtual void Shutdown() = 0;
-	virtual void BeginScene(EditorCamera& camera) = 0;
+	virtual void BeginScene(EditorCamera & camera) = 0;
 	virtual void EndScene() = 0;
-	virtual void Submit(const glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, int textureID, glm::vec2* texCoords) = 0;
+	virtual void Submit(const glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, int textureID, glm::vec2 * texCoords) = 0;
+
+	virtual void Submit(std::shared_ptr<Model> model) = 0;
 
 	struct RenderStats
 	{
@@ -38,9 +38,8 @@ public:
 	};
 
 
-
+	RenderStats m_RenderStats;
 	virtual void ResetStats() = 0;
 	virtual RenderStats GetStats() = 0;
-
 };
 

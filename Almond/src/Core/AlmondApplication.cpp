@@ -1,6 +1,5 @@
 #include "AlmondApplication.h"
 #include "TimeStep.h"
-#include "Renderer/GPUBatched_Renderer.h"
 #include "System Stack/ImGuiSystem.h"
 #include "System Stack/InputSystem.h"
 

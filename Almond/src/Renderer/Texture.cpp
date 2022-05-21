@@ -5,7 +5,7 @@ Texture::Texture(const std::string filePath)
 	:m_FilePath(filePath)
 {
 
-	glGenTextures(1, &m_TexID);
+	glGenTextures(1, &id);
 
 	int nrComponents;
 	unsigned char* data = stbi_load(filePath.c_str(), &m_Width, &m_Height, &nrComponents, 0);
@@ -19,7 +19,7 @@ Texture::Texture(const std::string filePath)
 		else if (nrComponents == 4)
 			format = GL_RGBA;
 
-		glBindTexture(GL_TEXTURE_2D, m_TexID);
+		glBindTexture(GL_TEXTURE_2D, id);
 		glTexImage2D(GL_TEXTURE_2D, 0, format, m_Width, m_Height, 0, format, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 

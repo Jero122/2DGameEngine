@@ -8,6 +8,10 @@ class EditorCamera: public Camera
 public:
 	EditorCamera() = default;
 	EditorCamera(float fov, float aspectRatio, float near, float far);
+	glm::vec3 Position()
+	{
+		return m_Position;
+	}
 	void SetViewPortSize(float width, float height);
 	virtual void OnUpdate(TimeStep timeStep);
 

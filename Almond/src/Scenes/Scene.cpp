@@ -8,8 +8,8 @@
 #include "ECS/Components/SpriteRenderer.h"
 #include "ECS/Components/TagComponent.h"
 #include "ECS/Components/Transform.h"
-#include "Renderer/CPUBatched_Renderer.h"
-#include "Renderer/GPUBatched_Renderer.h"
+#include "Renderer/Renderer2D.h"
+#include "Renderer/Renderer3D.h"
 
 
 Scene::Scene()
@@ -21,7 +21,7 @@ Scene::Scene()
 	m_Ecs.CreateComponent<RigidBody>();
 	m_Ecs.CreateComponent<BoxCollider2D>();
 	m_Ecs.CreateComponent<MovementComponent>();
-	m_Renderer = new CPUBatched_Renderer();
+	m_Renderer = new Renderer2D();
 }
 
 Scene::~Scene()

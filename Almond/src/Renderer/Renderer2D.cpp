@@ -1,10 +1,10 @@
 #include <array>
 
-#include "CPUBatched_Renderer.h"
+#include "Renderer2D.h"
 #include <future>
 #include "OpenGLRenderCommand.h"
 
-CPUBatched_Renderer::CPUBatched_Renderer()
+Renderer2D::Renderer2D()
 {
 	/*m_Batches = std::vector<Batch>();*/
 	m_CurrentBatch = new Batch();
@@ -58,12 +58,12 @@ CPUBatched_Renderer::CPUBatched_Renderer()
 	m_Shader->setIntArray("uTextures", samplers, MAX_TEXTURE_SLOTS);
 }
 
-void CPUBatched_Renderer::Shutdown()
+void Renderer2D::Shutdown()
 {
 
 }
 
-void CPUBatched_Renderer::BeginScene(EditorCamera& camera)
+void Renderer2D::BeginScene(EditorCamera& camera)
 {
 	m_ProjectionMatrix = camera.GetProjectionMatrix();
 	m_ViewMatrix = camera.GetViewMatrix();
@@ -72,7 +72,7 @@ void CPUBatched_Renderer::BeginScene(EditorCamera& camera)
 	OpenGLRenderCommand::Clear();
 }
 
-void CPUBatched_Renderer::EndScene()
+void Renderer2D::EndScene()
 {
 	//Put current batch in list
 	m_Batches->push_back(m_CurrentBatch);
@@ -134,7 +134,7 @@ void CPUBatched_Renderer::EndScene()
 	m_CurrentBatch = new Batch();
 }
 
-void CPUBatched_Renderer::Submit(const glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, int textureID, glm::vec2* texCoords)
+void Renderer2D::Submit(const glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, int textureID, glm::vec2* texCoords)
 {
 	float textureIndex = 0;
 	//If textureID is already in batch
@@ -168,8 +168,11 @@ void CPUBatched_Renderer::Submit(const glm::vec3 position, float rotation, glm::
 
 }
 
+void Renderer2D::Submit(std::shared_ptr<Model> model)
+{
+}
 
-void CPUBatched_Renderer::ProcessBatch(std::shared_ptr<std::vector<BatchBuffer*>> buffers, Batch* batch)
+void Renderer2D::ProcessBatch(std::shared_ptr<std::vector<BatchBuffer*>> buffers, Batch* batch)
 {
 	BatchBuffer* buffer = new BatchBuffer();
 	for (auto quad : batch->Quads)
@@ -235,12 +238,12 @@ void CPUBatched_Renderer::ProcessBatch(std::shared_ptr<std::vector<BatchBuffer*>
 }
 
 
-void CPUBatched_Renderer::ResetStats()
+void Renderer2D::ResetStats()
 {
 	memset(&m_RenderStats, 0, sizeof(RenderStats));
 }
 
-CPUBatched_Renderer::RenderStats CPUBatched_Renderer::GetStats()
+Renderer2D::RenderStats Renderer2D::GetStats()
 {
 	return m_RenderStats;
 }

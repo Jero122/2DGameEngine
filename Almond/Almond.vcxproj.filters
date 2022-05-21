@@ -126,9 +126,6 @@
     <ClInclude Include="src\Platforms\Windows\WindowsWindow.h">
       <Filter>src\Platforms\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="src\Renderer\CPUBatched_Renderer.h">
-      <Filter>src\Renderer</Filter>
-    </ClInclude>
     <ClInclude Include="src\Renderer\Camera.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
@@ -157,6 +154,9 @@
       <Filter>src\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\Renderer.h">
+      <Filter>src\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\Renderer2D.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\Renderer3D.h">
@@ -224,13 +224,13 @@
     <ClCompile Include="src\Platforms\Windows\WindowsWindow.cpp">
       <Filter>src\Platforms\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="src\Renderer\CPUBatched_Renderer.cpp">
-      <Filter>src\Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="src\Renderer\EditorCamera.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\GPUBatched_Renderer.cpp">
+      <Filter>src\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer\Renderer2D.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\Renderer3D.cpp">

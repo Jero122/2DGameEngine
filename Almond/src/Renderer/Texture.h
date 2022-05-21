@@ -7,11 +7,12 @@
 class Texture
 {
 public:
+
 	Texture(const std::string filePath);
 
 	unsigned GetTexID() const
 	{
-		return m_TexID;
+		return id;
 	}
 
 	int GetWidth() const
@@ -24,9 +25,23 @@ public:
 		return m_Height;
 	}
 
+
+	std::string Type()
+	{
+		return type;
+	}
+
+	std::string FilePath()
+	{
+		return m_FilePath;
+	}
+
+	unsigned int id;
 private:
-	unsigned int m_TexID;
+
 	int m_Width;
 	int m_Height;
+	std::string type;
 	std::string m_FilePath;
+
 };
