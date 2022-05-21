@@ -28,7 +28,8 @@ project "AlmondNut"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.Box2D}",
 		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.assimp}"
+		"%{IncludeDir.assimp}",
+		"%{IncludeDir.stb}"
 	}
 
 	links

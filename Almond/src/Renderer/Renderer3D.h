@@ -5,6 +5,7 @@ class Renderer3D : public Renderer
 {
 private:
 	std::vector<std::shared_ptr<Model>> m_Models;
+	Model backpack;
 public:
 	Renderer3D();
 	~Renderer3D() override;

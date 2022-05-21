@@ -1,12 +1,12 @@
 ﻿#pragma once
-#include <cassert>
 #include <string>
 #include "GLCall.h"
-
 
 class Texture
 {
 public:
+
+	Texture() = default;
 
 	Texture(const std::string filePath);
 
@@ -26,22 +26,13 @@ public:
 	}
 
 
-	std::string Type()
-	{
-		return type;
-	}
-
-	std::string FilePath()
-	{
-		return m_FilePath;
-	}
-
+	std::string m_FilePath;
 	unsigned int id;
+	std::string type;
 private:
 
 	int m_Width;
 	int m_Height;
-	std::string type;
-	std::string m_FilePath;
+
 
 };

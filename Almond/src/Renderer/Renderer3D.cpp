@@ -3,10 +3,14 @@
 
 Renderer3D::Renderer3D()
 {
+
+	stbi_set_flip_vertically_on_load(true);
 	std::string shaderPath("resources/shaders/Lit3D.glsl");
 	m_Shader = std::make_unique<Shader>();
 	m_Shader->init(shaderPath);
 	m_Shader->use();
+
+	backpack = Model("Resources/Models/backpack/backpack.obj");
 }
 
 Renderer3D::~Renderer3D()
@@ -33,14 +37,26 @@ void Renderer3D::EndScene()
 	m_Shader->setMat4("uView", m_ViewMatrix);
 	m_Shader->setMat4("uProjection", m_ProjectionMatrix);
 	m_Shader->setVec3("uViewPos", m_ViewPosition);
+	// directional light
+	m_Shader->setVec3("uDirectionalLight.direction", -0.2f, -1.0f, -0.3f);
+	m_Shader->setVec3("uDirectionalLight.ambient", 0.05f, 0.05f, 0.05f);
+	m_Shader->setVec3("uDirectionalLight.diffuse", 0.4f, 0.4f, 0.4f);
+	m_Shader->setVec3("uDirectionalLight.specular", 0.5f, 0.5f, 0.5f);
 
+	m_Shader->setInt("uMaterial.diffuse", 0);
+	m_Shader->setVec3("uMaterial.specular", 1.0f, 1.0f, 1.0f);
+	m_Shader->setFloat("uMaterial.shininess", 512.0f);
 
-	for (auto model : m_Models)
+	m_Shader->setVec3("uLight.direction", -0.2f, -1.0f, -0.3f);
+	m_Shader->setVec3("uLight.ambient", 0.2f, 0.2f, 0.2f);
+	m_Shader->setVec3("uLight.diffuse", 0.5f, 0.5f, 0.5f); // darken diffuse light a bit
+	m_Shader->setFloat("uLight.constant", 1.0f);
+	m_Shader->setFloat("uLight.linear", 0.09f);
+	m_Shader->setFloat("uLight.quadratic", 0.032f);
+
+	/*for (auto model : m_Models)
 	{
-		m_Shader->setVec3("uDirectionalLight.direction", -0.2f, -1.0f, -0.3f);
-		m_Shader->setVec3("uDirectionalLight.ambient", 1.0f, 0.5f, 0.31f);
-		m_Shader->setVec3("uDirectionalLight.diffuse", 1.0f, 0.5f, 0.31f);
-		m_Shader->setVec3("uDirectionalLight.specular", 0.5f, 0.5f, 0.5f);
+
 
 		glm::mat4 modelMatrix = glm::mat4(1.0f);
 		modelMatrix = glm::translate(modelMatrix, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
@@ -48,7 +64,13 @@ void Renderer3D::EndScene()
 
 		m_Shader->setMat4("uModel", modelMatrix);
 		model->Draw(*m_Shader);
-	}
+	}*/
+
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
+	model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
+	m_Shader->setMat4("uModel", model);
+	backpack.Draw(*m_Shader);
 	//m_Models.clear();
 }
 

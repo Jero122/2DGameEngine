@@ -157,7 +157,7 @@ AI_FORCE_INLINE
         case aiPTI_Float:
         case aiPTI_Double: {
             // Read as float and cast to bool
-            ai_real value = 0.0f;
+            float value = 0.0f;
             if (AI_SUCCESS == ::aiGetMaterialFloat(this, pKey, type, idx, &value)) {
                 pOut = static_cast<bool>(value);
                 return AI_SUCCESS;

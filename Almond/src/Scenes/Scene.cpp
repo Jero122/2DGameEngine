@@ -21,7 +21,7 @@ Scene::Scene()
 	m_Ecs.CreateComponent<RigidBody>();
 	m_Ecs.CreateComponent<BoxCollider2D>();
 	m_Ecs.CreateComponent<MovementComponent>();
-	m_Renderer = new Renderer2D();
+	m_Renderer = new Renderer3D();
 }
 
 Scene::~Scene()
