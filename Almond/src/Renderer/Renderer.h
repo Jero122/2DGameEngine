@@ -17,6 +17,7 @@ protected:
 
 	glm::mat4 m_ProjectionMatrix;
 	glm::mat4 m_ViewMatrix;
+
 	glm::vec3 m_ViewPosition;
 	float fov;
 public:
@@ -27,7 +28,7 @@ public:
 	virtual void EndScene() = 0;
 	virtual void Submit(const glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, int textureID, glm::vec2 * texCoords) = 0;
 
-	virtual void Submit(std::shared_ptr<Model> model) = 0;
+	virtual void Submit(std::shared_ptr<Model> model, const glm::vec3 position, const glm::vec3 rotation, const glm::vec3 scale) = 0;
 
 	struct RenderStats
 	{

@@ -9,8 +9,6 @@ Renderer3D::Renderer3D()
 	m_Shader = std::make_unique<Shader>();
 	m_Shader->init(shaderPath);
 	m_Shader->use();
-
-	backpack = Model("Resources/Models/backpack/backpack.obj");
 }
 
 Renderer3D::~Renderer3D()
@@ -54,24 +52,31 @@ void Renderer3D::EndScene()
 	m_Shader->setFloat("uLight.linear", 0.09f);
 	m_Shader->setFloat("uLight.quadratic", 0.032f);
 
-	/*for (auto model : m_Models)
+	for (auto model_tuple : m_Models)
 	{
+		glm::mat4 modelMatrix{ 1.0f };
+		modelMatrix = glm::translate(glm::mat4(1.0f), model_tuple.position);
 
+		if (model_tuple.rotation.x != 0)
+		{
+			modelMatrix = modelMatrix * glm::rotate(glm::mat4(1.0f), glm::radians(model_tuple.rotation.x), { 1,0,0 });
+		}
+		if(model_tuple.rotation.y != 0)
+		{
+			modelMatrix = modelMatrix * glm::rotate(glm::mat4(1.0f), glm::radians(model_tuple.rotation.y), { 0,1,0 });
+		}
+		if (model_tuple.rotation.z != 0)
+		{
+			modelMatrix = modelMatrix * glm::rotate(glm::mat4(1.0f), glm::radians(model_tuple.rotation.z), { 0,0,1 });
+		}
 
-		glm::mat4 modelMatrix = glm::mat4(1.0f);
-		modelMatrix = glm::translate(modelMatrix, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-		modelMatrix = glm::scale(modelMatrix, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
+		modelMatrix = modelMatrix * glm::scale(glm::mat4(1.0f), model_tuple.scale);
 
 		m_Shader->setMat4("uModel", modelMatrix);
-		model->Draw(*m_Shader);
-	}*/
+		model_tuple.model->Draw(*m_Shader);
+	}
 
-	glm::mat4 model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f)); // translate it down so it's at the center of the scene
-	model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));	// it's a bit too big for our scene, so scale it down
-	m_Shader->setMat4("uModel", model);
-	backpack.Draw(*m_Shader);
-	//m_Models.clear();
+	m_Models.clear();
 }
 
 void Renderer3D::Submit(const glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, int textureID,
@@ -79,9 +84,10 @@ void Renderer3D::Submit(const glm::vec3 position, float rotation, glm::vec2 scal
 {
 }
 
-void Renderer3D::Submit(std::shared_ptr<Model> model)
+void Renderer3D::Submit(std::shared_ptr<Model> model, const glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
 {
-	m_Models.push_back(model);
+	
+	m_Models.push_back({model,position,rotation,scale});
 }
 
 void Renderer3D::ResetStats()

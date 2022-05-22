@@ -111,6 +111,7 @@
     <ClInclude Include="src\Core\Window.h" />
     <ClInclude Include="src\ECS\ComponentManager.h" />
     <ClInclude Include="src\ECS\Components\BoxCollider2D.h" />
+    <ClInclude Include="src\ECS\Components\ModelRenderer.h" />
     <ClInclude Include="src\ECS\Components\MovementComponent.h" />
     <ClInclude Include="src\ECS\Components\RigidBody.h" />
     <ClInclude Include="src\ECS\Components\SpriteRenderer.h" />

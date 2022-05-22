@@ -4,8 +4,16 @@
 class Renderer3D : public Renderer
 {
 private:
-	std::vector<std::shared_ptr<Model>> m_Models;
-	Model backpack;
+	struct ModelTuple
+	{
+		std::shared_ptr<Model> model;
+		glm::vec3 position;
+		glm::vec3 rotation;
+		glm::vec3 scale;
+	};
+
+	std::vector<ModelTuple> m_Models;
+
 public:
 	Renderer3D();
 	~Renderer3D() override;
@@ -17,5 +25,6 @@ public:
 		glm::vec2* texCoords) override;
 	void ResetStats() override;
 	RenderStats GetStats() override;
-	void Submit(std::shared_ptr<Model> model) override;
+	void Submit(std::shared_ptr<Model> model, const glm::vec3 position, const glm::vec3 rotation,
+		const glm::vec3 scale) override;
 };

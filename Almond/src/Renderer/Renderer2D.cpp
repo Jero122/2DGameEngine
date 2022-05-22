@@ -168,7 +168,8 @@ void Renderer2D::Submit(const glm::vec3 position, float rotation, glm::vec2 scal
 
 }
 
-void Renderer2D::Submit(std::shared_ptr<Model> model)
+void Renderer2D::Submit(std::shared_ptr<Model> model, const glm::vec3 position, const glm::vec3 rotation,
+	const glm::vec3 scale)
 {
 }
 

@@ -3,6 +3,7 @@
 #include "ECS/SceneView.h"
 #include <box2d/b2_polygon_shape.h>
 #include "ECS/Components/BoxCollider2D.h"
+#include "ECS/Components/ModelRenderer.h"
 #include "ECS/Components/MovementComponent.h"
 #include "ECS/Components/RigidBody.h"
 #include "ECS/Components/SpriteRenderer.h"
@@ -21,6 +22,7 @@ Scene::Scene()
 	m_Ecs.CreateComponent<RigidBody>();
 	m_Ecs.CreateComponent<BoxCollider2D>();
 	m_Ecs.CreateComponent<MovementComponent>();
+	m_Ecs.CreateComponent<ModelRenderer>();
 	m_Renderer = new Renderer3D();
 }
 
@@ -119,6 +121,20 @@ void Scene::OnRuntimeUpdate(TimeStep timestep, EditorCamera& editorCamera)
 		auto transform = m_Ecs.GetComponent<Transform>(ent);
 		auto sprite = m_Ecs.GetComponent<SpriteRenderer>(ent);
 		m_Renderer->Submit(transform->position,transform->rotation.z,{transform->scale.x, transform->scale.y}, sprite->color,sprite->textureID, sprite->texCoords);
+	}
+
+	for (EntityID ent : SceneView<Transform, SpriteRenderer>(m_Ecs))
+	{
+		auto transform = m_Ecs.GetComponent<Transform>(ent);
+		auto sprite = m_Ecs.GetComponent<SpriteRenderer>(ent);
+		m_Renderer->Submit(transform->position, transform->rotation.z, { transform->scale.x, transform->scale.y }, sprite->color, sprite->textureID, sprite->texCoords);
+	}
+
+	for (EntityID entt: SceneView<Transform, ModelRenderer>(m_Ecs))
+	{
+		auto transform = m_Ecs.GetComponent<Transform>(entt);
+		auto modelRenderer = m_Ecs.GetComponent<ModelRenderer>(entt);
+		m_Renderer->Submit(modelRenderer->model, transform->position, transform->rotation,transform->scale);
 	}
 	m_Renderer->EndScene();
 	

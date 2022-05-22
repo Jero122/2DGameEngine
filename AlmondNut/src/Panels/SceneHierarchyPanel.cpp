@@ -2,6 +2,7 @@
 
 #include "ECS/SceneView.h"
 #include "ECS/Components/BoxCollider2D.h"
+#include "ECS/Components/ModelRenderer.h"
 #include "ECS/Components/RigidBody.h"
 #include "ECS/Components/SpriteRenderer.h"
 #include "ECS/Components/TagComponent.h"
@@ -316,7 +317,7 @@ void SceneHierarchyPanel::DrawEntityProperties(Entity entity)
 			
 		});
 
-		DrawComponent<BoxCollider2D>("Boxy Collider 2D", entity, [](auto& component, Entity entity)
+		DrawComponent<BoxCollider2D>("Box Collider 2D", entity, [](auto& component, Entity entity)
 			{
 				auto collider = (BoxCollider2D*)component;
 				auto rb = entity.GetComponent<RigidBody>();
@@ -328,6 +329,11 @@ void SceneHierarchyPanel::DrawEntityProperties(Entity entity)
 				ImGui::DragFloat("Friction", &(collider->Friction), 0.1f, 0, 1);
 				ImGui::DragFloat("Restitution", &(collider->Restitution), 0.1f, 0, 1);
 				ImGui::DragFloat("Restitution Threshold", &(collider->RestitutionThreshold), 0.1f, 0, 1);
+			});
+		DrawComponent<ModelRenderer>("Model Renderer", entity, [](auto& component, Entity entity)
+			{
+				auto model = (ModelRenderer*)component;
+				ImGui::Text("Yes");
 			});
 	}
 	

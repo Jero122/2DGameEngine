@@ -5,6 +5,7 @@
 
 #include "imgui_internal.h"
 #include "ECS/Components/BoxCollider2D.h"
+#include "ECS/Components/ModelRenderer.h"
 #include "ECS/Components/MovementComponent.h"
 #include "imgui/imgui.h"
 #include "Scenes/SceneSerializer.h"
@@ -76,7 +77,14 @@ void EditorSystem::OnStart()
         BoxCollider2D collider = BoxCollider2D{ {0.0f,0.0f}, {0.5f, 0.5f} };
         collider.Friction = 0.1f;
         enttA.AddComponent(collider);
+    }
 
+    Entity backpack = m_CurrentScene->CreateEntity("backpack");
+    {
+        auto transformComponent = enttA.GetComponent<Transform>();
+        *transformComponent = Transform{ glm::vec3(0,0,0), glm::vec3(0,0,0),glm::vec3(1,1,1) };
+        auto backpackModel = std::make_shared<Model>("Resources/Models/backpack/backpack.obj");
+        backpack.AddComponent(ModelRenderer{backpackModel});
     }
 
     /*SceneSerializer sceneSerializer(m_CurrentScene);
@@ -135,7 +143,7 @@ void EditorSystem::OnImGuiRender()
     bool p_open = true;
     static bool opt_fullscreen = true;
     static bool opt_padding = false;
-    static bool show_sceneHierarchy = false;
+    static bool show_sceneHierarchy = true;
     static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
 
     // We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
