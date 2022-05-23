@@ -111,7 +111,8 @@
     <ClInclude Include="src\Core\Window.h" />
     <ClInclude Include="src\ECS\ComponentManager.h" />
     <ClInclude Include="src\ECS\Components\BoxCollider2D.h" />
-    <ClInclude Include="src\ECS\Components\ModelRenderer.h" />
+    <ClInclude Include="src\ECS\Components\LightComponent.h" />
+    <ClInclude Include="src\ECS\Components\ModelRendererComponent.h" />
     <ClInclude Include="src\ECS\Components\MovementComponent.h" />
     <ClInclude Include="src\ECS\Components\RigidBody.h" />
     <ClInclude Include="src\ECS\Components\SpriteRenderer.h" />
@@ -130,7 +131,6 @@
     <ClInclude Include="src\Renderer\Camera.h" />
     <ClInclude Include="src\Renderer\EditorCamera.h" />
     <ClInclude Include="src\Renderer\GLCall.h" />
-    <ClInclude Include="src\Renderer\GPUBatched_Renderer.h" />
     <ClInclude Include="src\Renderer\Mesh.h" />
     <ClInclude Include="src\Renderer\Model.h" />
     <ClInclude Include="src\Renderer\OpenGLBuffer.h" />
@@ -162,7 +162,6 @@
     <ClCompile Include="src\Platforms\OpenGL\imgui_impl_sdl.cpp" />
     <ClCompile Include="src\Platforms\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\Renderer\EditorCamera.cpp" />
-    <ClCompile Include="src\Renderer\GPUBatched_Renderer.cpp" />
     <ClCompile Include="src\Renderer\Renderer2D.cpp" />
     <ClCompile Include="src\Renderer\Renderer3D.cpp" />
     <ClCompile Include="src\Renderer\Shader.cpp" />

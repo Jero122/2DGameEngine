@@ -26,9 +26,8 @@ public:
 	virtual void Shutdown() = 0;
 	virtual void BeginScene(EditorCamera & camera) = 0;
 	virtual void EndScene() = 0;
-	virtual void Submit(const glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, int textureID, glm::vec2 * texCoords) = 0;
+	
 
-	virtual void Submit(std::shared_ptr<Model> model, const glm::vec3 position, const glm::vec3 rotation, const glm::vec3 scale) = 0;
 
 	struct RenderStats
 	{

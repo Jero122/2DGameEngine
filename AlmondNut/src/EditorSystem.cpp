@@ -5,7 +5,7 @@
 
 #include "imgui_internal.h"
 #include "ECS/Components/BoxCollider2D.h"
-#include "ECS/Components/ModelRenderer.h"
+#include "ECS/Components/ModelRendererComponent.h"
 #include "ECS/Components/MovementComponent.h"
 #include "imgui/imgui.h"
 #include "Scenes/SceneSerializer.h"
@@ -84,7 +84,7 @@ void EditorSystem::OnStart()
         auto transformComponent = enttA.GetComponent<Transform>();
         *transformComponent = Transform{ glm::vec3(0,0,0), glm::vec3(0,0,0),glm::vec3(1,1,1) };
         auto backpackModel = std::make_shared<Model>("Resources/Models/backpack/backpack.obj");
-        backpack.AddComponent(ModelRenderer{backpackModel});
+        backpack.AddComponent(ModelRendererComponent{backpackModel});
     }
 
     /*SceneSerializer sceneSerializer(m_CurrentScene);

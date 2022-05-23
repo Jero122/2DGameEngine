@@ -2,7 +2,7 @@
 
 #include "ECS/SceneView.h"
 #include "ECS/Components/BoxCollider2D.h"
-#include "ECS/Components/ModelRenderer.h"
+#include "ECS/Components/ModelRendererComponent.h"
 #include "ECS/Components/RigidBody.h"
 #include "ECS/Components/SpriteRenderer.h"
 #include "ECS/Components/TagComponent.h"
@@ -330,9 +330,9 @@ void SceneHierarchyPanel::DrawEntityProperties(Entity entity)
 				ImGui::DragFloat("Restitution", &(collider->Restitution), 0.1f, 0, 1);
 				ImGui::DragFloat("Restitution Threshold", &(collider->RestitutionThreshold), 0.1f, 0, 1);
 			});
-		DrawComponent<ModelRenderer>("Model Renderer", entity, [](auto& component, Entity entity)
+		DrawComponent<ModelRendererComponent>("Model Renderer", entity, [](auto& component, Entity entity)
 			{
-				auto model = (ModelRenderer*)component;
+				auto model = (ModelRendererComponent*)component;
 				ImGui::Text("Yes");
 			});
 	}

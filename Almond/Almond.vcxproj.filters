@@ -135,9 +135,6 @@
     <ClInclude Include="src\Renderer\GLCall.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\Renderer\GPUBatched_Renderer.h">
-      <Filter>src\Renderer</Filter>
-    </ClInclude>
     <ClInclude Include="src\Renderer\Mesh.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
@@ -189,7 +186,8 @@
     <ClInclude Include="vendor\stb\stb\stb_image.h">
       <Filter>vendor\stb\stb</Filter>
     </ClInclude>
-    <ClInclude Include="src\ECS\Components\ModelRenderer.h" />
+    <ClInclude Include="src\ECS\Components\ModelRendererComponent.h" />
+    <ClInclude Include="src\ECS\Components\LightComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\AlmondApplication.cpp">
@@ -226,9 +224,6 @@
       <Filter>src\Platforms\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\EditorCamera.cpp">
-      <Filter>src\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Renderer\GPUBatched_Renderer.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer\Renderer2D.cpp">

@@ -79,14 +79,8 @@ void Renderer3D::EndScene()
 	m_Models.clear();
 }
 
-void Renderer3D::Submit(const glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, int textureID,
-	glm::vec2* texCoords)
-{
-}
-
 void Renderer3D::Submit(std::shared_ptr<Model> model, const glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
 {
-	
 	m_Models.push_back({model,position,rotation,scale});
 }
 

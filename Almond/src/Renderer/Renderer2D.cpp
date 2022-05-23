@@ -164,13 +164,6 @@ void Renderer2D::Submit(const glm::vec3 position, float rotation, glm::vec2 scal
 		m_CurrentBatch = new Batch();
 	
 	}
-
-
-}
-
-void Renderer2D::Submit(std::shared_ptr<Model> model, const glm::vec3 position, const glm::vec3 rotation,
-	const glm::vec3 scale)
-{
 }
 
 void Renderer2D::ProcessBatch(std::shared_ptr<std::vector<BatchBuffer*>> buffers, Batch* batch)

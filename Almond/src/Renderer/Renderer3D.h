@@ -21,10 +21,9 @@ public:
 	void Shutdown() override;
 	void BeginScene(EditorCamera& camera) override;
 	void EndScene() override;
-	void Submit(const glm::vec3 position, float rotation, glm::vec2 scale, glm::vec4 color, int textureID,
-		glm::vec2* texCoords) override;
 	void ResetStats() override;
 	RenderStats GetStats() override;
+
 	void Submit(std::shared_ptr<Model> model, const glm::vec3 position, const glm::vec3 rotation,
-		const glm::vec3 scale) override;
+		const glm::vec3 scale);
 };

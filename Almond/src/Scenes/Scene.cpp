@@ -3,7 +3,8 @@
 #include "ECS/SceneView.h"
 #include <box2d/b2_polygon_shape.h>
 #include "ECS/Components/BoxCollider2D.h"
-#include "ECS/Components/ModelRenderer.h"
+#include "ECS/Components/LightComponent.h"
+#include "ECS/Components/ModelRendererComponent.h"
 #include "ECS/Components/MovementComponent.h"
 #include "ECS/Components/RigidBody.h"
 #include "ECS/Components/SpriteRenderer.h"
@@ -22,8 +23,11 @@ Scene::Scene()
 	m_Ecs.CreateComponent<RigidBody>();
 	m_Ecs.CreateComponent<BoxCollider2D>();
 	m_Ecs.CreateComponent<MovementComponent>();
-	m_Ecs.CreateComponent<ModelRenderer>();
-	m_Renderer = new Renderer3D();
+	m_Ecs.CreateComponent<ModelRendererComponent>();
+	m_Ecs.CreateComponent<LightComponent>();
+
+	m_Renderer3D = new Renderer3D();
+	m_Renderer2D = new Renderer2D();
 }
 
 Scene::~Scene()
@@ -114,29 +118,7 @@ void Scene::OnRuntimeUpdate(TimeStep timestep, EditorCamera& editorCamera)
 		transform->position.y -= move->speed * timestep.GetSeconds();
 	}
 
-	//Render
-	m_Renderer->BeginScene(editorCamera);
-	for (EntityID ent : SceneView<Transform, SpriteRenderer>(m_Ecs))
-	{
-		auto transform = m_Ecs.GetComponent<Transform>(ent);
-		auto sprite = m_Ecs.GetComponent<SpriteRenderer>(ent);
-		m_Renderer->Submit(transform->position,transform->rotation.z,{transform->scale.x, transform->scale.y}, sprite->color,sprite->textureID, sprite->texCoords);
-	}
-
-	for (EntityID ent : SceneView<Transform, SpriteRenderer>(m_Ecs))
-	{
-		auto transform = m_Ecs.GetComponent<Transform>(ent);
-		auto sprite = m_Ecs.GetComponent<SpriteRenderer>(ent);
-		m_Renderer->Submit(transform->position, transform->rotation.z, { transform->scale.x, transform->scale.y }, sprite->color, sprite->textureID, sprite->texCoords);
-	}
-
-	for (EntityID entt: SceneView<Transform, ModelRenderer>(m_Ecs))
-	{
-		auto transform = m_Ecs.GetComponent<Transform>(entt);
-		auto modelRenderer = m_Ecs.GetComponent<ModelRenderer>(entt);
-		m_Renderer->Submit(modelRenderer->model, transform->position, transform->rotation,transform->scale);
-	}
-	m_Renderer->EndScene();
+	Render(editorCamera);
 	
 	//Physcs
 	m_Physics2D->OnUpdate();
@@ -146,15 +128,37 @@ void Scene::OnRuntimeUpdate(TimeStep timestep, EditorCamera& editorCamera)
 
 void Scene::OnEditorUpdate(TimeStep timestep, EditorCamera& editorCamera)
 {
+	Render(editorCamera);
+	editorCamera.OnUpdate(timestep);
+}
+
+void Scene::Render(EditorCamera& editorCamera)
+{
 	//Render
-	m_Renderer->BeginScene(editorCamera);
+	/*m_Renderer2D->BeginScene(editorCamera);
+
 	for (EntityID ent : SceneView<Transform, SpriteRenderer>(m_Ecs))
 	{
 		auto transform = m_Ecs.GetComponent<Transform>(ent);
 		auto sprite = m_Ecs.GetComponent<SpriteRenderer>(ent);
-		m_Renderer->Submit(transform->position, transform->rotation.z, { transform->scale.x, transform->scale.y }, sprite->color, sprite->textureID, sprite->texCoords);
+		m_Renderer2D->Submit(transform->position, transform->rotation.z, { transform->scale.x, transform->scale.y }, sprite->color, sprite->textureID, sprite->texCoords);
+	}
+	m_Renderer2D->EndScene();*/
+
+	m_Renderer3D->BeginScene(editorCamera);
+	for (EntityID entt : SceneView<Transform, ModelRendererComponent>(m_Ecs))
+	{
+		auto transform = m_Ecs.GetComponent<Transform>(entt);
+		auto modelRenderer = m_Ecs.GetComponent<ModelRendererComponent>(entt);
+		m_Renderer3D->Submit(modelRenderer->model, transform->position, transform->rotation, transform->scale);
 	}
 
-	m_Renderer->EndScene();
-	editorCamera.OnUpdate(timestep);
+	/*for (EntityID entt : SceneView<Transform, LightComponent>(m_Ecs))
+	{
+		auto transform = m_Ecs.GetComponent<Transform>(entt);
+		auto light = m_Ecs.GetComponent<LightComponent>(entt);
+		m_Renderer3D->Submit(transform->position, transform->rotation, transform->scale);
+	}*/
+	m_Renderer3D->EndScene();
+
 }
