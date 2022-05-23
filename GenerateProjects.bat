@@ -1,4 +1,4 @@
-call premake5.exe vs2019
+call premake5.exe vs2022
 if not exist "bin" mkdir "bin\Debug-windows-x86_64\AlmondNut"
 if not exist "bin\Release-windows-x86_64" mkdir "bin\Release-windows-x86_64\AlmondNut"
 
