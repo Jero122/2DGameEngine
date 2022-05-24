@@ -5,6 +5,7 @@
 
 #include "imgui_internal.h"
 #include "ECS/Components/BoxCollider2D.h"
+#include "ECS/Components/LightComponent.h"
 #include "ECS/Components/ModelRendererComponent.h"
 #include "ECS/Components/MovementComponent.h"
 #include "imgui/imgui.h"
@@ -81,12 +82,29 @@ void EditorSystem::OnStart()
 
     Entity backpack = m_CurrentScene->CreateEntity("backpack");
     {
-        auto transformComponent = enttA.GetComponent<Transform>();
-        *transformComponent = Transform{ glm::vec3(0,0,0), glm::vec3(0,0,0),glm::vec3(1,1,1) };
+        auto transformComponent = backpack.GetComponent<Transform>();
+        *transformComponent = Transform{ glm::vec3(0,0,0), glm::vec3(0,0,0),glm::vec3(1,1,-1) };
         auto backpackModel = std::make_shared<Model>("Resources/Models/backpack/backpack.obj");
         backpack.AddComponent(ModelRendererComponent{backpackModel});
     }
 
+    Entity pointlight = m_CurrentScene->CreateEntity("pointlight");
+    {
+        auto transformComponent = pointlight.GetComponent<Transform>();
+
+        glm::vec3 position = { 2.3f, -3.3f, -4.0f };
+        glm::vec3 ambient = { 0.05f, 0.05f, 0.05f };
+        glm::vec3 diffuse = { 0.8f, 0.8f, 0.8f };
+        glm::vec3 specular = { 1.0f, 1.0f, 1.0f};
+        float constant = 1.0f;
+        float linear = 0.09f;
+        float quadratic = 0.032f;
+
+
+        *transformComponent = Transform{ position, glm::vec3(0,0,0),glm::vec3(1,1,1) };
+        LightComponent lightcomponent{ position, ambient,diffuse,specular,constant,linear,quadratic };
+        pointlight.AddComponent(lightcomponent);
+    }
     /*SceneSerializer sceneSerializer(m_CurrentScene);
     sceneSerializer.Serialize("assets/scenes/Example.alm");*/
 

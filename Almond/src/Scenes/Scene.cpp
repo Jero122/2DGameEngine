@@ -135,9 +135,9 @@ void Scene::OnEditorUpdate(TimeStep timestep, EditorCamera& editorCamera)
 void Scene::Render(EditorCamera& editorCamera)
 {
 	//Render
-	/*m_Renderer2D->BeginScene(editorCamera);
+	m_Renderer2D->BeginScene(editorCamera);
 
-	for (EntityID ent : SceneView<Transform, SpriteRenderer>(m_Ecs))
+	/*for (EntityID ent : SceneView<Transform, SpriteRenderer>(m_Ecs))
 	{
 		auto transform = m_Ecs.GetComponent<Transform>(ent);
 		auto sprite = m_Ecs.GetComponent<SpriteRenderer>(ent);
@@ -146,19 +146,26 @@ void Scene::Render(EditorCamera& editorCamera)
 	m_Renderer2D->EndScene();*/
 
 	m_Renderer3D->BeginScene(editorCamera);
-	for (EntityID entt : SceneView<Transform, ModelRendererComponent>(m_Ecs))
+	for (EntityID ent : SceneView<Transform, ModelRendererComponent>(m_Ecs))
 	{
-		auto transform = m_Ecs.GetComponent<Transform>(entt);
-		auto modelRenderer = m_Ecs.GetComponent<ModelRendererComponent>(entt);
+		auto transform = m_Ecs.GetComponent<Transform>(ent);
+		auto modelRenderer = m_Ecs.GetComponent<ModelRendererComponent>(ent);
 		m_Renderer3D->Submit(modelRenderer->model, transform->position, transform->rotation, transform->scale);
 	}
 
-	/*for (EntityID entt : SceneView<Transform, LightComponent>(m_Ecs))
+	for (EntityID entt : SceneView<Transform, LightComponent>(m_Ecs))
 	{
 		auto transform = m_Ecs.GetComponent<Transform>(entt);
 		auto light = m_Ecs.GetComponent<LightComponent>(entt);
-		m_Renderer3D->Submit(transform->position, transform->rotation, transform->scale);
-	}*/
+		if (light->type == LightComponent::PointLight)
+		{
+			m_Renderer3D->SubmitPointLight(transform->position, light->ambient, light->diffuse, light->specular, light->constant, light->linear, light->quadratic);
+		}
+		else if (light->type == LightComponent::SpotLight)
+		{
+			m_Renderer3D->SubmitSpotLight(transform->position, light->ambient, light->diffuse, light->specular, light->direction, light->innerCutOff, light->outerCutoff);
+		}
+	}
 	m_Renderer3D->EndScene();
 
 }

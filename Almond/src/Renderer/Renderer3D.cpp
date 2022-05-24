@@ -32,26 +32,36 @@ void Renderer3D::BeginScene(EditorCamera& camera)
 void Renderer3D::EndScene()
 {
 	m_Shader->use();
-	m_Shader->setMat4("uView", m_ViewMatrix);
-	m_Shader->setMat4("uProjection", m_ProjectionMatrix);
-	m_Shader->setVec3("uViewPos", m_ViewPosition);
+	m_Shader->setMat4("view", m_ViewMatrix);
+	m_Shader->setMat4("projection", m_ProjectionMatrix);
+	m_Shader->setVec3("viewPos", m_ViewPosition);
 	// directional light
-	m_Shader->setVec3("uDirectionalLight.direction", -0.2f, -1.0f, -0.3f);
-	m_Shader->setVec3("uDirectionalLight.ambient", 0.05f, 0.05f, 0.05f);
-	m_Shader->setVec3("uDirectionalLight.diffuse", 0.4f, 0.4f, 0.4f);
-	m_Shader->setVec3("uDirectionalLight.specular", 0.5f, 0.5f, 0.5f);
+	m_Shader->setVec3("directionalLight.direction", -0.2f, -1.0f, -0.3f);
+	m_Shader->setVec3("directionalLight.ambient", 0.05f, 0.05f, 0.05f);
+	m_Shader->setVec3("directionalLight.diffuse", 0.4f, 0.4f, 0.4f);
+	m_Shader->setVec3("directionalLight.specular", 0.5f, 0.5f, 0.5f);
 
-	m_Shader->setInt("uMaterial.diffuse", 0);
-	m_Shader->setVec3("uMaterial.specular", 1.0f, 1.0f, 1.0f);
-	m_Shader->setFloat("uMaterial.shininess", 512.0f);
+	m_Shader->setInt("material.diffuse", 0);
+	m_Shader->setVec3("material.specular", 1.0f, 1.0f, 1.0f);
+	m_Shader->setFloat("material.shininess", 512.0f);
 
-	m_Shader->setVec3("uLight.direction", -0.2f, -1.0f, -0.3f);
-	m_Shader->setVec3("uLight.ambient", 0.2f, 0.2f, 0.2f);
-	m_Shader->setVec3("uLight.diffuse", 0.5f, 0.5f, 0.5f); // darken diffuse light a bit
-	m_Shader->setFloat("uLight.constant", 1.0f);
-	m_Shader->setFloat("uLight.linear", 0.09f);
-	m_Shader->setFloat("uLight.quadratic", 0.032f);
 
+	glm::vec3 pointLightPositions[] = {
+	 glm::vec3(0.7f,  0.2f,  2.0f),
+	 glm::vec3(2.3f, -3.3f, -4.0f),
+	 glm::vec3(-4.0f,  2.0f, -12.0f),
+	 glm::vec3(0.0f,  0.0f, -3.0f)
+	};
+	for (int i = 0; i < m_pointLights.size(); ++i)
+	{
+		m_Shader->setVec3("pointLights[0].position", m_pointLights[i].position);
+		m_Shader->setVec3("pointLights[0].ambient", m_pointLights[i].ambient);
+		m_Shader->setVec3("pointLights[0].diffuse", m_pointLights[i].diffuse);
+		m_Shader->setVec3("pointLights[0].specular", m_pointLights[i].specular);
+		m_Shader->setFloat("pointLights[0].constant", m_pointLights[i].constant);
+		m_Shader->setFloat("pointLights[0].linear", m_pointLights[i].linear);
+		m_Shader->setFloat("pointLights[0].quadratic", m_pointLights[i].quadratic);
+	}
 	for (auto model_tuple : m_Models)
 	{
 		glm::mat4 modelMatrix{ 1.0f };
@@ -72,16 +82,28 @@ void Renderer3D::EndScene()
 
 		modelMatrix = modelMatrix * glm::scale(glm::mat4(1.0f), model_tuple.scale);
 
-		m_Shader->setMat4("uModel", modelMatrix);
+		m_Shader->setMat4("model", modelMatrix);
 		model_tuple.model->Draw(*m_Shader);
 	}
 
 	m_Models.clear();
+	m_pointLights.clear();
 }
 
 void Renderer3D::Submit(std::shared_ptr<Model> model, const glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
 {
 	m_Models.push_back({model,position,rotation,scale});
+}
+
+void Renderer3D::SubmitPointLight(glm::vec3 position, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular,
+	float constant, float linear, float quadratic)
+{
+	m_pointLights.push_back({position, ambient,diffuse,specular, constant,linear,quadratic });
+}
+
+void Renderer3D::SubmitSpotLight(glm::vec3 position, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular,
+	glm::vec3 direction, float innerCutoff, float outterCutoff)
+{
 }
 
 void Renderer3D::ResetStats()
