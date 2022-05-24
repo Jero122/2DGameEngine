@@ -2,6 +2,7 @@
 
 #include "ECS/SceneView.h"
 #include "ECS/Components/BoxCollider2D.h"
+#include "ECS/Components/LightComponent.h"
 #include "ECS/Components/ModelRendererComponent.h"
 #include "ECS/Components/RigidBody.h"
 #include "ECS/Components/SpriteRenderer.h"
@@ -318,23 +319,84 @@ void SceneHierarchyPanel::DrawEntityProperties(Entity entity)
 		});
 
 		DrawComponent<BoxCollider2D>("Box Collider 2D", entity, [](auto& component, Entity entity)
-			{
-				auto collider = (BoxCollider2D*)component;
-				auto rb = entity.GetComponent<RigidBody>();
+		{
+			auto collider = (BoxCollider2D*)component;
+			auto rb = entity.GetComponent<RigidBody>();
 
-				DrawVec2Control("Offset", collider->Offset);
-				DrawVec2Control("Size", collider->Size);
+			DrawVec2Control("Offset", collider->Offset);
+			DrawVec2Control("Size", collider->Size);
 
-				ImGui::DragFloat("Density", &(collider->Density), 0.1f);
-				ImGui::DragFloat("Friction", &(collider->Friction), 0.1f, 0, 1);
-				ImGui::DragFloat("Restitution", &(collider->Restitution), 0.1f, 0, 1);
-				ImGui::DragFloat("Restitution Threshold", &(collider->RestitutionThreshold), 0.1f, 0, 1);
-			});
+			ImGui::DragFloat("Density", &(collider->Density), 0.1f);
+			ImGui::DragFloat("Friction", &(collider->Friction), 0.1f, 0, 1);
+			ImGui::DragFloat("Restitution", &(collider->Restitution), 0.1f, 0, 1);
+			ImGui::DragFloat("Restitution Threshold", &(collider->RestitutionThreshold), 0.1f, 0, 1);
+		});
 		DrawComponent<ModelRendererComponent>("Model Renderer", entity, [](auto& component, Entity entity)
+		{
+			auto model = (ModelRendererComponent*)component;
+			ImGui::Text("Yes");
+		});
+		DrawComponent<LightComponent>("Light", entity, [](auto& component, Entity entity)
+		{
+			auto light = (LightComponent*)component;
+			ImGui::ColorEdit3("Color", glm::value_ptr(light->ambient));
+			ImGui::ColorEdit3("Specular", glm::value_ptr(light->specular));
+			if (ImGui::DragFloat("Intensity", &(light->diffuse.x), 0.1f, 0))
 			{
-				auto model = (ModelRendererComponent*)component;
-				ImGui::Text("Yes");
-			});
+				light->diffuse = { light->diffuse.x,light->diffuse.x,light->diffuse.x };
+			}
+			const char* items[] = { "Point", "Spot" };
+			static int item_current_idx = 0; // Here we store our selection data as an index.
+			switch (light->type)
+			{
+			case LightComponent::PointLight:
+				item_current_idx = 0;
+				break;
+			case LightComponent::SpotLight:
+				item_current_idx = 1;
+				break;
+			}
+			const char* combo_preview_value = items[item_current_idx];  // Pass in the preview value visible before opening the combo (it could be anything)
+
+			if (ImGui::BeginCombo("combo 1", combo_preview_value))
+			{
+				for (int n = 0; n < IM_ARRAYSIZE(items); n++)
+				{
+					const bool is_selected = (item_current_idx == n);
+					if (ImGui::Selectable(items[n], is_selected))
+					{
+						item_current_idx = n;
+						if (item_current_idx == 0)
+						{
+							light->type = LightComponent::PointLight;
+						}
+						else if (item_current_idx == 1)
+						{
+							light->type = LightComponent::SpotLight;
+						}
+					}
+					
+
+					// Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+					if (is_selected)
+						ImGui::SetItemDefaultFocus();
+				}
+				ImGui::EndCombo();
+			}
+
+			if (light->type == LightComponent::PointLight)
+			{
+				ImGui::DragFloat("constant", &(light->constant), 0.1f, 0, 10, "%.3f", ImGuiSliderFlags_Logarithmic);
+				ImGui::DragFloat("linear", &(light->linear), 0.01f, 0,10,"%.3f", ImGuiSliderFlags_Logarithmic);
+				ImGui::DragFloat("quadratic", &(light->quadratic), 0.001f, 0, 10, "%.3f", ImGuiSliderFlags_Logarithmic);
+			}
+			else if(light->type == LightComponent::SpotLight)
+			{
+				DrawVec3Control("direction", light->direction);
+				ImGui::DragFloat("inner", &(light->innerCutOff), 0.1f, 0, 1,"%.3f", ImGuiSliderFlags_Logarithmic);
+				ImGui::DragFloat("outer", &(light->outerCutoff), 0.1f, 0, 1);
+			}
+		});
 	}
 	
 	

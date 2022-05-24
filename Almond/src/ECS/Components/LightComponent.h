@@ -10,12 +10,12 @@ struct LightComponent
 	glm::vec3 specular;
 	Type type;
 
-	//SpotLight
+	//PointLight
 	float constant;
 	float linear;
 	float quadratic;
 
-	//PointLight
+	//SpotLight
 	glm::vec3 direction;
 	float innerCutOff;
 	float outerCutoff;

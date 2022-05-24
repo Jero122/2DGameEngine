@@ -101,9 +101,11 @@ void EditorSystem::OnStart()
         float quadratic = 0.032f;
 
 
-        *transformComponent = Transform{ position, glm::vec3(0,0,0),glm::vec3(1,1,1) };
+        *transformComponent = Transform{ position, glm::vec3(0,0,0),glm::vec3(0.1f,0.1f,0.1f) };
         LightComponent lightcomponent{ position, ambient,diffuse,specular,constant,linear,quadratic };
         pointlight.AddComponent(lightcomponent);
+        auto cube = std::make_shared<Model>("Resources/Models/Cube.obj");
+        pointlight.AddComponent(ModelRendererComponent{ cube });
     }
     /*SceneSerializer sceneSerializer(m_CurrentScene);
     sceneSerializer.Serialize("assets/scenes/Example.alm");*/

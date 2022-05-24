@@ -86,6 +86,16 @@ void Renderer3D::EndScene()
 		model_tuple.model->Draw(*m_Shader);
 	}
 
+	for (int i = 0; i < m_pointLights.size(); ++i)
+	{
+		m_Shader->setVec3("pointLights[0].position", {0,0,0});
+		m_Shader->setVec3("pointLights[0].ambient", { 0,0,0 });
+		m_Shader->setVec3("pointLights[0].diffuse", { 0,0,0 });
+		m_Shader->setVec3("pointLights[0].specular", { 0,0,0 });
+		m_Shader->setFloat("pointLights[0].constant", 0);
+		m_Shader->setFloat("pointLights[0].linear", 0);
+		m_Shader->setFloat("pointLights[0].quadratic", 0);
+	}
 	m_Models.clear();
 	m_pointLights.clear();
 }

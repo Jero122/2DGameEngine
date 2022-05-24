@@ -1,6 +1,11 @@
 # Binaries
 **/bin/
 bin-int/
+**.obj
+**.FBX
+**.mtl
+**.png
+**.jpeg
 
 # Visual Studio files and folder
 .vs/
@@ -8,3 +13,4 @@ bin-int/
 **.vcxproj
 **.vcxproj.filters
 **.vcxproj.user
+
