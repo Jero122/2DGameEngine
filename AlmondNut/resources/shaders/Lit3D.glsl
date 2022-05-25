@@ -33,10 +33,10 @@ struct Material {
 
 struct DirLight {
     vec3 direction;
-
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
+    bool enabled;
 };
 
 struct PointLight {    
@@ -50,8 +50,9 @@ struct PointLight {
     vec3 diffuse;
     vec3 specular;
 };  
-#define NR_POINT_LIGHTS 1  
+#define NR_POINT_LIGHTS 4  
 uniform PointLight pointLights[NR_POINT_LIGHTS];
+uniform int numPointLights;
 
 in vec3 FragPos;  
 in vec3 Normal;  
@@ -100,16 +101,52 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 
 void main()
 {
+
+    // properties
     vec3 norm = normalize(Normal);
     vec3 viewDir = normalize(viewPos - FragPos);
+    vec3 result;
 
-     // phase 1: Directional lighting
-    vec3 result = CalcDirLight(dirLight, norm, viewDir);
+    if(dirLight.enabled)
+    {
+        // phase 1: Directional lighting
+        result = CalcDirLight(dirLight, norm, viewDir);
+    }
+
     // phase 2: Point lights
-    for(int i = 0; i < NR_POINT_LIGHTS; i++)
+    for(int i = 0; i < numPointLights; i++)
         result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);    
     // phase 3: Spot light
-    //result += CalcSpotLight(spotLight, norm, FragPos, viewDir); 
+    //result += CalcSpotLight(spotLight, norm, FragPos, viewDir);    
 
-    FragColor = vec4(result, 1.0);   
+    FragColor = vec4(result, 1.0);
+
+    /*
+    // ambient
+    // ambient
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+
+    if (dirLight.enabled)
+    {
+        ambient = dirLight.ambient * texture(material.diffuse, TexCoords).rgb;
+  	
+        // diffuse 
+        vec3 norm = normalize(Normal);
+        // vec3 lightDir = normalize(light.position - FragPos);
+        vec3 lightDir = normalize(-dirLight.direction);  
+        float diff = max(dot(norm, lightDir), 0.0);
+        diffuse = dirLight.diffuse * diff * texture(material.diffuse, TexCoords).rgb;  
+    
+        // specular
+        vec3 viewDir = normalize(viewPos - FragPos);
+        vec3 reflectDir = reflect(-lightDir, norm);  
+        float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+        specular = dirLight.specular * spec * texture(material.specular, TexCoords).rgb;  
+    }
+    
+        
+    FragColor = vec4(ambient + diffuse + specular, 1.0);
+    */
 } 

@@ -88,13 +88,13 @@ void EditorSystem::OnStart()
         backpack.AddComponent(ModelRendererComponent{backpackModel});
     }
 
-    Entity pointlight = m_CurrentScene->CreateEntity("pointlight");
+    Entity pointlight1 = m_CurrentScene->CreateEntity("pointlight");
     {
-        auto transformComponent = pointlight.GetComponent<Transform>();
+        auto transformComponent = pointlight1.GetComponent<Transform>();
 
-        glm::vec3 position = { 2.3f, -3.3f, -4.0f };
-        glm::vec3 ambient = { 0.05f, 0.05f, 0.05f };
-        glm::vec3 diffuse = { 0.8f, 0.8f, 0.8f };
+        glm::vec3 position = { 1.05, 0.0f, -1.0f };
+        glm::vec3 ambient = { 0.2f, 0.2f, 0.2f };
+        glm::vec3 diffuse = { 0.5f, 0.5f, 0.5f };
         glm::vec3 specular = { 1.0f, 1.0f, 1.0f};
         float constant = 1.0f;
         float linear = 0.09f;
@@ -102,10 +102,30 @@ void EditorSystem::OnStart()
 
 
         *transformComponent = Transform{ position, glm::vec3(0,0,0),glm::vec3(0.1f,0.1f,0.1f) };
-        LightComponent lightcomponent{ position, ambient,diffuse,specular,constant,linear,quadratic };
-        pointlight.AddComponent(lightcomponent);
+        LightComponent lightcomponent{position,ambient,diffuse,specular,constant,linear,quadratic};
+        pointlight1.AddComponent(lightcomponent);
         auto cube = std::make_shared<Model>("Resources/Models/Cube.obj");
-        pointlight.AddComponent(ModelRendererComponent{ cube });
+        pointlight1.AddComponent(ModelRendererComponent{ cube });
+    }
+
+    Entity pointlight2 = m_CurrentScene->CreateEntity("pointlight");
+    {
+        auto transformComponent = pointlight2.GetComponent<Transform>();
+
+        glm::vec3 position = { -1.05, 0.0f, -1.0f };
+        glm::vec3 ambient = { 0.2f, 0.2f, 0.2f };
+        glm::vec3 diffuse = { 0.5f, 0.5f, 0.5f };
+        glm::vec3 specular = { 1.0f, 1.0f, 1.0f };
+        float constant = 1.0f;
+        float linear = 0.09f;
+        float quadratic = 0.032f;
+
+
+        *transformComponent = Transform{ position, glm::vec3(0,0,0),glm::vec3(0.1f,0.1f,0.1f) };
+        LightComponent lightcomponent{ position,ambient,diffuse,specular,constant,linear,quadratic };
+        pointlight2.AddComponent(lightcomponent);
+        auto cube = std::make_shared<Model>("Resources/Models/Cube.obj");
+        pointlight2.AddComponent(ModelRendererComponent{ cube });
     }
     /*SceneSerializer sceneSerializer(m_CurrentScene);
     sceneSerializer.Serialize("assets/scenes/Example.alm");*/

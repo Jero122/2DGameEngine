@@ -165,6 +165,10 @@ void Scene::Render(EditorCamera& editorCamera)
 		{
 			m_Renderer3D->SubmitSpotLight(transform->position, light->ambient, light->diffuse, light->specular, light->direction, light->innerCutOff, light->outerCutoff);
 		}
+		else if (light->type == LightComponent::DirectionLight)
+		{
+			m_Renderer3D->SetDirectionalLight(light->ambient, light->diffuse, light->specular, light->direction);
+		}
 	}
 	m_Renderer3D->EndScene();
 

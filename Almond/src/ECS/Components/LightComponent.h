@@ -3,7 +3,7 @@
 
 struct LightComponent
 {
-	enum Type { SpotLight, PointLight };
+	enum Type { SpotLight, PointLight, DirectionLight};
 	glm::vec3 position;
 	glm::vec3 ambient;
 	glm::vec3 diffuse;
@@ -15,7 +15,7 @@ struct LightComponent
 	float linear;
 	float quadratic;
 
-	//SpotLight
+	//DirectionalLight/ SpotLight
 	glm::vec3 direction;
 	float innerCutOff;
 	float outerCutoff;
@@ -52,5 +52,21 @@ struct LightComponent
 		constant = 0;
 		linear = 0;
 		quadratic = 0;
+	}
+
+	LightComponent(const glm::vec3& ambient, const glm::vec3& diffuse,
+		const glm::vec3& specular, const glm::vec3& direction)
+		: ambient(ambient),
+		diffuse(diffuse),
+		specular(specular),
+		direction(direction)
+	{
+		position = { 0,0,0 };
+		type = DirectionLight;
+		constant = 0;
+		linear = 0;
+		quadratic = 0;
+		innerCutOff = 0;
+		outerCutoff = 0;
 	}
 };

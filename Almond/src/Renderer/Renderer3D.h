@@ -34,8 +34,19 @@ private:
 		float outerCutoff;
 	};
 
+	struct DirectionalLight
+	{
+		glm::vec3 ambient;
+		glm::vec3 diffuse;
+		glm::vec3 specular;
+		glm::vec3 direction;
+		bool enabled = false;
+	};
+
 	std::vector<ModelTuple> m_Models;
 	std::vector<PointLight> m_pointLights;
+	DirectionalLight m_directional_light = {{0,0,0} , {0,0,0} ,{0,0,0} , {0,0,0} , false};
+
 public:
 	Renderer3D();
 	~Renderer3D() override;
@@ -50,4 +61,5 @@ public:
 		const glm::vec3 scale);
 	void SubmitPointLight(glm::vec3 position, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic);
 	void SubmitSpotLight(glm::vec3 position, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, glm::vec3 direction, float innerCutoff, float outterCutoff);
+	void SetDirectionalLight(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, glm::vec3 direction);
 };

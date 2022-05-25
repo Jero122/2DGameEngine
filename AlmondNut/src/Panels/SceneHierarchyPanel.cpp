@@ -66,6 +66,11 @@ void SceneHierarchyPanel::OnImGuiRender()
 				m_SelectedEntity.AddComponent<RigidBody>({});
 				ImGui::CloseCurrentPopup();
 			}
+			if (ImGui::MenuItem("Light"))
+			{
+				m_SelectedEntity.AddComponent<LightComponent>({});
+				ImGui::CloseCurrentPopup();
+			}
 			ImGui::EndPopup();
 		}
 	}
@@ -345,7 +350,7 @@ void SceneHierarchyPanel::DrawEntityProperties(Entity entity)
 			{
 				light->diffuse = { light->diffuse.x,light->diffuse.x,light->diffuse.x };
 			}
-			const char* items[] = { "Point", "Spot" };
+			const char* items[] = { "Point", "Spot", "Direction"};
 			static int item_current_idx = 0; // Here we store our selection data as an index.
 			switch (light->type)
 			{
@@ -354,6 +359,9 @@ void SceneHierarchyPanel::DrawEntityProperties(Entity entity)
 				break;
 			case LightComponent::SpotLight:
 				item_current_idx = 1;
+				break;
+			case LightComponent::DirectionLight:
+				item_current_idx = 2;
 				break;
 			}
 			const char* combo_preview_value = items[item_current_idx];  // Pass in the preview value visible before opening the combo (it could be anything)
@@ -373,6 +381,10 @@ void SceneHierarchyPanel::DrawEntityProperties(Entity entity)
 						else if (item_current_idx == 1)
 						{
 							light->type = LightComponent::SpotLight;
+						}
+						else if (item_current_idx == 2)
+						{
+							light->type = LightComponent::DirectionLight;
 						}
 					}
 					
@@ -396,9 +408,10 @@ void SceneHierarchyPanel::DrawEntityProperties(Entity entity)
 				ImGui::DragFloat("inner", &(light->innerCutOff), 0.1f, 0, 1,"%.3f", ImGuiSliderFlags_Logarithmic);
 				ImGui::DragFloat("outer", &(light->outerCutoff), 0.1f, 0, 1);
 			}
+			else if (light->type == LightComponent::DirectionLight)
+			{
+				DrawVec3Control("direction", light->direction);
+			}
 		});
 	}
-	
-	
-	
 }

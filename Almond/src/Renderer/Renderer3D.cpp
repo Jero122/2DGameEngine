@@ -35,33 +35,36 @@ void Renderer3D::EndScene()
 	m_Shader->setMat4("view", m_ViewMatrix);
 	m_Shader->setMat4("projection", m_ProjectionMatrix);
 	m_Shader->setVec3("viewPos", m_ViewPosition);
-	// directional light
-	m_Shader->setVec3("directionalLight.direction", -0.2f, -1.0f, -0.3f);
-	m_Shader->setVec3("directionalLight.ambient", 0.05f, 0.05f, 0.05f);
-	m_Shader->setVec3("directionalLight.diffuse", 0.4f, 0.4f, 0.4f);
-	m_Shader->setVec3("directionalLight.specular", 0.5f, 0.5f, 0.5f);
 
 	m_Shader->setInt("material.diffuse", 0);
 	m_Shader->setVec3("material.specular", 1.0f, 1.0f, 1.0f);
 	m_Shader->setFloat("material.shininess", 512.0f);
 
+	//Directional Light
+	if (m_directional_light.enabled)
+	{
+		m_Shader->setBool("dirLight.enabled", true);
+		m_Shader->setVec3("dirLight.direction", m_directional_light.direction);
+		m_Shader->setVec3("dirLight.ambient", m_directional_light.ambient);
+		m_Shader->setVec3("dirLight.diffuse", m_directional_light.diffuse);
+		m_Shader->setVec3("dirLight.specular", m_directional_light.specular);
+	}
 
-	glm::vec3 pointLightPositions[] = {
-	 glm::vec3(0.7f,  0.2f,  2.0f),
-	 glm::vec3(2.3f, -3.3f, -4.0f),
-	 glm::vec3(-4.0f,  2.0f, -12.0f),
-	 glm::vec3(0.0f,  0.0f, -3.0f)
-	};
+	//Point Lights
 	for (int i = 0; i < m_pointLights.size(); ++i)
 	{
-		m_Shader->setVec3("pointLights[0].position", m_pointLights[i].position);
-		m_Shader->setVec3("pointLights[0].ambient", m_pointLights[i].ambient);
-		m_Shader->setVec3("pointLights[0].diffuse", m_pointLights[i].diffuse);
-		m_Shader->setVec3("pointLights[0].specular", m_pointLights[i].specular);
-		m_Shader->setFloat("pointLights[0].constant", m_pointLights[i].constant);
-		m_Shader->setFloat("pointLights[0].linear", m_pointLights[i].linear);
-		m_Shader->setFloat("pointLights[0].quadratic", m_pointLights[i].quadratic);
+		m_Shader->setVec3("pointLights["+ std::to_string(i) +"].position", m_pointLights[i].position);
+		m_Shader->setVec3("pointLights[" + std::to_string(i) + "].ambient", m_pointLights[i].ambient);
+		m_Shader->setVec3("pointLights[" + std::to_string(i) + "].diffuse", m_pointLights[i].diffuse);
+		m_Shader->setVec3("pointLights[" + std::to_string(i) + "].specular", m_pointLights[i].specular);
+		m_Shader->setFloat("pointLights[" + std::to_string(i) + "].constant", m_pointLights[i].constant);
+		m_Shader->setFloat("pointLights[" + std::to_string(i) + "].linear", m_pointLights[i].linear);
+		m_Shader->setFloat("pointLights[" + std::to_string(i) + "].quadratic", m_pointLights[i].quadratic);
 	}
+
+	m_Shader->setInt("numPointLights", m_pointLights.size());
+
+	//Draw Models
 	for (auto model_tuple : m_Models)
 	{
 		glm::mat4 modelMatrix{ 1.0f };
@@ -86,6 +89,7 @@ void Renderer3D::EndScene()
 		model_tuple.model->Draw(*m_Shader);
 	}
 
+	//Reset Point lights
 	for (int i = 0; i < m_pointLights.size(); ++i)
 	{
 		m_Shader->setVec3("pointLights[0].position", {0,0,0});
@@ -96,6 +100,12 @@ void Renderer3D::EndScene()
 		m_Shader->setFloat("pointLights[0].linear", 0);
 		m_Shader->setFloat("pointLights[0].quadratic", 0);
 	}
+
+	//Disable Directional Light
+	m_Shader->setBool("dirLight.enabled", false);
+	m_directional_light.enabled = false;
+	m_Shader->setInt("numPointLights", 0);
+
 	m_Models.clear();
 	m_pointLights.clear();
 }
@@ -114,6 +124,16 @@ void Renderer3D::SubmitPointLight(glm::vec3 position, glm::vec3 ambient, glm::ve
 void Renderer3D::SubmitSpotLight(glm::vec3 position, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular,
 	glm::vec3 direction, float innerCutoff, float outterCutoff)
 {
+}
+
+void Renderer3D::SetDirectionalLight(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular,
+	glm::vec3 direction)
+{
+	m_directional_light.ambient = ambient;
+	m_directional_light.diffuse = diffuse;
+	m_directional_light.specular = specular;
+	m_directional_light.direction = direction;
+	m_directional_light.enabled = true;
 }
 
 void Renderer3D::ResetStats()
