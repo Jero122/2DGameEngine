@@ -35,22 +35,14 @@ public:
 	{
 		unsigned int diffuseNr = 1;
 		unsigned int specularNr = 1;
+
+		std::vector<unsigned int> texIDs;
 		for (unsigned int i = 0; i < textures.size(); i++)
 		{
-			OpenGLRenderCommand::BindTexture(textures[i].GetTexID(), i);
-			/*glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit before binding
-			// retrieve texture number (the N in diffuse_textureN)
-			glBindTexture(GL_TEXTURE_2D, textures[i].GetTexID());*/
-
-			std::string number;
-			std::string name = textures[i].type;
-			if (name == "texture_diffuse")
-				number = std::to_string(diffuseNr++);
-			else if (name == "texture_specular")
-				number = std::to_string(specularNr++);
-
-			//shader.setFloat(("material." + name + number).c_str(), i);
+			//glBindTextureUnit(i, textures[i].id);
+			texIDs.push_back(textures[i].id);
 		}
+		OpenGLRenderCommand::BindTextures(0, textures.size(), texIDs.data());
 
 		// draw mesh
 		m_VertexArray->Bind();

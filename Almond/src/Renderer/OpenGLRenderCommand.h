@@ -24,6 +24,15 @@ public:
 		glBindTexture(GL_TEXTURE_2D, texture);
 	}
 
+	static void BindTextureUnit(unsigned int unit, unsigned int texture)
+	{
+		glBindTextureUnit(unit, texture);
+	}
+	static void BindTextures(unsigned int firstUnit, int count, const unsigned int* textures)
+	{
+		glBindTextures(firstUnit, count, textures);
+	}
+
 	static void DrawElementsTriangle(int count, const void* indices)
 	{
 		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, indices);
