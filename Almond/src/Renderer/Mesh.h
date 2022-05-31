@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 
+#include "OpenGLRenderCommand.h"
 #include "Shader.h"
 #include "Texture.h"
 #include "glm/vec3.hpp"
@@ -29,14 +30,18 @@ public:
 		setupMesh();
 	}
 
+
 	void Draw(Shader& shader)
 	{
 		unsigned int diffuseNr = 1;
 		unsigned int specularNr = 1;
 		for (unsigned int i = 0; i < textures.size(); i++)
 		{
-			glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit before binding
+			OpenGLRenderCommand::BindTexture(textures[i].GetTexID(), i);
+			/*glActiveTexture(GL_TEXTURE0 + i); // activate proper texture unit before binding
 			// retrieve texture number (the N in diffuse_textureN)
+			glBindTexture(GL_TEXTURE_2D, textures[i].GetTexID());*/
+
 			std::string number;
 			std::string name = textures[i].type;
 			if (name == "texture_diffuse")
@@ -45,43 +50,30 @@ public:
 				number = std::to_string(specularNr++);
 
 			//shader.setFloat(("material." + name + number).c_str(), i);
-			glBindTexture(GL_TEXTURE_2D, textures[i].GetTexID());
 		}
-		glActiveTexture(GL_TEXTURE0);
 
 		// draw mesh
-		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-		glBindVertexArray(0);
+		m_VertexArray->Bind();
+		OpenGLRenderCommand::DrawElementsTriangle(indices.size(), 0);
+		m_VertexArray->UnBind();
 	}
 private:
-
-	unsigned int VAO, VBO, EBO;
+	std::unique_ptr<OpenGLVertexArray> m_VertexArray;
+	std::unique_ptr<OpenGLVertexBuffer> m_VertexBuffer;
+	std::unique_ptr<OpenGLIndexBuffer> m_IndexBuffer;
 
 	void setupMesh()
 	{
-		glGenVertexArrays(1, &VAO);
-		glGenBuffers(1, &VBO);
-		glGenBuffers(1, &EBO);
-
-		glBindVertexArray(VAO);
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), &vertices[0], GL_STATIC_DRAW);
-
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
-
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
-
-		glEnableVertexAttribArray(1);
-		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
-
-		glEnableVertexAttribArray(2);
-		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
-
-		glBindVertexArray(0);
+		m_VertexArray = std::make_unique<OpenGLVertexArray>();
+		m_VertexArray->Bind();
+		m_VertexBuffer = std::make_unique<OpenGLVertexBuffer>((float*)(&vertices[0]), vertices.size() * sizeof(Vertex));
+		BufferLayout layout;
+		layout.AddAttribute({ "aPos", BufferAttribType::Float3, false });
+		layout.AddAttribute({ "aNormal", BufferAttribType::Float3, true });
+		layout.AddAttribute({ "aTexCoord", BufferAttribType::Float2, false });
+		m_VertexBuffer->SetLayout(layout);
+		m_IndexBuffer = std::make_unique<OpenGLIndexBuffer>(&indices[0], indices.size() * sizeof(unsigned int));
+		m_IndexBuffer->Bind();
+		m_VertexArray->UnBind();
 	}
-
 };

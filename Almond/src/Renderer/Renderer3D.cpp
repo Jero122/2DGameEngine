@@ -1,5 +1,6 @@
 #include "Renderer/Renderer3D.h"
 #include "OpenGLRenderCommand.h"
+#include "stb/stb_image.h"
 
 Renderer3D::Renderer3D()
 {
