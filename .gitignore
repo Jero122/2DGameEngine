@@ -1,6 +1,11 @@
 # Binaries
 **/bin/
 bin-int/
+**.obj
+**.FBX
+**.mtl
+**.png
+**.jpeg
 
 # Visual Studio files and folder
 .vs/
