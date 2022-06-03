@@ -41,7 +41,7 @@ public:
 		for (unsigned int i = 0; i < textures.size(); i++)
 		{
 			//glBindTextureUnit(i, textures[i].id);
-			texIDs.push_back(textures[i].id);
+			texIDs.push_back(textures[i].ID());
 		}
 		GLRenderCommand::BindTextures(0, textures.size(), texIDs.data());
 

@@ -20,9 +20,9 @@ public:
 
 	~SpriteSheet();
 
-	unsigned int GetTexID() const
+	unsigned int ID() const
 	{
-		return m_Texture.GetTexID();
+		return m_Texture.ID();
 	}
 
 

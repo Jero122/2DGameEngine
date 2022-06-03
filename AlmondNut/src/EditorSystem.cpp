@@ -47,7 +47,7 @@ void EditorSystem::OnStart()
 
 
 
-    Entity floor = m_CurrentScene->CreateEntity("Floor");
+    /*Entity floor = m_CurrentScene->CreateEntity("Floor");
     {
         auto transformComponent = floor.GetComponent<Transform>();
         *transformComponent = Transform{ glm::vec3(0,-3.5,0), glm::vec3(0,0,0),glm::vec3(16,1,1) };
@@ -68,7 +68,7 @@ void EditorSystem::OnStart()
         auto transformComponent = enttA.GetComponent<Transform>();
         *transformComponent = Transform{ glm::vec3(0,10,0), glm::vec3(0,0,0),glm::vec3(1,1,1) };
 
-        enttA.AddComponent(SpriteRenderer{ 1, 1, Crate->GetTexID() });
+        enttA.AddComponent(SpriteRenderer{ 1, 1, Crate->ID() });
 
         RigidBody rb = RigidBody{};
         rb.FixedRotation = false;
@@ -78,7 +78,7 @@ void EditorSystem::OnStart()
         BoxCollider2D collider = BoxCollider2D{ {0.0f,0.0f}, {0.5f, 0.5f} };
         collider.Friction = 0.1f;
         enttA.AddComponent(collider);
-    }
+    }*/
 
     Entity backpack = m_CurrentScene->CreateEntity("backpack");
     {
@@ -276,7 +276,7 @@ void EditorSystem::OnImGuiRender()
         std::shared_ptr<Texture> icon = m_SceneState == SceneState::Edit ? m_PlayIcon : m_StopIcon;
         float size = ImGui::GetWindowHeight() - 4.0f;
         ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
-        if (ImGui::ImageButton((ImTextureID)icon->GetTexID(), { size, size }, { 0,0 }, { 1,1 }, 0))
+        if (ImGui::ImageButton((ImTextureID)icon->ID(), { size, size }, { 0,0 }, { 1,1 }, 0))
 	    {
 		    if (m_SceneState == SceneState::Edit)
 		    {
