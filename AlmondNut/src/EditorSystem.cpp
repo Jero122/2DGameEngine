@@ -13,11 +13,14 @@
 
 EditorSystem::EditorSystem()
 {
-    m_FrameBufferSpec.width = 1280;
-    m_FrameBufferSpec.height = 720;
     m_ViewportSize.x = 1280;
     m_ViewportSize.y = 720;
-    CreateFrameBuffer(m_FrameBufferSpec);
+
+    m_GLFrameBuffer = std::make_unique<GLFrameBuffer>(m_ViewportSize.x, m_ViewportSize.y);
+    m_GLFrameBuffer->Bind();
+    m_GLFrameBuffer->AddColourAttachment();
+    m_GLFrameBuffer->AddDepthAttachment();
+    m_GLFrameBuffer->UnBind();
 }
 std::default_random_engine generator;
 std::uniform_real_distribution<float> randSpeed(0.1f, 1.0f);
@@ -140,25 +143,21 @@ void EditorSystem::OnEnd()
 
 void EditorSystem::OnUpdate(TimeStep timeStep)
 {
+    m_GLFrameBuffer->Bind();
 	//Resizing
-	if (m_FrameBufferSpec.width != m_ViewportSize.x || m_FrameBufferSpec.height != m_ViewportSize.y)
+	if (m_GLFrameBuffer->GetWidth() != m_ViewportSize.x || m_GLFrameBuffer->GetHeight() != m_ViewportSize.y)
 	{
-        m_FrameBufferSpec.width = m_ViewportSize.x;
-        m_FrameBufferSpec.height = m_ViewportSize.y;
-
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
       
         m_EditorCamera.SetViewPortSize(m_ViewportSize.x, m_ViewportSize.y);
         gluPerspective(45.0,  m_ViewportSize.x/ m_ViewportSize.y, -1.0f, 1000.0f);
         glMatrixMode(GL_MODELVIEW);
-        CreateFrameBuffer(m_FrameBufferSpec);
+
+        m_GLFrameBuffer->Invalidate(m_ViewportSize.x, m_ViewportSize.y);
 	}
 
-	
-    glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBuffer);
     glViewport(0, 0, m_ViewportSize.x, m_ViewportSize.y);
-
 
 	switch (m_SceneState)
 	{
@@ -174,7 +173,7 @@ void EditorSystem::OnUpdate(TimeStep timeStep)
         }
 	}
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    m_GLFrameBuffer->UnBind();
 }
 
 void EditorSystem::OnImGuiRender()
@@ -309,8 +308,8 @@ void EditorSystem::OnImGuiRender()
 
     ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
     m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
-    ImGui::Image(reinterpret_cast<void*>(m_FrameBuffer), {m_ViewportSize.x,m_ViewportSize.y}, {0,1}, {1,0});
-    ImGui::End();
+    ImGui::Image(reinterpret_cast<void*>(m_GLFrameBuffer->ID()), { m_ViewportSize.x,m_ViewportSize.y }, { 0,1 }, { 1,0 });
+	ImGui::End();
     ImGui::PopStyleVar();
 
    if (show_sceneHierarchy)
@@ -351,38 +350,4 @@ void EditorSystem::OnImGuiRender()
 
 void EditorSystem::OnLateUpdate()
 {
-}
-
-void EditorSystem::CreateFrameBuffer(FrameBufferSpec spec)
-{
-	if (m_FrameBuffer != 0)
-	{
-        glDeleteFramebuffers(1, &m_FrameBuffer);
-        glDeleteTextures(1, &m_ColourAttachment);
-	}
-	
-    //FRAME BUFFER
-    GLCALL(glGenFramebuffers(1, &m_FrameBuffer));
-    GLCALL(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_FrameBuffer));
-    //generate frame buffer texture
-
-    glGenTextures(1, &m_ColourAttachment);
-    glBindTexture(GL_TEXTURE_2D, m_ColourAttachment);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, spec.width, spec.height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_ColourAttachment, 0);
-
-    unsigned int rbo;
-    glGenRenderbuffers(1, &rbo);
-    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, m_ViewportSize.x, m_ViewportSize.y); // use a single renderbuffer object for both a depth AND stencil buffer.
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo); // now actually attach it
-
-	
-    //check if framebuffer is complete
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

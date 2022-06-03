@@ -193,6 +193,7 @@
       <Filter>vendor\stb\stb</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\GLFramework\GLTexture.h" />
+    <ClInclude Include="src\Renderer\GLFramework\GLFrameBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\AlmondApplication.cpp">
