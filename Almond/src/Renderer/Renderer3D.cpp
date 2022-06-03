@@ -1,5 +1,5 @@
 #include "Renderer/Renderer3D.h"
-#include "OpenGLRenderCommand.h"
+#include "GLFramework/GLRenderCommand.h"
 #include "stb/stb_image.h"
 
 Renderer3D::Renderer3D()
@@ -26,8 +26,8 @@ void Renderer3D::BeginScene(EditorCamera& camera)
 	m_ViewMatrix = camera.GetViewMatrix();
 	m_ViewPosition = camera.Position();
 
-	OpenGLRenderCommand::ClearColor(62.0f / 255.0f, 62.0f / 255.0f, 58.0f / 255.0f, 1.0f);
-	OpenGLRenderCommand::Clear();
+	GLRenderCommand::ClearColor(62.0f / 255.0f, 62.0f / 255.0f, 58.0f / 255.0f, 1.0f);
+	GLRenderCommand::Clear();
 }
 
 void Renderer3D::EndScene()

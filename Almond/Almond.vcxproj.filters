@@ -147,13 +147,13 @@
     <ClInclude Include="src\Renderer\Model.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\Renderer\OpenGLBuffer.h">
+    <ClInclude Include="src\Renderer\GLFramework\GLBuffer.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\Renderer\OpenGLRenderCommand.h">
+    <ClInclude Include="src\Renderer\GLFramework\GLRenderCommand.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\Renderer\OpenGLVertexArray.h">
+    <ClInclude Include="src\Renderer\GLFramework\GLVertexArray.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\Renderer.h">

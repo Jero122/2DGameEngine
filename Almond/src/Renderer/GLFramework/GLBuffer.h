@@ -102,24 +102,24 @@ private:
 	uint32_t m_tempOffset = 0;
 };
 
-class OpenGLVertexBuffer
+class GLVertexBuffer
 {
 public:
-	OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, uint32_t size)
+	GLVertexBuffer::GLVertexBuffer(float* vertices, uint32_t size)
 	{
 		glGenBuffers(1, &ID);
 		glBindBuffer(GL_ARRAY_BUFFER, ID);
 		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_DYNAMIC_DRAW);
 	}
 
-	virtual ~OpenGLVertexBuffer(){}
+	virtual ~GLVertexBuffer(){}
 
-	void OpenGLVertexBuffer::Bind() const
+	void GLVertexBuffer::Bind() const
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, ID);
 	}
 
-	void OpenGLVertexBuffer::Unbind() const
+	void GLVertexBuffer::Unbind() const
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
@@ -152,25 +152,25 @@ private:
 
 };
 
-class OpenGLIndexBuffer
+class GLIndexBuffer
 {
 public:
 
-	OpenGLIndexBuffer::OpenGLIndexBuffer(const void* indices, uint32_t size)
+	GLIndexBuffer::GLIndexBuffer(const void* indices, uint32_t size)
 	{
 		glGenBuffers(1, &ID);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, GL_STATIC_DRAW);
 	}
 
-	virtual ~OpenGLIndexBuffer() {}
+	virtual ~GLIndexBuffer() {}
 
-	void OpenGLIndexBuffer::Bind() const
+	void GLIndexBuffer::Bind() const
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID);
 	}
 
-	void OpenGLIndexBuffer::UnBind() const
+	void GLIndexBuffer::UnBind() const
 	{
 	}
 
