@@ -194,6 +194,7 @@
     </ClInclude>
     <ClInclude Include="src\Renderer\GLFramework\GLTexture.h" />
     <ClInclude Include="src\Renderer\GLFramework\GLFrameBuffer.h" />
+    <ClInclude Include="src\Renderer\GLFramework\GLRenderBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\AlmondApplication.cpp">

@@ -3,6 +3,8 @@
 #include <iostream>
 #include <GL/glew.h>
 
+#include "GLRenderBuffer.h"
+
 class GLFrameBuffer
 {
 public:
@@ -40,9 +42,8 @@ public:
 
 	void AddDepthAttachment()
 	{
-		glCreateRenderbuffers(1, &m_DepthAttachment);
-		glNamedRenderbufferStorage(m_DepthAttachment, GL_DEPTH24_STENCIL8, m_Width, m_Height);
-		glNamedFramebufferRenderbuffer(id, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_DepthAttachment);
+		m_DepthAttachment = std::make_unique<GLRenderBuffer>(GL_DEPTH24_STENCIL8, m_Width, m_Height);
+		glNamedFramebufferRenderbuffer(id, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_DepthAttachment->ID());
 	}
 
 	void Invalidate(int width, int height)
@@ -51,7 +52,7 @@ public:
 		{
 			glDeleteFramebuffers(1, &id);
 			//glDeleteTextures(1, &m_ColourAttachment);
-			glDeleteRenderbuffers(1, &m_DepthAttachment);
+			//glDeleteRenderbuffers(1, &m_DepthAttachment);
 		}
 
 		m_Width = width;
@@ -89,6 +90,7 @@ private:
 	int m_Height;
 
 	std::unique_ptr<GLTexture> m_ColourAttachment;
+	std::unique_ptr<GLRenderBuffer> m_DepthAttachment;
 	//unsigned int m_ColourAttachment;
-	unsigned int m_DepthAttachment;
+	//unsigned int m_DepthAttachment;
 };

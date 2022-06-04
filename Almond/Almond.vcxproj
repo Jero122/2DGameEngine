@@ -132,6 +132,7 @@
     <ClInclude Include="src\Renderer\EditorCamera.h" />
     <ClInclude Include="src\Renderer\GLCall.h" />
     <ClInclude Include="src\Renderer\GLFramework\GLFrameBuffer.h" />
+    <ClInclude Include="src\Renderer\GLFramework\GLRenderBuffer.h" />
     <ClInclude Include="src\Renderer\GLFramework\GLTexture.h" />
     <ClInclude Include="src\Renderer\Mesh.h" />
     <ClInclude Include="src\Renderer\Model.h" />
