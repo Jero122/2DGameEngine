@@ -27,14 +27,15 @@ public:
 
 	void AddColourAttachment()
 	{
-		glGenTextures(1, &m_ColourAttachment);
-		glBindTexture(GL_TEXTURE_2D, m_ColourAttachment);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_Width, m_Height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glBindTexture(GL_TEXTURE_2D, 0);
+		/*glCreateTextures(GL_TEXTURE_2D, 1, &m_ColourAttachment);
+		glTextureParameteri(m_ColourAttachment, GL_TEXTURE_MAX_LEVEL, 0);
+		glTextureParameteri(m_ColourAttachment, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTextureParameteri(m_ColourAttachment, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTextureStorage2D(m_ColourAttachment, 1, GL_RGB8, m_Width, m_Height);
+		glNamedFramebufferTexture(id, GL_COLOR_ATTACHMENT0, m_ColourAttachment, 0);*/
 
-		glNamedFramebufferTexture(id, GL_COLOR_ATTACHMENT0, m_ColourAttachment, 0);
+		m_ColourAttachment = std::make_unique<GLTexture>(GL_TEXTURE_2D, m_Width, m_Height, GL_RGB8);
+		glNamedFramebufferTexture(id, GL_COLOR_ATTACHMENT0, m_ColourAttachment->ID(), 0);
 		//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_ColourAttachment, 0);
 	}
 
@@ -52,7 +53,7 @@ public:
 		if (id != 0)
 		{
 			glDeleteFramebuffers(1, &id);
-			glDeleteTextures(1, &m_ColourAttachment);
+			//glDeleteTextures(1, &m_ColourAttachment);
 			glDeleteRenderbuffers(1, &m_DepthAttachment);
 		}
 
@@ -60,7 +61,10 @@ public:
 		m_Height = height;
 		glCreateFramebuffers(1, &id);
 		glBindFramebuffer(GL_FRAMEBUFFER, id);
-		AddColourAttachment();
+
+		m_ColourAttachment->Resize(m_Width, m_Height);
+		glNamedFramebufferTexture(id, GL_COLOR_ATTACHMENT0, m_ColourAttachment->ID(), 0);
+
 		AddDepthAttachment();
 
 		if (glCheckNamedFramebufferStatus(id,GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -87,6 +91,7 @@ private:
 	int m_Width;
 	int m_Height;
 
-	unsigned int m_ColourAttachment;
+	std::unique_ptr<GLTexture> m_ColourAttachment;
+	//unsigned int m_ColourAttachment;
 	unsigned int m_DepthAttachment;
 };

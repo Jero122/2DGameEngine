@@ -1,17 +1,18 @@
 #pragma once
 #include <GL/glew.h>
+#include <iostream>
 
 class GLTexture
 {
 public:
 	GLTexture(GLenum type, int width, int height, GLenum internalFormat)
-		:m_Type(type), m_Width(width),m_Height(height)
+		:m_Type(type), m_Width(width),m_Height(height), m_InternalFormat(internalFormat)
 	{
 		glCreateTextures(GL_TEXTURE_2D, 1, &id);
 		glTextureParameteri(id, GL_TEXTURE_MAX_LEVEL, 0);
 		glTextureParameteri(id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTextureParameteri(id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTextureStorage2D(id, 1, internalFormat, m_Width, m_Height);
+		glTextureStorage2D(id, 1, m_InternalFormat, m_Width, m_Height);
 	}
 
 	GLTexture(int width, int height, GLenum externalFormat, const void *image)
@@ -38,7 +39,27 @@ public:
 	GLTexture::~GLTexture()
 	{
 		//TODO manage deletion of textures in a resource manager
-		glDeleteTextures(1, &id);
+		if (id !=0)
+		{
+			glDeleteTextures(1, &id);
+		}
+	}
+
+	void Resize(int width, int height)
+	{
+		if (id != 0)
+		{
+			glDeleteTextures(1, &id);
+		}
+
+		m_Width = width;
+		m_Height = height;
+
+		glCreateTextures(GL_TEXTURE_2D, 1, &id);
+		glTextureParameteri(id, GL_TEXTURE_MAX_LEVEL, 0);
+		glTextureParameteri(id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTextureParameteri(id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTextureStorage2D(id, 1, m_InternalFormat, m_Width, m_Height);
 	}
 
 	int GetWidth() const
@@ -58,6 +79,7 @@ public:
 private:
 	unsigned int id;
 	GLenum m_Type;
+	GLenum m_InternalFormat;
 	int m_Width;
 	int m_Height;
 };
