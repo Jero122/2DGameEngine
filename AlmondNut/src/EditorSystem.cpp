@@ -20,6 +20,8 @@ EditorSystem::EditorSystem()
     m_GLFrameBuffer->Bind();
     m_GLFrameBuffer->AddColourAttachment();
     m_GLFrameBuffer->AddDepthAttachment();
+    if (glCheckNamedFramebufferStatus(m_GLFrameBuffer->ID(), GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
     m_GLFrameBuffer->UnBind();
 }
 std::default_random_engine generator;
@@ -143,7 +145,6 @@ void EditorSystem::OnEnd()
 
 void EditorSystem::OnUpdate(TimeStep timeStep)
 {
-    m_GLFrameBuffer->Bind();
 	//Resizing
 	if (m_GLFrameBuffer->GetWidth() != m_ViewportSize.x || m_GLFrameBuffer->GetHeight() != m_ViewportSize.y)
 	{
@@ -154,9 +155,10 @@ void EditorSystem::OnUpdate(TimeStep timeStep)
         gluPerspective(45.0,  m_ViewportSize.x/ m_ViewportSize.y, -1.0f, 1000.0f);
         glMatrixMode(GL_MODELVIEW);
 
+        m_GLFrameBuffer->Bind();
         m_GLFrameBuffer->Invalidate(m_ViewportSize.x, m_ViewportSize.y);
 	}
-
+    m_GLFrameBuffer->Bind();
     glViewport(0, 0, m_ViewportSize.x, m_ViewportSize.y);
 
 	switch (m_SceneState)

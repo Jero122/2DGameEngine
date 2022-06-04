@@ -28,6 +28,7 @@ public:
 	{
 		glBindTextureUnit(unit, texture);
 	}
+
 	static void BindTextures(unsigned int firstUnit, int count, const unsigned int* textures)
 	{
 		glBindTextures(firstUnit, count, textures);

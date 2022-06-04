@@ -38,7 +38,7 @@ public:
 	GLTexture::~GLTexture()
 	{
 		//TODO manage deletion of textures in a resource manager
-		//glDeleteTextures(1, &id);
+		glDeleteTextures(1, &id);
 	}
 
 	int GetWidth() const

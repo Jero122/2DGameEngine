@@ -10,17 +10,19 @@ public:
 		: m_Width(m_width),
 		  m_Height(m_height)
 	{
-		glGenFramebuffers(1, &id);
+		//glGenFramebuffers(1, &id);
+		glCreateFramebuffers(1, &id);
 	}
 
 	void Bind()
 	{
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, id);
+		glBindFramebuffer(GL_FRAMEBUFFER, id);
+		glViewport(0, 0, m_Width, m_Height);
 	}
 
 	void UnBind()
 	{
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
 	void AddColourAttachment()
@@ -31,7 +33,9 @@ public:
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glBindTexture(GL_TEXTURE_2D, 0);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_ColourAttachment, 0);
+
+		glNamedFramebufferTexture(id, GL_COLOR_ATTACHMENT0, m_ColourAttachment, 0);
+		//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_ColourAttachment, 0);
 	}
 
 	void AddDepthAttachment()
@@ -39,7 +43,8 @@ public:
 		glGenRenderbuffers(1, &m_DepthAttachment);
 		glBindRenderbuffer(GL_RENDERBUFFER, m_DepthAttachment);
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, m_Width, m_Height); // use a single renderbuffer object for both a depth AND stencil buffer.
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_DepthAttachment); // now actually attach it
+		glNamedFramebufferRenderbuffer(id, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_DepthAttachment);
+		//glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_DepthAttachment); // now actually attach it
 	}
 
 	void Invalidate(int width, int height)
@@ -53,12 +58,12 @@ public:
 
 		m_Width = width;
 		m_Height = height;
-		glGenFramebuffers(1, &id);
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, id);
+		glCreateFramebuffers(1, &id);
+		glBindFramebuffer(GL_FRAMEBUFFER, id);
 		AddColourAttachment();
 		AddDepthAttachment();
 
-		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		if (glCheckNamedFramebufferStatus(id,GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 			std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
