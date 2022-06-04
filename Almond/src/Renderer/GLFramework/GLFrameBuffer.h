@@ -36,16 +36,13 @@ public:
 
 		m_ColourAttachment = std::make_unique<GLTexture>(GL_TEXTURE_2D, m_Width, m_Height, GL_RGB8);
 		glNamedFramebufferTexture(id, GL_COLOR_ATTACHMENT0, m_ColourAttachment->ID(), 0);
-		//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_ColourAttachment, 0);
 	}
 
 	void AddDepthAttachment()
 	{
-		glGenRenderbuffers(1, &m_DepthAttachment);
-		glBindRenderbuffer(GL_RENDERBUFFER, m_DepthAttachment);
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, m_Width, m_Height); // use a single renderbuffer object for both a depth AND stencil buffer.
+		glCreateRenderbuffers(1, &m_DepthAttachment);
+		glNamedRenderbufferStorage(m_DepthAttachment, GL_DEPTH24_STENCIL8, m_Width, m_Height);
 		glNamedFramebufferRenderbuffer(id, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_DepthAttachment);
-		//glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_DepthAttachment); // now actually attach it
 	}
 
 	void Invalidate(int width, int height)
