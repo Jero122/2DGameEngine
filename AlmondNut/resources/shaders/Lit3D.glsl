@@ -23,7 +23,9 @@ void main()
 
 #shader fragment
 #version 330 core
-out vec4 FragColor;
+
+layout (location = 0) out vec4 Colour1;
+layout (location = 1) out vec4 Colour2;
 
 struct Material {
     sampler2D diffuse;
@@ -119,8 +121,8 @@ void main()
     // phase 3: Spot light
     //result += CalcSpotLight(spotLight, norm, FragPos, viewDir);    
 
-    FragColor = vec4(result, 1.0);
-
+    Colour1 = vec4(result, 1.0);
+    Colour2 = vec4(1.0,0,0,1.0);
     /*
     // ambient
     // ambient

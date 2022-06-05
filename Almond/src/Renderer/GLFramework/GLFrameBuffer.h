@@ -1,8 +1,9 @@
 #pragma once
-#include <cstddef>
-#include <iostream>
 #include <GL/glew.h>
+#include<iostream>
+#include <vector>
 
+#include "GLTexture.h"
 #include "GLRenderBuffer.h"
 
 class GLFrameBuffer
@@ -27,17 +28,13 @@ public:
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
-	void AddColourAttachment()
+	void AddColourAttachment(GLenum internalFormat, GLint filterMode)
 	{
-		/*glCreateTextures(GL_TEXTURE_2D, 1, &m_ColourAttachment);
-		glTextureParameteri(m_ColourAttachment, GL_TEXTURE_MAX_LEVEL, 0);
-		glTextureParameteri(m_ColourAttachment, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTextureParameteri(m_ColourAttachment, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTextureStorage2D(m_ColourAttachment, 1, GL_RGB8, m_Width, m_Height);
-		glNamedFramebufferTexture(id, GL_COLOR_ATTACHMENT0, m_ColourAttachment, 0);*/
-
-		m_ColourAttachment = std::make_unique<GLTexture>(GL_TEXTURE_2D, m_Width, m_Height, GL_RGB8);
-		glNamedFramebufferTexture(id, GL_COLOR_ATTACHMENT0, m_ColourAttachment->ID(), 0);
+		m_ColourAttachments.push_back(std::make_unique<GLTexture>(GL_TEXTURE_2D, m_Width, m_Height, internalFormat, filterMode));
+		auto& attachment = m_ColourAttachments[ColourAttachmentIdx];
+		glNamedFramebufferTexture(id, GL_COLOR_ATTACHMENT0 + ColourAttachmentIdx, attachment->ID(), 0);
+		m_AttachmentTargets.push_back(GL_COLOR_ATTACHMENT0 + ColourAttachmentIdx);
+		ColourAttachmentIdx += 1;
 	}
 
 	void AddDepthAttachment()
@@ -51,8 +48,6 @@ public:
 		if (id != 0)
 		{
 			glDeleteFramebuffers(1, &id);
-			//glDeleteTextures(1, &m_ColourAttachment);
-			//glDeleteRenderbuffers(1, &m_DepthAttachment);
 		}
 
 		m_Width = width;
@@ -60,16 +55,33 @@ public:
 		glCreateFramebuffers(1, &id);
 		glBindFramebuffer(GL_FRAMEBUFFER, id);
 
-		m_ColourAttachment->Resize(m_Width, m_Height);
-		glNamedFramebufferTexture(id, GL_COLOR_ATTACHMENT0, m_ColourAttachment->ID(), 0);
+		for (int i = 0; i < ColourAttachmentIdx; ++i)
+		{
+			auto& attachment = m_ColourAttachments[i];
+			attachment->Resize(m_Width, m_Height);
+			glNamedFramebufferTexture(id, GL_COLOR_ATTACHMENT0 + i, attachment->ID(), 0);
+		}
 
 		AddDepthAttachment();
 
+		if (m_ColourAttachments.size() > 1)
+		{
+			glDrawBuffers(m_ColourAttachments.size(), m_AttachmentTargets.data());
+		}
+		else if (m_ColourAttachments.empty())
+		{
+			// Only depth-pass
+			glDrawBuffer(GL_NONE);
+		}
 		if (glCheckNamedFramebufferStatus(id,GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 			std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
+	unsigned int GetAttachmentID(unsigned int index)
+	{
+		return m_ColourAttachments[index]->ID();
+	}
 	unsigned int ID()
 	{
 		return  id;
@@ -89,7 +101,11 @@ private:
 	int m_Width;
 	int m_Height;
 
-	std::unique_ptr<GLTexture> m_ColourAttachment;
+	std::vector<std::unique_ptr<GLTexture>> m_ColourAttachments;
+	std::vector<unsigned int> m_AttachmentTargets;
+	unsigned int ColourAttachmentIdx = 0;
+
+	//std::unique_ptr<GLTexture> m_ColourAttachment;
 	std::unique_ptr<GLRenderBuffer> m_DepthAttachment;
 	//unsigned int m_ColourAttachment;
 	//unsigned int m_DepthAttachment;

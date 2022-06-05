@@ -18,7 +18,9 @@ EditorSystem::EditorSystem()
 
     m_GLFrameBuffer = std::make_unique<GLFrameBuffer>(m_ViewportSize.x, m_ViewportSize.y);
     m_GLFrameBuffer->Bind();
-    m_GLFrameBuffer->AddColourAttachment();
+	m_GLFrameBuffer->AddColourAttachment(GL_RGB8, GL_LINEAR);
+    m_GLFrameBuffer->AddColourAttachment(GL_RGB8, GL_NEAREST);
+	//m_GLFrameBuffer->AddColourAttachment(GL_R8I, GL_NEAREST);
     m_GLFrameBuffer->AddDepthAttachment();
     if (glCheckNamedFramebufferStatus(m_GLFrameBuffer->ID(), GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
         std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
@@ -312,6 +314,13 @@ void EditorSystem::OnImGuiRender()
     m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
     ImGui::Image(reinterpret_cast<void*>(m_GLFrameBuffer->ID()), { m_ViewportSize.x,m_ViewportSize.y }, { 0,1 }, { 1,0 });
 	ImGui::End();
+    ImGui::PopStyleVar();
+
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+    ImGui::Begin("ViewPort2");
+    m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
+    ImGui::Image(reinterpret_cast<void*>(m_GLFrameBuffer->GetAttachmentID(1)), { m_ViewportSize.x,m_ViewportSize.y }, { 0,1 }, { 1,0 });
+    ImGui::End();
     ImGui::PopStyleVar();
 
    if (show_sceneHierarchy)
