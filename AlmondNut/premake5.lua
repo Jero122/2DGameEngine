@@ -42,7 +42,7 @@ project "AlmondNut"
 		"opengl32",
 		"ImGui",
 		"box2d",
-		"assimp-vc142-mt"
+		"assimp-vc143-mt"
 	}
 
 	filter "system:windows"

@@ -74,7 +74,7 @@ project "Almond"
 		"box2d",
 		"ImGui",
 		"yaml-cpp",
-		"assimp-vc142-mt"
+		"assimp-vc143-mt"
 	}
 
 	filter "system:windows"

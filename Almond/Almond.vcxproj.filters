@@ -28,6 +28,9 @@
     <Filter Include="src\Renderer">
       <UniqueIdentifier>{73D1DFBF-5F34-6F64-08BA-A71AF4FB3AE7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Renderer\GLFramework">
+      <UniqueIdentifier>{03ED2B31-EF11-7BB1-185D-604104E179CF}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\ResourceManager">
       <UniqueIdentifier>{3F4EAE55-ABAF-8B63-341D-D215A07DC222}</UniqueIdentifier>
     </Filter>
@@ -141,19 +144,28 @@
     <ClInclude Include="src\Renderer\GLCall.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Renderer\GLFramework\GLBuffer.h">
+      <Filter>src\Renderer\GLFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\GLFramework\GLFrameBuffer.h">
+      <Filter>src\Renderer\GLFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\GLFramework\GLRenderBuffer.h">
+      <Filter>src\Renderer\GLFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\GLFramework\GLRenderCommand.h">
+      <Filter>src\Renderer\GLFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\GLFramework\GLTexture.h">
+      <Filter>src\Renderer\GLFramework</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer\GLFramework\GLVertexArray.h">
+      <Filter>src\Renderer\GLFramework</Filter>
+    </ClInclude>
     <ClInclude Include="src\Renderer\Mesh.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\Model.h">
-      <Filter>src\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Renderer\GLFramework\GLBuffer.h">
-      <Filter>src\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Renderer\GLFramework\GLRenderCommand.h">
-      <Filter>src\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Renderer\GLFramework\GLVertexArray.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\Renderer.h">
@@ -192,9 +204,6 @@
     <ClInclude Include="vendor\stb\stb\stb_image.h">
       <Filter>vendor\stb\stb</Filter>
     </ClInclude>
-    <ClInclude Include="src\Renderer\GLFramework\GLTexture.h" />
-    <ClInclude Include="src\Renderer\GLFramework\GLFrameBuffer.h" />
-    <ClInclude Include="src\Renderer\GLFramework\GLRenderBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\AlmondApplication.cpp">
