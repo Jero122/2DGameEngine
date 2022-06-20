@@ -70,6 +70,11 @@ public:
 		return m_Height;
 	}
 
+	GLenum GetInternalFormat()
+	{
+		return m_InternalFormat;
+	}
+
 	int ID() const
 	{
 		return id;

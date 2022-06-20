@@ -25,6 +25,7 @@ public:
 private:
 	std::unique_ptr<GLFrameBuffer> m_GLFrameBuffer;
 	glm::vec2 m_ViewportSize = {1280.0f, 720.0f};
+	glm::vec2 m_ViewportBounds[2];
 
 	SceneHierarchyPanel m_SceneHierarchyPanel;
 	EditorCamera m_EditorCamera;

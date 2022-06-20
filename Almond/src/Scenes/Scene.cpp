@@ -134,9 +134,6 @@ void Scene::OnEditorUpdate(TimeStep timestep, EditorCamera& editorCamera)
 
 void Scene::Render(EditorCamera& editorCamera)
 {
-	//Render
-	m_Renderer2D->BeginScene(editorCamera);
-
 	/*for (EntityID ent : SceneView<Transform, SpriteRenderer>(m_Ecs))
 	{
 		auto transform = m_Ecs.GetComponent<Transform>(ent);
@@ -150,7 +147,8 @@ void Scene::Render(EditorCamera& editorCamera)
 	{
 		auto transform = m_Ecs.GetComponent<Transform>(ent);
 		auto modelRenderer = m_Ecs.GetComponent<ModelRendererComponent>(ent);
-		m_Renderer3D->Submit(modelRenderer->model, transform->position, transform->rotation, transform->scale);
+		auto id = ent >> 32;
+		m_Renderer3D->Submit(modelRenderer->model, transform->position, transform->rotation, transform->scale, id);
 	}
 
 	for (EntityID entt : SceneView<Transform, LightComponent>(m_Ecs))

@@ -43,6 +43,20 @@ public:
 		glNamedFramebufferRenderbuffer(id, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_DepthAttachment->ID());
 	}
 
+	int ReadColourAttachment(int attachmentIdx, int x, int y)
+	{
+		glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIdx);
+
+		int pixelData;
+		glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
+		return pixelData;
+	}
+
+	void ClearColourAttachment(int attachmentIdx, int value)
+	{
+		glClearTexImage(m_ColourAttachments[attachmentIdx]->ID(), 0, GL_RED_INTEGER ,GL_INT, &value);
+	}
+
 	void Invalidate(int width, int height)
 	{
 		if (id != 0)
@@ -82,6 +96,12 @@ public:
 	{
 		return m_ColourAttachments[index]->ID();
 	}
+
+	unsigned int GetDepthAttachmentID()
+	{
+		return m_DepthAttachment->ID();
+	}
+
 	unsigned int ID()
 	{
 		return  id;

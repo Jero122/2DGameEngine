@@ -19,7 +19,7 @@ EditorSystem::EditorSystem()
     m_GLFrameBuffer = std::make_unique<GLFrameBuffer>(m_ViewportSize.x, m_ViewportSize.y);
     m_GLFrameBuffer->Bind();
 	m_GLFrameBuffer->AddColourAttachment(GL_RGB8, GL_LINEAR);
-    m_GLFrameBuffer->AddColourAttachment(GL_RGB8, GL_NEAREST);
+    m_GLFrameBuffer->AddColourAttachment(GL_RGBA16UI, GL_NEAREST);
 	//m_GLFrameBuffer->AddColourAttachment(GL_R8I, GL_NEAREST);
     m_GLFrameBuffer->AddDepthAttachment();
     if (glCheckNamedFramebufferStatus(m_GLFrameBuffer->ID(), GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -147,6 +147,7 @@ void EditorSystem::OnEnd()
 
 void EditorSystem::OnUpdate(TimeStep timeStep)
 {
+
 	//Resizing
 	if (m_GLFrameBuffer->GetWidth() != m_ViewportSize.x || m_GLFrameBuffer->GetHeight() != m_ViewportSize.y)
 	{
@@ -159,9 +160,18 @@ void EditorSystem::OnUpdate(TimeStep timeStep)
 
         m_GLFrameBuffer->Bind();
         m_GLFrameBuffer->Invalidate(m_ViewportSize.x, m_ViewportSize.y);
-	}
+    }
+
     m_GLFrameBuffer->Bind();
+
+    GLRenderCommand::ClearColor(62.0f / 255.0f, 62.0f / 255.0f, 58.0f / 255.0f, 1.0f);
+    GLRenderCommand::Clear();
+
+    m_GLFrameBuffer->ClearColourAttachment(1, -1);
+ 
     glViewport(0, 0, m_ViewportSize.x, m_ViewportSize.y);
+
+   
 
 	switch (m_SceneState)
 	{
@@ -176,6 +186,22 @@ void EditorSystem::OnUpdate(TimeStep timeStep)
             break;
         }
 	}
+
+	if (Input::GetInstance()->GetMouseButtonDown(Input::MouseButton::left))
+	{
+      
+	}
+
+    auto [mx, my] = ImGui::GetMousePos();
+    mx -= m_ViewportBounds[0].x;
+    my -= m_ViewportBounds[0].y;
+    glm::vec2 viewportSize = m_ViewportBounds[1] - m_ViewportBounds[0];
+    my = viewportSize.y - my;
+    int mouseX = (int)mx;
+    int mouseY = (int)my;
+
+    auto pixel = m_GLFrameBuffer->ReadColourAttachment(1, mouseX, mouseY);
+    std::cout << pixel << "\n";
 
     m_GLFrameBuffer->UnBind();
 }
@@ -310,17 +336,16 @@ void EditorSystem::OnImGuiRender()
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
     ImGui::Begin("ViewPort");
 
+    auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
+    auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
+    auto viewportOffset = ImGui::GetWindowPos();
+    m_ViewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
+    m_ViewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
+
     ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
     m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
     ImGui::Image(reinterpret_cast<void*>(m_GLFrameBuffer->ID()), { m_ViewportSize.x,m_ViewportSize.y }, { 0,1 }, { 1,0 });
 	ImGui::End();
-    ImGui::PopStyleVar();
-
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-    ImGui::Begin("ViewPort2");
-    m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
-    ImGui::Image(reinterpret_cast<void*>(m_GLFrameBuffer->GetAttachmentID(1)), { m_ViewportSize.x,m_ViewportSize.y }, { 0,1 }, { 1,0 });
-    ImGui::End();
     ImGui::PopStyleVar();
 
    if (show_sceneHierarchy)
