@@ -2,7 +2,7 @@
 
 #include "Renderer2D.h"
 #include <future>
-#include "OpenGLRenderCommand.h"
+#include "GLFramework/GLRenderCommand.h"
 
 Renderer2D::Renderer2D()
 {
@@ -14,9 +14,9 @@ Renderer2D::Renderer2D()
 	m_Shader->init(shaderPath);
 	m_Shader->use();
 
-	m_VertexArray = std::make_unique<OpenGLVertexArray>();
+	m_VertexArray = std::make_unique<GLVertexArray>();
 	m_VertexArray->Bind();
-	m_VertexBuffer = std::make_unique<OpenGLVertexBuffer>(nullptr, MAX_VERTEX_COUNT * sizeof(Quad::Vertex));
+	m_VertexBuffer = std::make_unique<GLVertexBuffer>(nullptr, MAX_VERTEX_COUNT * sizeof(Quad::Vertex));
 
 	BufferLayout layout;
 	layout.AddAttribute({ "aPos", BufferAttribType::Float3, false });
@@ -42,7 +42,7 @@ Renderer2D::Renderer2D()
 		offset += 4;
 	}
 
-	m_IndexBuffer = std::make_unique<OpenGLIndexBuffer>(indices, sizeof(indices));
+	m_IndexBuffer = std::make_unique<GLIndexBuffer>(indices, sizeof(indices));
 
 	int32_t samplers[MAX_TEXTURE_SLOTS];
 	for (uint32_t i = 0; i < MAX_TEXTURE_SLOTS; ++i)
@@ -68,8 +68,8 @@ void Renderer2D::BeginScene(EditorCamera& camera)
 	m_ProjectionMatrix = camera.GetProjectionMatrix();
 	m_ViewMatrix = camera.GetViewMatrix();
 
-	OpenGLRenderCommand::ClearColor(62.0f / 255.0f, 62.0f / 255.0f, 58.0f / 255.0f, 1.0f);
-	OpenGLRenderCommand::Clear();
+	GLRenderCommand::ClearColor(62.0f / 255.0f, 62.0f / 255.0f, 58.0f / 255.0f, 1.0f);
+	GLRenderCommand::Clear();
 }
 
 void Renderer2D::EndScene()
@@ -107,12 +107,12 @@ void Renderer2D::EndScene()
 		m_IndexBuffer->Bind();
 		for (unsigned int i = 1; i < bufferData->CurrentTextureSlotIndex; ++i)
 		{
-			OpenGLRenderCommand::BindTexture(bufferData->TextureSlots[i], i);
+			GLRenderCommand::BindTexture(bufferData->TextureSlots[i], i);
 		}
-		OpenGLRenderCommand::DrawElementsTriangle(bufferData->IndexCount, 0);
+		GLRenderCommand::DrawElementsTriangle(bufferData->IndexCount, 0);
 	}
 
-	OpenGLRenderCommand::UnbindFrameBuffer();
+	GLRenderCommand::UnbindFrameBuffer();
 
 
 	//clear all batches

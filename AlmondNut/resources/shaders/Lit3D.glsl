@@ -23,7 +23,9 @@ void main()
 
 #shader fragment
 #version 330 core
-out vec4 FragColor;
+
+layout (location = 0) out vec4 Colour1;
+layout (location = 1) out int Colour2;
 
 struct Material {
     sampler2D diffuse;
@@ -61,6 +63,7 @@ in vec2 TexCoords;
 uniform Material material;
 uniform DirLight dirLight;
 uniform vec3 viewPos;
+uniform int entityID;
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
 {
@@ -119,7 +122,14 @@ void main()
     // phase 3: Spot light
     //result += CalcSpotLight(spotLight, norm, FragPos, viewDir);    
 
-    FragColor = vec4(result, 1.0);
+    Colour1 = vec4(result, 1.0);
+    int id =-1;
+
+    if (Colour1.a >= 0.5)
+        id = entityID;
+
+    Colour2 = id;
+
 
     /*
     // ambient

@@ -2,17 +2,15 @@
 #include <memory>
 #include "EditorCamera.h"
 #include "Shader.h"
-#include "OpenGLBuffer.h"
-#include "OpenGLVertexArray.h"
 #include "glm/fwd.hpp"
 #include "Model.h"
 
 class Renderer
 {
 protected:
-	std::unique_ptr<OpenGLVertexArray> m_VertexArray;
-	std::unique_ptr<OpenGLVertexBuffer> m_VertexBuffer;
-	std::unique_ptr<OpenGLIndexBuffer> m_IndexBuffer;
+	std::unique_ptr<GLVertexArray> m_VertexArray;
+	std::unique_ptr<GLVertexBuffer> m_VertexBuffer;
+	std::unique_ptr<GLIndexBuffer> m_IndexBuffer;
 	std::unique_ptr<Shader> m_Shader;
 
 	glm::mat4 m_ProjectionMatrix;

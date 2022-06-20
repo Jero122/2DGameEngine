@@ -1,9 +1,9 @@
 #pragma once
 #include <gl/glew.h>
-class OpenGLVertexArray
+class GLVertexArray
 {
 public:
-	OpenGLVertexArray()
+	GLVertexArray()
 	{
 		glGenVertexArrays(1, &ID);
 	}

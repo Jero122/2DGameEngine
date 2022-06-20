@@ -1,6 +1,6 @@
 #pragma once
 #include <GL/glew.h>
-class OpenGLRenderCommand
+class GLRenderCommand
 {
 public:
 	static void Clear()
@@ -28,6 +28,7 @@ public:
 	{
 		glBindTextureUnit(unit, texture);
 	}
+
 	static void BindTextures(unsigned int firstUnit, int count, const unsigned int* textures)
 	{
 		glBindTextures(firstUnit, count, textures);

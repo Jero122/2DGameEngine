@@ -229,8 +229,10 @@ void SceneHierarchyPanel::DrawEntityNode(Entity entity)
 
 	ImGuiTreeNodeFlags flags = (m_SelectedEntity == entity) ? ImGuiTreeNodeFlags_Selected: 0 |ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
 	bool opened = ImGui::TreeNodeEx((void*)(uint64_t)entity, flags, tag.c_str());
+	
 	if (ImGui::IsItemClicked())
 	{
+		std::cout << entity.GetHandle() << "\n";
 		m_SelectedEntity = entity;
 	}
 

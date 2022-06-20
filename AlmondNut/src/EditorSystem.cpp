@@ -13,11 +13,18 @@
 
 EditorSystem::EditorSystem()
 {
-    m_FrameBufferSpec.width = 1280;
-    m_FrameBufferSpec.height = 720;
     m_ViewportSize.x = 1280;
     m_ViewportSize.y = 720;
-    CreateFrameBuffer(m_FrameBufferSpec);
+
+    m_GLFrameBuffer = std::make_unique<GLFrameBuffer>(m_ViewportSize.x, m_ViewportSize.y);
+    m_GLFrameBuffer->Bind();
+	m_GLFrameBuffer->AddColourAttachment(GL_RGB8, GL_LINEAR);
+    m_GLFrameBuffer->AddColourAttachment(GL_RGBA16UI, GL_NEAREST);
+	//m_GLFrameBuffer->AddColourAttachment(GL_R8I, GL_NEAREST);
+    m_GLFrameBuffer->AddDepthAttachment();
+    if (glCheckNamedFramebufferStatus(m_GLFrameBuffer->ID(), GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+    m_GLFrameBuffer->UnBind();
 }
 std::default_random_engine generator;
 std::uniform_real_distribution<float> randSpeed(0.1f, 1.0f);
@@ -47,7 +54,7 @@ void EditorSystem::OnStart()
 
 
 
-    Entity floor = m_CurrentScene->CreateEntity("Floor");
+    /*Entity floor = m_CurrentScene->CreateEntity("Floor");
     {
         auto transformComponent = floor.GetComponent<Transform>();
         *transformComponent = Transform{ glm::vec3(0,-3.5,0), glm::vec3(0,0,0),glm::vec3(16,1,1) };
@@ -68,7 +75,7 @@ void EditorSystem::OnStart()
         auto transformComponent = enttA.GetComponent<Transform>();
         *transformComponent = Transform{ glm::vec3(0,10,0), glm::vec3(0,0,0),glm::vec3(1,1,1) };
 
-        enttA.AddComponent(SpriteRenderer{ 1, 1, Crate->GetTexID() });
+        enttA.AddComponent(SpriteRenderer{ 1, 1, Crate->ID() });
 
         RigidBody rb = RigidBody{};
         rb.FixedRotation = false;
@@ -78,7 +85,7 @@ void EditorSystem::OnStart()
         BoxCollider2D collider = BoxCollider2D{ {0.0f,0.0f}, {0.5f, 0.5f} };
         collider.Friction = 0.1f;
         enttA.AddComponent(collider);
-    }
+    }*/
 
     Entity backpack = m_CurrentScene->CreateEntity("backpack");
     {
@@ -140,25 +147,31 @@ void EditorSystem::OnEnd()
 
 void EditorSystem::OnUpdate(TimeStep timeStep)
 {
-	//Resizing
-	if (m_FrameBufferSpec.width != m_ViewportSize.x || m_FrameBufferSpec.height != m_ViewportSize.y)
-	{
-        m_FrameBufferSpec.width = m_ViewportSize.x;
-        m_FrameBufferSpec.height = m_ViewportSize.y;
 
+	//Resizing
+	if (m_GLFrameBuffer->GetWidth() != m_ViewportSize.x || m_GLFrameBuffer->GetHeight() != m_ViewportSize.y)
+	{
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
       
         m_EditorCamera.SetViewPortSize(m_ViewportSize.x, m_ViewportSize.y);
         gluPerspective(45.0,  m_ViewportSize.x/ m_ViewportSize.y, -1.0f, 1000.0f);
         glMatrixMode(GL_MODELVIEW);
-        CreateFrameBuffer(m_FrameBufferSpec);
-	}
 
-	
-    glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBuffer);
+        m_GLFrameBuffer->Bind();
+        m_GLFrameBuffer->Invalidate(m_ViewportSize.x, m_ViewportSize.y);
+    }
+
+    m_GLFrameBuffer->Bind();
+
+    GLRenderCommand::ClearColor(62.0f / 255.0f, 62.0f / 255.0f, 58.0f / 255.0f, 1.0f);
+    GLRenderCommand::Clear();
+
+    m_GLFrameBuffer->ClearColourAttachment(1, -1);
+ 
     glViewport(0, 0, m_ViewportSize.x, m_ViewportSize.y);
 
+   
 
 	switch (m_SceneState)
 	{
@@ -174,7 +187,23 @@ void EditorSystem::OnUpdate(TimeStep timeStep)
         }
 	}
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	if (Input::GetInstance()->GetMouseButtonDown(Input::MouseButton::left))
+	{
+      
+	}
+
+    auto [mx, my] = ImGui::GetMousePos();
+    mx -= m_ViewportBounds[0].x;
+    my -= m_ViewportBounds[0].y;
+    glm::vec2 viewportSize = m_ViewportBounds[1] - m_ViewportBounds[0];
+    my = viewportSize.y - my;
+    int mouseX = (int)mx;
+    int mouseY = (int)my;
+
+    auto pixel = m_GLFrameBuffer->ReadColourAttachment(1, mouseX, mouseY);
+    std::cout << pixel << "\n";
+
+    m_GLFrameBuffer->UnBind();
 }
 
 void EditorSystem::OnImGuiRender()
@@ -276,7 +305,7 @@ void EditorSystem::OnImGuiRender()
         std::shared_ptr<Texture> icon = m_SceneState == SceneState::Edit ? m_PlayIcon : m_StopIcon;
         float size = ImGui::GetWindowHeight() - 4.0f;
         ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
-        if (ImGui::ImageButton((ImTextureID)icon->GetTexID(), { size, size }, { 0,0 }, { 1,1 }, 0))
+        if (ImGui::ImageButton((ImTextureID)icon->ID(), { size, size }, { 0,0 }, { 1,1 }, 0))
 	    {
 		    if (m_SceneState == SceneState::Edit)
 		    {
@@ -307,10 +336,16 @@ void EditorSystem::OnImGuiRender()
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
     ImGui::Begin("ViewPort");
 
+    auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
+    auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
+    auto viewportOffset = ImGui::GetWindowPos();
+    m_ViewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
+    m_ViewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
+
     ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
     m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
-    ImGui::Image(reinterpret_cast<void*>(m_FrameBuffer), {m_ViewportSize.x,m_ViewportSize.y}, {0,1}, {1,0});
-    ImGui::End();
+    ImGui::Image(reinterpret_cast<void*>(m_GLFrameBuffer->ID()), { m_ViewportSize.x,m_ViewportSize.y }, { 0,1 }, { 1,0 });
+	ImGui::End();
     ImGui::PopStyleVar();
 
    if (show_sceneHierarchy)
@@ -351,38 +386,4 @@ void EditorSystem::OnImGuiRender()
 
 void EditorSystem::OnLateUpdate()
 {
-}
-
-void EditorSystem::CreateFrameBuffer(FrameBufferSpec spec)
-{
-	if (m_FrameBuffer != 0)
-	{
-        glDeleteFramebuffers(1, &m_FrameBuffer);
-        glDeleteTextures(1, &m_ColourAttachment);
-	}
-	
-    //FRAME BUFFER
-    GLCALL(glGenFramebuffers(1, &m_FrameBuffer));
-    GLCALL(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_FrameBuffer));
-    //generate frame buffer texture
-
-    glGenTextures(1, &m_ColourAttachment);
-    glBindTexture(GL_TEXTURE_2D, m_ColourAttachment);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, spec.width, spec.height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_ColourAttachment, 0);
-
-    unsigned int rbo;
-    glGenRenderbuffers(1, &rbo);
-    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, m_ViewportSize.x, m_ViewportSize.y); // use a single renderbuffer object for both a depth AND stencil buffer.
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo); // now actually attach it
-
-	
-    //check if framebuffer is complete
-    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

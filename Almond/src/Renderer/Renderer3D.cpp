@@ -1,5 +1,5 @@
 #include "Renderer/Renderer3D.h"
-#include "OpenGLRenderCommand.h"
+#include "GLFramework/GLRenderCommand.h"
 #include "stb/stb_image.h"
 
 Renderer3D::Renderer3D()
@@ -10,6 +10,18 @@ Renderer3D::Renderer3D()
 	m_Shader = std::make_unique<Shader>();
 	m_Shader->init(shaderPath);
 	m_Shader->use();
+
+
+	m_VertexArray = std::make_unique<GLVertexArray>();
+	m_VertexArray->Bind();
+
+	m_VertexBuffer = std::make_unique<GLVertexBuffer>(nullptr, 0);
+	BufferLayout layout;
+	layout.AddAttribute({ "aPos", BufferAttribType::Float3, false });
+	layout.AddAttribute({ "aNormal", BufferAttribType::Float3, false });
+	layout.AddAttribute({ "aTexCoord", BufferAttribType::Float2, false });
+	m_VertexBuffer->SetLayout(layout);
+
 }
 
 Renderer3D::~Renderer3D()
@@ -26,8 +38,6 @@ void Renderer3D::BeginScene(EditorCamera& camera)
 	m_ViewMatrix = camera.GetViewMatrix();
 	m_ViewPosition = camera.Position();
 
-	OpenGLRenderCommand::ClearColor(62.0f / 255.0f, 62.0f / 255.0f, 58.0f / 255.0f, 1.0f);
-	OpenGLRenderCommand::Clear();
 }
 
 void Renderer3D::EndScene()
@@ -87,6 +97,7 @@ void Renderer3D::EndScene()
 		modelMatrix = modelMatrix * glm::scale(glm::mat4(1.0f), model_tuple.scale);
 
 		m_Shader->setMat4("model", modelMatrix);
+		m_Shader->setInt("entityID", model_tuple.entityID);
 		model_tuple.model->Draw(*m_Shader);
 	}
 
@@ -111,13 +122,18 @@ void Renderer3D::EndScene()
 	m_pointLights.clear();
 }
 
-void Renderer3D::Submit(std::shared_ptr<Model> model, const glm::vec3 position, glm::vec3 rotation, glm::vec3 scale)
+void Renderer3D::Submit(std::shared_ptr<Model> model, const glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, int entityID)
 {
-	m_Models.push_back({model,position,rotation,scale});
+	m_Models.push_back({model,position,rotation,scale,entityID});
+}
+
+void Renderer3D::Submit(std::shared_ptr<Model> model, const glm::vec3 position, const glm::vec3 rotation,
+	const glm::vec3 scale)
+{
 }
 
 void Renderer3D::SubmitPointLight(glm::vec3 position, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular,
-	float constant, float linear, float quadratic)
+                                  float constant, float linear, float quadratic)
 {
 	m_pointLights.push_back({position, ambient,diffuse,specular, constant,linear,quadratic });
 }

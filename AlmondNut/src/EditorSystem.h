@@ -4,6 +4,7 @@
 #include "Almond.h"
 #include "glm/vec2.hpp"
 #include "Panels/SceneHierarchyPanel.h"
+#include "Renderer/GLFramework/GLFrameBuffer.h"
 
 
 class EditorSystem : public GameSystem
@@ -22,17 +23,9 @@ public:
 	std::shared_ptr<Scene> m_CurrentScene;
 
 private:
-	struct FrameBufferSpec
-	{
-		float width;
-		float height;
-	};
-	
-	void CreateFrameBuffer(FrameBufferSpec spec);
-	unsigned int m_FrameBuffer = 0;
-	FrameBufferSpec m_FrameBufferSpec = {1280.0f, 720.0f};
-	unsigned int m_ColourAttachment;
+	std::unique_ptr<GLFrameBuffer> m_GLFrameBuffer;
 	glm::vec2 m_ViewportSize = {1280.0f, 720.0f};
+	glm::vec2 m_ViewportBounds[2];
 
 	SceneHierarchyPanel m_SceneHierarchyPanel;
 	EditorCamera m_EditorCamera;

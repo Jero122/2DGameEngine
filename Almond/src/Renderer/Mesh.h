@@ -1,10 +1,11 @@
 #pragma once
 #include <string>
 #include <vector>
-
-#include "OpenGLRenderCommand.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "GLFramework/GLBuffer.h"
+#include "GLFramework/GLRenderCommand.h"
+#include "GLFramework/GLVertexArray.h"
 #include "glm/vec3.hpp"
 
 struct Vertex
@@ -40,31 +41,31 @@ public:
 		for (unsigned int i = 0; i < textures.size(); i++)
 		{
 			//glBindTextureUnit(i, textures[i].id);
-			texIDs.push_back(textures[i].id);
+			texIDs.push_back(textures[i].ID());
 		}
-		OpenGLRenderCommand::BindTextures(0, textures.size(), texIDs.data());
+		GLRenderCommand::BindTextures(0, textures.size(), texIDs.data());
 
 		// draw mesh
 		m_VertexArray->Bind();
-		OpenGLRenderCommand::DrawElementsTriangle(indices.size(), 0);
+		GLRenderCommand::DrawElementsTriangle(indices.size(), 0);
 		m_VertexArray->UnBind();
 	}
 private:
-	std::unique_ptr<OpenGLVertexArray> m_VertexArray;
-	std::unique_ptr<OpenGLVertexBuffer> m_VertexBuffer;
-	std::unique_ptr<OpenGLIndexBuffer> m_IndexBuffer;
+	std::unique_ptr<GLVertexArray> m_VertexArray;
+	std::unique_ptr<GLVertexBuffer> m_VertexBuffer;
+	std::unique_ptr<GLIndexBuffer> m_IndexBuffer;
 
 	void setupMesh()
 	{
-		m_VertexArray = std::make_unique<OpenGLVertexArray>();
+		m_VertexArray = std::make_unique<GLVertexArray>();
 		m_VertexArray->Bind();
-		m_VertexBuffer = std::make_unique<OpenGLVertexBuffer>((float*)(&vertices[0]), vertices.size() * sizeof(Vertex));
+		m_VertexBuffer = std::make_unique<GLVertexBuffer>((float*)(&vertices[0]), vertices.size() * sizeof(Vertex));
 		BufferLayout layout;
 		layout.AddAttribute({ "aPos", BufferAttribType::Float3, false });
 		layout.AddAttribute({ "aNormal", BufferAttribType::Float3, true });
 		layout.AddAttribute({ "aTexCoord", BufferAttribType::Float2, false });
 		m_VertexBuffer->SetLayout(layout);
-		m_IndexBuffer = std::make_unique<OpenGLIndexBuffer>(&indices[0], indices.size() * sizeof(unsigned int));
+		m_IndexBuffer = std::make_unique<GLIndexBuffer>(&indices[0], indices.size() * sizeof(unsigned int));
 		m_IndexBuffer->Bind();
 		m_VertexArray->UnBind();
 	}

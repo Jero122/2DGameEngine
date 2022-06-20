@@ -131,11 +131,14 @@
     <ClInclude Include="src\Renderer\Camera.h" />
     <ClInclude Include="src\Renderer\EditorCamera.h" />
     <ClInclude Include="src\Renderer\GLCall.h" />
+    <ClInclude Include="src\Renderer\GLFramework\GLFrameBuffer.h" />
+    <ClInclude Include="src\Renderer\GLFramework\GLRenderBuffer.h" />
+    <ClInclude Include="src\Renderer\GLFramework\GLTexture.h" />
     <ClInclude Include="src\Renderer\Mesh.h" />
     <ClInclude Include="src\Renderer\Model.h" />
-    <ClInclude Include="src\Renderer\OpenGLBuffer.h" />
-    <ClInclude Include="src\Renderer\OpenGLRenderCommand.h" />
-    <ClInclude Include="src\Renderer\OpenGLVertexArray.h" />
+    <ClInclude Include="src\Renderer\GLFramework\GLBuffer.h" />
+    <ClInclude Include="src\Renderer\GLFramework\GLRenderCommand.h" />
+    <ClInclude Include="src\Renderer\GLFramework\GLVertexArray.h" />
     <ClInclude Include="src\Renderer\Renderer.h" />
     <ClInclude Include="src\Renderer\Renderer2D.h" />
     <ClInclude Include="src\Renderer\Renderer3D.h" />

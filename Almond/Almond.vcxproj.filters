@@ -147,13 +147,13 @@
     <ClInclude Include="src\Renderer\Model.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\Renderer\OpenGLBuffer.h">
+    <ClInclude Include="src\Renderer\GLFramework\GLBuffer.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\Renderer\OpenGLRenderCommand.h">
+    <ClInclude Include="src\Renderer\GLFramework\GLRenderCommand.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\Renderer\OpenGLVertexArray.h">
+    <ClInclude Include="src\Renderer\GLFramework\GLVertexArray.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer\Renderer.h">
@@ -192,6 +192,9 @@
     <ClInclude Include="vendor\stb\stb\stb_image.h">
       <Filter>vendor\stb\stb</Filter>
     </ClInclude>
+    <ClInclude Include="src\Renderer\GLFramework\GLTexture.h" />
+    <ClInclude Include="src\Renderer\GLFramework\GLFrameBuffer.h" />
+    <ClInclude Include="src\Renderer\GLFramework\GLRenderBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\AlmondApplication.cpp">
