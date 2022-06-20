@@ -30,6 +30,8 @@ private:
 	SceneHierarchyPanel m_SceneHierarchyPanel;
 	EditorCamera m_EditorCamera;
 
+	Entity m_HoveredEntity;
+
 	enum class SceneState
 	{
 		Play = 0, Edit

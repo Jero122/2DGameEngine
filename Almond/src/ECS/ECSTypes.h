@@ -4,12 +4,6 @@
 #include <set>
 #include <vector>
 
-
-
-
-
-
-
 typedef std::uint32_t EntityID;
 //2^20 max entities = 1,048,576 entities
 typedef std::uint32_t EntityIndex;

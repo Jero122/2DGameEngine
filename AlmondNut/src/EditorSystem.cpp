@@ -19,7 +19,7 @@ EditorSystem::EditorSystem()
     m_GLFrameBuffer = std::make_unique<GLFrameBuffer>(m_ViewportSize.x, m_ViewportSize.y);
     m_GLFrameBuffer->Bind();
 	m_GLFrameBuffer->AddColourAttachment(GL_RGB8, GL_LINEAR);
-    m_GLFrameBuffer->AddColourAttachment(GL_RGBA16UI, GL_NEAREST);
+    m_GLFrameBuffer->AddColourAttachment(GL_RGBA16I, GL_NEAREST);
 	//m_GLFrameBuffer->AddColourAttachment(GL_R8I, GL_NEAREST);
     m_GLFrameBuffer->AddDepthAttachment();
     if (glCheckNamedFramebufferStatus(m_GLFrameBuffer->ID(), GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -189,19 +189,27 @@ void EditorSystem::OnUpdate(TimeStep timeStep)
 
 	if (Input::GetInstance()->GetMouseButtonDown(Input::MouseButton::left))
 	{
-      
+        auto [mx, my] = ImGui::GetMousePos();
+        mx -= m_ViewportBounds[0].x;
+        my -= m_ViewportBounds[0].y;
+        glm::vec2 viewportSize = m_ViewportBounds[1] - m_ViewportBounds[0];
+        my = viewportSize.y - my;
+        int mouseX = (int)mx;
+        int mouseY = (int)my;
+
+        int pixel = m_GLFrameBuffer->ReadColourAttachment(1, mouseX, mouseY);
+        std::cout << pixel << "\n";
+
+        if (pixel <= -1)
+        {
+            m_HoveredEntity = Entity();
+        }
+        else
+        {
+            m_HoveredEntity = Entity{(EntityID)pixel, m_CurrentScene.get() };
+            m_SceneHierarchyPanel.SetSelectedEntity(m_HoveredEntity);
+        }
 	}
-
-    auto [mx, my] = ImGui::GetMousePos();
-    mx -= m_ViewportBounds[0].x;
-    my -= m_ViewportBounds[0].y;
-    glm::vec2 viewportSize = m_ViewportBounds[1] - m_ViewportBounds[0];
-    my = viewportSize.y - my;
-    int mouseX = (int)mx;
-    int mouseY = (int)my;
-
-    auto pixel = m_GLFrameBuffer->ReadColourAttachment(1, mouseX, mouseY);
-    std::cout << pixel << "\n";
 
     m_GLFrameBuffer->UnBind();
 }

@@ -67,12 +67,12 @@ public:
 
 	operator bool() const
 	{
-		return m_entityHandle != (uint64_t)-1 && m_Scene != nullptr;
+		return m_entityHandle != (uint32_t)-1 && m_Scene != nullptr;
 	}
 
 	bool IsValid()
 	{
-		if (m_entityHandle != (uint64_t)-1 && m_Scene != nullptr)
+		if (m_entityHandle != (uint32_t)-1 && m_Scene != nullptr)
 		{
 			return true;
 		}
