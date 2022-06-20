@@ -147,8 +147,7 @@ void Scene::Render(EditorCamera& editorCamera)
 	{
 		auto transform = m_Ecs.GetComponent<Transform>(ent);
 		auto modelRenderer = m_Ecs.GetComponent<ModelRendererComponent>(ent);
-		auto id = ent >> 32;
-		m_Renderer3D->Submit(modelRenderer->model, transform->position, transform->rotation, transform->scale, id);
+		m_Renderer3D->Submit(modelRenderer->model, transform->position, transform->rotation, transform->scale, ent);
 	}
 
 	for (EntityID entt : SceneView<Transform, LightComponent>(m_Ecs))

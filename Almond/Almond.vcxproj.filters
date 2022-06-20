@@ -218,9 +218,6 @@
     <ClCompile Include="src\Core\Window.cpp">
       <Filter>src\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\ECS\ECSTypes.cpp">
-      <Filter>src\ECS</Filter>
-    </ClCompile>
     <ClCompile Include="src\Physics2D\DebugDrawBox2D.cpp">
       <Filter>src\Physics2D</Filter>
     </ClCompile>

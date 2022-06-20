@@ -157,7 +157,6 @@
     <ClCompile Include="src\Core\Input.cpp" />
     <ClCompile Include="src\Core\SystemStack.cpp" />
     <ClCompile Include="src\Core\Window.cpp" />
-    <ClCompile Include="src\ECS\ECSTypes.cpp" />
     <ClCompile Include="src\Physics2D\DebugDrawBox2D.cpp" />
     <ClCompile Include="src\Physics2D\Geometry2D.cpp" />
     <ClCompile Include="src\Physics2D\Physics2D.cpp" />
