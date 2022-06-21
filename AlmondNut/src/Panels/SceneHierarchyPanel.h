@@ -14,6 +14,7 @@ public:
 	void OnImGuiRender();
 
 	void SetSelectedEntity(Entity entity);
+	Entity GetSelectedEntity();
 
 private:
 	void DrawEntityNode(Entity entity);

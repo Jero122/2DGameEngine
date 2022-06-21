@@ -7,3 +7,6 @@
 [submodule "Almond/vendor/yaml-cpp"]
 	path = Almond/vendor/yaml-cpp
 	url = https://github.com/Jero122/yaml-cpp
+[submodule "Almond/vendor/ImGuizmo"]
+	path = Almond/vendor/ImGuizmo
+	url = https://github.com/Jero122/ImGuizmo

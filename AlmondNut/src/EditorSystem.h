@@ -21,6 +21,7 @@ public:
 	void OnLateUpdate() override;
 	std::stack<EntityID> m_entities;
 	std::shared_ptr<Scene> m_CurrentScene;
+	int m_GizmoType = -1;
 
 private:
 	std::unique_ptr<GLFrameBuffer> m_GLFrameBuffer;

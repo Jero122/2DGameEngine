@@ -86,6 +86,11 @@ void SceneHierarchyPanel::SetSelectedEntity(Entity entity)
 	m_SelectedEntity = entity;
 }
 
+Entity SceneHierarchyPanel::GetSelectedEntity()
+{
+	return m_SelectedEntity;
+}
+
 template<typename T, typename UIFunction>
 static void DrawComponent(const std::string& name, Entity entity, UIFunction uiFunction)
 {

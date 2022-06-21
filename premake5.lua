@@ -21,6 +21,7 @@ IncludeDir["GL"] = "%{wks.location}/Almond/dependencies/include/GL"
 IncludeDir["Box2D"] = "%{wks.location}/Almond/dependencies/include/box2d"
 IncludeDir["stb"] = "%{wks.location}/Almond/vendor/stb"
 IncludeDir["glm"] = "%{wks.location}/Almond/vendor/glm"
+IncludeDir["ImGuizmo"] = "%{wks.location}/Almond/vendor/ImGuizmo"
 IncludeDir["yaml"] = "%{wks.location}/Almond/vendor/yaml-cpp/include"
 IncludeDir["assimp"] = "%{wks.location}/Almond/dependencies/include/assimp"
 
@@ -42,11 +43,12 @@ project "Almond"
 
 	files
 	{
-		
 		"Almond/src/**.h",
 		"Almond/src/**.cpp",
 		"Almond/vendor/stb/**.h",
-		"Almond/vendor/stb/**.cpp"
+		"Almond/vendor/stb/**.cpp",
+		"Almond/vendor/ImGuizmo/ImGuizmo.h",
+		"Almond/vendor/ImGuizmo/ImGuizmo.cpp"
 	}
 
 	includedirs
@@ -61,7 +63,8 @@ project "Almond"
 		"%{IncludeDir.GL}",
 		"%{IncludeDir.Box2D}",
 		"%{IncludeDir.yaml}",
-		"%{IncludeDir.assimp}"
+		"%{IncludeDir.assimp}",
+		"%{IncludeDir.ImGuizmo}"
 	}
 
 	links

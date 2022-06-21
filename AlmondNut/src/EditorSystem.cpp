@@ -2,6 +2,7 @@
 
 #include "EditorSystem.h"
 #include <GL/glew.h>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "imgui_internal.h"
 #include "ECS/Components/BoxCollider2D.h"
@@ -9,6 +10,7 @@
 #include "ECS/Components/ModelRendererComponent.h"
 #include "ECS/Components/MovementComponent.h"
 #include "imgui/imgui.h"
+#include "ImGuizmo.h"
 #include "Scenes/SceneSerializer.h"
 
 EditorSystem::EditorSystem()
@@ -353,13 +355,67 @@ void EditorSystem::OnImGuiRender()
     ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
     m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
     ImGui::Image(reinterpret_cast<void*>(m_GLFrameBuffer->ID()), { m_ViewportSize.x,m_ViewportSize.y }, { 0,1 }, { 1,0 });
+
+    //Gizmos
+    Entity selectedEntity = m_SceneHierarchyPanel.GetSelectedEntity();
+	if (selectedEntity)
+	{
+		ImGuizmo::SetOrthographic(false);
+		ImGuizmo::SetDrawlist();
+
+        auto tc = selectedEntity.GetComponent<Transform>();
+
+        const glm::mat4& projection = m_EditorCamera.GetProjectionMatrix();
+        glm::mat4 view = m_EditorCamera.GetViewMatrix();
+
+        auto transformation = ImGuizmo::OPERATION::TRANSLATE;
+
+        float tmpMatrix[16];
+        ImGuizmo::RecomposeMatrixFromComponents(glm::value_ptr(tc->position), glm::value_ptr(tc->rotation), glm::value_ptr(tc->scale), tmpMatrix);
+        ImGuizmo::SetRect(m_ViewportBounds[0].x, m_ViewportBounds[0].y, m_ViewportBounds[1].x - m_ViewportBounds[0].x, m_ViewportBounds[1].y - m_ViewportBounds[0].y);
+        ImGuizmo::Manipulate(glm::value_ptr(view), glm::value_ptr(projection), transformation,
+            ImGuizmo::MODE::LOCAL, tmpMatrix);
+
+        if (ImGuizmo::IsUsing())
+        {
+            float matrixTranslation[3], matrixRotation[3], matrixScale[3];
+            ImGuizmo::DecomposeMatrixToComponents(tmpMatrix, matrixTranslation, matrixRotation, matrixScale);
+
+            switch (transformation)
+            {
+            case ImGuizmo::OPERATION::TRANSLATE:
+                tc->position = glm::vec3(matrixTranslation[0], matrixTranslation[1], matrixTranslation[2]);
+                break;
+
+            case ImGuizmo::OPERATION::ROTATE:
+                tc->rotation = glm::vec3(matrixRotation[0], matrixRotation[1], matrixRotation[2]);
+                break;
+
+            case ImGuizmo::OPERATION::SCALE:
+                tc->scale = glm::vec3(matrixScale[0], matrixScale[1], matrixScale[2]);
+                break;
+
+            default:
+                break;
+            }
+        }
+
+        /*ImGuizmo::SetRect(m_ViewportBounds[0].x, m_ViewportBounds[0].y, m_ViewportBounds[1].x - m_ViewportBounds[0].x, m_ViewportBounds[1].y - m_ViewportBounds[0].y);
+        ImGuizmo::Manipulate(glm::value_ptr(view), glm::value_ptr(projection), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(matrix));
+
+        if (ImGuizmo::IsUsing())
+        {
+            tc->position = glm::vec3(matrix[3]);
+        }*/
+	}
+
 	ImGui::End();
     ImGui::PopStyleVar();
 
-   if (show_sceneHierarchy)
-   {
-       m_SceneHierarchyPanel.OnImGuiRender();
-   }
+	if (show_sceneHierarchy)
+	{
+		m_SceneHierarchyPanel.OnImGuiRender();
+	}
 
     ImGui::Begin("Asset Browser");
     ImGui::End();
@@ -377,18 +433,11 @@ void EditorSystem::OnImGuiRender()
         float avgFPS = ImGui::GetIO().Framerate;
         float avgFrameTime = 1000.0f / ImGui::GetIO().Framerate;
 
-        /*if (m_ElapsedTime >= 15.0f)
-        {
-            m_ElapsedTime = 0.0f;
-        }*/
-
         ImGui::Text("Application current %.3f ms/frame (%.1f FPS)", currentFrameTime, currentFPS);
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", avgFrameTime, avgFPS);
         ImGui::Text("Elapsed Time: %.3f s", m_ElapsedTime);
         ImGui::End();
    }
-
-	
     ImGui::End();
 }
 

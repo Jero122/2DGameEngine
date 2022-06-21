@@ -5,6 +5,7 @@
 #include "imgui/backends/imgui_impl_sdl.h"
 #include "imgui/backends/imgui_impl_opengl3.h"
 #include "SDL/SDL.h"
+#include "ImGuizmo/ImGuizmo.h"
 
 ImGuiSystem::~ImGuiSystem()
 {
@@ -89,6 +90,7 @@ void ImGuiSystem::Begin()
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplSDL2_NewFrame(static_cast<SDL_Window*>(AlmondApplication::Get().GetWindow().GetNativeWindow()));
 	ImGui::NewFrame();
+	ImGuizmo::BeginFrame();
 }
 
 void ImGuiSystem::End()
