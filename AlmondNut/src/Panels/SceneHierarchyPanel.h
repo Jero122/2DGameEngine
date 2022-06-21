@@ -13,6 +13,8 @@ public:
 	void SetScene(const std::shared_ptr<Scene>& scene) { m_Scene = scene; }
 	void OnImGuiRender();
 
+	void SetSelectedEntity(Entity entity);
+
 private:
 	void DrawEntityNode(Entity entity);
 	void DrawEntityProperties(Entity entity);

@@ -27,7 +27,9 @@ project "AlmondNut"
 		"%{IncludeDir.GL}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.Box2D}",
-		"%{IncludeDir.ImGui}"
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.assimp}",
+		"%{IncludeDir.stb}"
 	}
 
 	links
@@ -39,7 +41,8 @@ project "AlmondNut"
 		"glu32",
 		"opengl32",
 		"ImGui",
-		"box2d"
+		"box2d",
+		"assimp-vc143-mt"
 	}
 
 	filter "system:windows"

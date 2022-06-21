@@ -1,18 +1,13 @@
 ﻿#pragma once
-#include <cassert>
+#include <memory>
 #include <string>
-#include "GLCall.h"
 
+#include "GLFramework/GLTexture.h"
 
 class Texture
 {
 public:
 	Texture(const std::string filePath);
-
-	unsigned GetTexID() const
-	{
-		return m_TexID;
-	}
 
 	int GetWidth() const
 	{
@@ -24,9 +19,16 @@ public:
 		return m_Height;
 	}
 
+	unsigned int ID() const
+	{
+		return m_Texture->ID();
+	}
+
+	std::string m_FilePath;
+	std::string type;
 private:
-	unsigned int m_TexID;
+	unsigned int id;
+	std::shared_ptr<GLTexture> m_Texture;
 	int m_Width;
 	int m_Height;
-	std::string m_FilePath;
 };

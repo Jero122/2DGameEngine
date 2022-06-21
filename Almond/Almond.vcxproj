@@ -22,13 +22,13 @@
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -57,7 +57,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>ALM_PLATFORM_WINDOWS;ALM_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor;dependencies\include;vendor\imgui;vendor\stb;vendor\glm;dependencies\include\SDL;dependencies\include\GL;dependencies\include\box2d;vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor;dependencies\include;vendor\imgui;vendor\stb;vendor\glm;dependencies\include\SDL;dependencies\include\GL;dependencies\include\box2d;vendor\yaml-cpp\include;dependencies\include\assimp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -70,7 +70,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;glew32s.lib;opengl32.lib;box2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;glew32s.lib;opengl32.lib;box2d.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>dependencies\lib\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
@@ -79,7 +79,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>ALM_PLATFORM_WINDOWS;ALM_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;vendor;dependencies\include;vendor\imgui;vendor\stb;vendor\glm;dependencies\include\SDL;dependencies\include\GL;dependencies\include\box2d;vendor\yaml-cpp\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src;vendor;dependencies\include;vendor\imgui;vendor\stb;vendor\glm;dependencies\include\SDL;dependencies\include\GL;dependencies\include\box2d;vendor\yaml-cpp\include;dependencies\include\assimp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -95,12 +95,11 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;glew32s.lib;opengl32.lib;box2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;glew32s.lib;opengl32.lib;box2d.lib;assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>dependencies\lib\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\ECS\Components\MovementComponent.h" />
     <ClInclude Include="src\Almond.h" />
     <ClInclude Include="src\Core\AlmondApplication.h" />
     <ClInclude Include="src\Core\Base.h" />
@@ -112,6 +111,9 @@
     <ClInclude Include="src\Core\Window.h" />
     <ClInclude Include="src\ECS\ComponentManager.h" />
     <ClInclude Include="src\ECS\Components\BoxCollider2D.h" />
+    <ClInclude Include="src\ECS\Components\LightComponent.h" />
+    <ClInclude Include="src\ECS\Components\ModelRendererComponent.h" />
+    <ClInclude Include="src\ECS\Components\MovementComponent.h" />
     <ClInclude Include="src\ECS\Components\RigidBody.h" />
     <ClInclude Include="src\ECS\Components\SpriteRenderer.h" />
     <ClInclude Include="src\ECS\Components\TagComponent.h" />
@@ -126,15 +128,20 @@
     <ClInclude Include="src\Physics2D\Geometry2D.h" />
     <ClInclude Include="src\Physics2D\Physics2D.h" />
     <ClInclude Include="src\Platforms\Windows\WindowsWindow.h" />
-    <ClInclude Include="src\Renderer\CPUBatched_Renderer.h" />
     <ClInclude Include="src\Renderer\Camera.h" />
     <ClInclude Include="src\Renderer\EditorCamera.h" />
     <ClInclude Include="src\Renderer\GLCall.h" />
-    <ClInclude Include="src\Renderer\GPUBatched_Renderer.h" />
-    <ClInclude Include="src\Renderer\OpenGLBuffer.h" />
-    <ClInclude Include="src\Renderer\OpenGLRenderCommand.h" />
-    <ClInclude Include="src\Renderer\OpenGLVertexArray.h" />
+    <ClInclude Include="src\Renderer\GLFramework\GLBuffer.h" />
+    <ClInclude Include="src\Renderer\GLFramework\GLFrameBuffer.h" />
+    <ClInclude Include="src\Renderer\GLFramework\GLRenderBuffer.h" />
+    <ClInclude Include="src\Renderer\GLFramework\GLRenderCommand.h" />
+    <ClInclude Include="src\Renderer\GLFramework\GLTexture.h" />
+    <ClInclude Include="src\Renderer\GLFramework\GLVertexArray.h" />
+    <ClInclude Include="src\Renderer\Mesh.h" />
+    <ClInclude Include="src\Renderer\Model.h" />
     <ClInclude Include="src\Renderer\Renderer.h" />
+    <ClInclude Include="src\Renderer\Renderer2D.h" />
+    <ClInclude Include="src\Renderer\Renderer3D.h" />
     <ClInclude Include="src\Renderer\Shader.h" />
     <ClInclude Include="src\Renderer\SpriteSheet.h" />
     <ClInclude Include="src\Renderer\Texture.h" />
@@ -150,16 +157,15 @@
     <ClCompile Include="src\Core\Input.cpp" />
     <ClCompile Include="src\Core\SystemStack.cpp" />
     <ClCompile Include="src\Core\Window.cpp" />
-    <ClCompile Include="src\ECS\ECSTypes.cpp" />
     <ClCompile Include="src\Physics2D\DebugDrawBox2D.cpp" />
     <ClCompile Include="src\Physics2D\Geometry2D.cpp" />
     <ClCompile Include="src\Physics2D\Physics2D.cpp" />
     <ClCompile Include="src\Platforms\OpenGL\imgui_impl_opengl3.cpp" />
     <ClCompile Include="src\Platforms\OpenGL\imgui_impl_sdl.cpp" />
     <ClCompile Include="src\Platforms\Windows\WindowsWindow.cpp" />
-    <ClCompile Include="src\Renderer\CPUBatched_Renderer.cpp" />
     <ClCompile Include="src\Renderer\EditorCamera.cpp" />
-    <ClCompile Include="src\Renderer\GPUBatched_Renderer.cpp" />
+    <ClCompile Include="src\Renderer\Renderer2D.cpp" />
+    <ClCompile Include="src\Renderer\Renderer3D.cpp" />
     <ClCompile Include="src\Renderer\Shader.cpp" />
     <ClCompile Include="src\Renderer\SpriteSheet.cpp" />
     <ClCompile Include="src\Renderer\Texture.cpp" />

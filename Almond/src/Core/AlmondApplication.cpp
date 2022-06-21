@@ -1,6 +1,5 @@
 #include "AlmondApplication.h"
 #include "TimeStep.h"
-#include "Renderer/GPUBatched_Renderer.h"
 #include "System Stack/ImGuiSystem.h"
 #include "System Stack/InputSystem.h"
 
@@ -62,8 +61,8 @@ void AlmondApplication::Run()
 
 		//std::cout << "FrameTime: " << time.GetMilliseconds() << " | FPS: " << fps << std::endl;
 
-		std::string output = "\rFrameTime: " + std::to_string(time.GetMilliseconds()) + " | FPS: " + std::to_string(fps);
-		std::cout << output;
+		/*std::string output = "\rFrameTime: " + std::to_string(time.GetMilliseconds()) + " | FPS: " + std::to_string(fps);
+		std::cout << output;*/
 
 	
 		for (auto system : m_SystemStack)

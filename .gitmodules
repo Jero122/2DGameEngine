@@ -6,4 +6,4 @@
 	url = https://github.com/g-truc/glm.git
 [submodule "Almond/vendor/yaml-cpp"]
 	path = Almond/vendor/yaml-cpp
-	url = https://github.com/Jero122/yaml-cpp.git
+	url = https://github.com/Jero122/yaml-cpp
