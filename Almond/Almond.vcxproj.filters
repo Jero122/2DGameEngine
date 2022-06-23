@@ -210,6 +210,7 @@
     <ClInclude Include="vendor\stb\stb\stb_image.h">
       <Filter>vendor\stb\stb</Filter>
     </ClInclude>
+    <ClInclude Include="src\Math\Math.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\AlmondApplication.cpp">
@@ -278,5 +279,6 @@
     <ClCompile Include="vendor\stb\stb\stb_image.cpp">
       <Filter>vendor\stb\stb</Filter>
     </ClCompile>
+    <ClCompile Include="src\Math\Math.cpp" />
   </ItemGroup>
 </Project>

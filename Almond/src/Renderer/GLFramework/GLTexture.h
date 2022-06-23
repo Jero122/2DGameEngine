@@ -22,7 +22,7 @@ public:
 		glTextureParameteri(id, GL_TEXTURE_MAX_LEVEL, 0);
 		glTextureParameteri(id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTextureParameteri(id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTextureStorage2D(id, 1, GL_RGB8, m_Width, m_Height);
+		glTextureStorage2D(id, 1, GL_RGBA8, m_Width, m_Height);
 		glTextureSubImage2D(id, 0, 0, 0, m_Width, m_Height, externalFormat, GL_UNSIGNED_BYTE, image);
 	}
 

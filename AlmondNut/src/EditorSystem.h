@@ -6,6 +6,9 @@
 #include "Panels/SceneHierarchyPanel.h"
 #include "Renderer/GLFramework/GLFrameBuffer.h"
 
+#include "imgui/imgui.h"
+#include "imgui_internal.h"
+#include "ImGuizmo.h"
 
 class EditorSystem : public GameSystem
 {
@@ -39,8 +42,15 @@ private:
 	};
 
 	SceneState m_SceneState = SceneState::Edit;
+
 	std::shared_ptr<Texture> m_PlayIcon;
 	std::shared_ptr<Texture> m_StopIcon;
+
+	std::shared_ptr<Texture> m_TranslateIcon;
+	std::shared_ptr<Texture> m_RotateIcon;
+	std::shared_ptr<Texture> m_ScaleIcon;
+
+	ImGuizmo::OPERATION m_TranformationMode = ImGuizmo::OPERATION::TRANSLATE;
 
 	float m_TotalFPS = 0.0f;
 	float m_TotalFrames = 0.0f;

@@ -1,17 +1,18 @@
-#include <random>
-
 #include "EditorSystem.h"
+
+#include <random>
 #include <GL/glew.h>
 #include <glm/gtc/type_ptr.hpp>
+#include <Math/Math.h>
 
-#include "imgui_internal.h"
 #include "ECS/Components/BoxCollider2D.h"
 #include "ECS/Components/LightComponent.h"
 #include "ECS/Components/ModelRendererComponent.h"
 #include "ECS/Components/MovementComponent.h"
-#include "imgui/imgui.h"
-#include "ImGuizmo.h"
+
 #include "Scenes/SceneSerializer.h"
+
+#include "iostream"
 
 EditorSystem::EditorSystem()
 {
@@ -52,6 +53,11 @@ void EditorSystem::OnStart()
 
     m_PlayIcon = std::make_shared<Texture>("resources/textures/PlayButton.png");
     m_StopIcon = std::make_shared<Texture>("resources/textures/StopButton.png");
+
+    m_TranslateIcon = std::make_shared<Texture>("resources/textures/Translate.png");
+    m_RotateIcon = std::make_shared<Texture>("resources/textures/Rotate.png");
+    m_ScaleIcon = std::make_shared<Texture>("resources/textures/Scale.png");
+
     std::shared_ptr<Texture> Crate = std::make_shared<Texture>("resources/textures/Crate.jpg");
 
 
@@ -189,7 +195,10 @@ void EditorSystem::OnUpdate(TimeStep timeStep)
         }
 	}
 
-	if (Input::GetInstance()->GetMouseButtonDown(Input::MouseButton::left))
+    auto Input = Input::GetInstance();
+
+    //Mouse Picking
+	if (Input->GetMouseButtonDown(Input::MouseButton::left))
 	{
         auto [mx, my] = ImGui::GetMousePos();
         mx -= m_ViewportBounds[0].x;
@@ -213,6 +222,23 @@ void EditorSystem::OnUpdate(TimeStep timeStep)
         }
 	}
 
+    //Transformation Mode
+    //Translation
+	if (Input->GetKeyDown(SDL_SCANCODE_Q))
+	{
+        m_TranformationMode = ImGuizmo::OPERATION::TRANSLATE;
+	}
+    //Rotation
+    if (Input->GetKeyDown(SDL_SCANCODE_W))
+    {
+        m_TranformationMode = ImGuizmo::OPERATION::ROTATE;
+    }
+    //Scale
+    if (Input->GetKeyDown(SDL_SCANCODE_E))
+    {
+        m_TranformationMode = ImGuizmo::OPERATION::SCALE;
+    }
+  
     m_GLFrameBuffer->UnBind();
 }
 
@@ -227,7 +253,7 @@ void EditorSystem::OnImGuiRender()
 
     // We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
     // because it would be confusing to have two docking targets within each others.
-    ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+    ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDocking;
     if (opt_fullscreen)
     {
         const ImGuiViewport* viewport = ImGui::GetMainViewport();
@@ -271,81 +297,74 @@ void EditorSystem::OnImGuiRender()
         ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
     }
 
-
-    if (ImGui::BeginMenuBar())
-    {
-        if (ImGui::BeginMenu("Options"))
-        {
-            // Disabling fullscreen would allow the window to be moved to the front of other windows,
-            // which we can't undo at the moment without finer window depth/z control.
-            ImGui::MenuItem("Scene Hierarchy", NULL, &show_sceneHierarchy);
-            ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen);
-            ImGui::MenuItem("Padding", NULL, &opt_padding);
-            ImGui::Separator();
-
-            if (ImGui::MenuItem("Flag: NoSplit", "", (dockspace_flags & ImGuiDockNodeFlags_NoSplit) != 0)) { dockspace_flags ^= ImGuiDockNodeFlags_NoSplit; }
-            if (ImGui::MenuItem("Flag: NoResize", "", (dockspace_flags & ImGuiDockNodeFlags_NoResize) != 0)) { dockspace_flags ^= ImGuiDockNodeFlags_NoResize; }
-            if (ImGui::MenuItem("Flag: NoDockingInCentralNode", "", (dockspace_flags & ImGuiDockNodeFlags_NoDockingInCentralNode) != 0)) { dockspace_flags ^= ImGuiDockNodeFlags_NoDockingInCentralNode; }
-            if (ImGui::MenuItem("Flag: AutoHideTabBar", "", (dockspace_flags & ImGuiDockNodeFlags_AutoHideTabBar) != 0)) { dockspace_flags ^= ImGuiDockNodeFlags_AutoHideTabBar; }
-            if (ImGui::MenuItem("Flag: PassthruCentralNode", "", (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode) != 0, opt_fullscreen)) { dockspace_flags ^= ImGuiDockNodeFlags_PassthruCentralNode; }
-            ImGui::Separator();
-
-            if (ImGui::MenuItem("Close", NULL, false, p_open != NULL))
-                p_open = false;
-            ImGui::EndMenu();
-        }
-
-        ImGui::EndMenuBar();
-    }
-
-
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0,2 });
-    ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, { 0,0 });
-
     auto& colors = ImGui::GetStyle().Colors;
     const auto& buttonHovered = colors[ImGuiCol_ButtonHovered];
     const auto& buttonActive = colors[ImGuiCol_ButtonActive];
-
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0,2 });
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, { 0,0 });
     ImGui::PushStyleColor(ImGuiCol_Button,{0,0,0,0});
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{buttonHovered.x,buttonHovered.y,buttonHovered.z, 0.5f});
     ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ buttonActive.x,buttonActive.y,buttonActive.z, 0.5f });
 
-    ImGui::Begin("##toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+
+    ImGui::Begin("##toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoResize);
     {
         std::shared_ptr<Texture> icon = m_SceneState == SceneState::Edit ? m_PlayIcon : m_StopIcon;
         float size = ImGui::GetWindowHeight() - 4.0f;
-        ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
-        if (ImGui::ImageButton((ImTextureID)icon->ID(), { size, size }, { 0,0 }, { 1,1 }, 0))
-	    {
+
+		ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
+		if (ImGui::ImageButton((ImTextureID)icon->ID(), { size, size }, { 0,0 }, { 1,1 }, 0))
+		{
 		    if (m_SceneState == SceneState::Edit)
 		    {
-                m_SceneState = SceneState::Play;
-                m_CurrentScene->OnRuntimeStart();
+		        m_SceneState = SceneState::Play;
+		        m_CurrentScene->OnRuntimeStart();
 		    }
-            else if (m_SceneState == SceneState::Play)
+		    else if (m_SceneState == SceneState::Play)
 		    {
-                m_SceneState = SceneState::Edit;
-                m_CurrentScene->OnRuntimeStop();
+		        m_SceneState = SceneState::Edit;
+		        m_CurrentScene->OnRuntimeStop();
 		    }
-	    }
+		}
         ImGui::End();
     }
 
     ImGui::PopStyleVar(2);
     ImGui::PopStyleColor(3);
 
-    /*auto stats = GPUBatched_Renderer::GetStats();
-    ImGui::Begin("Renderer Stats");
-    ImGui::Text("Draw Calls: %d", stats.DrawCalls);
-    ImGui::Text("Quads: %d", stats.QuadCount);
-    ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
-    ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
-    ImGui::End();
-    GPUBatched_Renderer::ResetStats();*/
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0,0 });
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, { 0,0 });
+    ImGui::PushStyleColor(ImGuiCol_Button, { 0,0,0,0 });
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ buttonHovered.x,buttonHovered.y,buttonHovered.z, 0.5f });
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ buttonActive.x,buttonActive.y,buttonActive.z, 0.5f });
+
+    ImGui::Begin("##GuizmoBar", nullptr,  ImGuiWindowFlags_NoDecoration |ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+    {
+        ImGui::SetNextWindowBgAlpha(0.35f);
+        float size = ImGui::GetWindowWidth();
+
+        if (ImGui::ImageButton((ImTextureID)m_TranslateIcon->ID(), { size, size }, { 0,0 }, { 1,1 }, 0))
+        {
+            m_TranformationMode = ImGuizmo::OPERATION::TRANSLATE;
+        }
+   
+        if (ImGui::ImageButton((ImTextureID)m_RotateIcon->ID(), { size, size }, { 0,0 }, { 1,1 }, 0))
+        {
+            m_TranformationMode = ImGuizmo::OPERATION::ROTATE;
+        }
+    
+        if (ImGui::ImageButton((ImTextureID)m_ScaleIcon->ID(), { size, size }, { 0,0 }, { 1,1 }, 0))
+        {
+            m_TranformationMode = ImGuizmo::OPERATION::SCALE;
+        }
+
+        ImGui::End();
+    }
+    ImGui::PopStyleVar(2);
+    ImGui::PopStyleColor(3);
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
     ImGui::Begin("ViewPort");
-
     auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
     auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
     auto viewportOffset = ImGui::GetWindowPos();
@@ -364,49 +383,29 @@ void EditorSystem::OnImGuiRender()
 		ImGuizmo::SetDrawlist();
 
         auto tc = selectedEntity.GetComponent<Transform>();
+        glm::mat4 transform = tc->GetTransform();
 
         const glm::mat4& projection = m_EditorCamera.GetProjectionMatrix();
         glm::mat4 view = m_EditorCamera.GetViewMatrix();
 
-        auto transformation = ImGuizmo::OPERATION::TRANSLATE;
 
         float tmpMatrix[16];
         ImGuizmo::RecomposeMatrixFromComponents(glm::value_ptr(tc->position), glm::value_ptr(tc->rotation), glm::value_ptr(tc->scale), tmpMatrix);
         ImGuizmo::SetRect(m_ViewportBounds[0].x, m_ViewportBounds[0].y, m_ViewportBounds[1].x - m_ViewportBounds[0].x, m_ViewportBounds[1].y - m_ViewportBounds[0].y);
-        ImGuizmo::Manipulate(glm::value_ptr(view), glm::value_ptr(projection), transformation,
+        ImGuizmo::Manipulate(glm::value_ptr(view), glm::value_ptr(projection), m_TranformationMode,
             ImGuizmo::MODE::LOCAL, tmpMatrix);
+
 
         if (ImGuizmo::IsUsing())
         {
             float matrixTranslation[3], matrixRotation[3], matrixScale[3];
             ImGuizmo::DecomposeMatrixToComponents(tmpMatrix, matrixTranslation, matrixRotation, matrixScale);
 
-            switch (transformation)
-            {
-            case ImGuizmo::OPERATION::TRANSLATE:
-                tc->position = glm::vec3(matrixTranslation[0], matrixTranslation[1], matrixTranslation[2]);
-                break;
-
-            case ImGuizmo::OPERATION::ROTATE:
-                tc->rotation = glm::vec3(matrixRotation[0], matrixRotation[1], matrixRotation[2]);
-                break;
-
-            case ImGuizmo::OPERATION::SCALE:
-                tc->scale = glm::vec3(matrixScale[0], matrixScale[1], matrixScale[2]);
-                break;
-
-            default:
-                break;
-            }
+            glm::vec3 deltaRotation = glm::vec3(matrixRotation[0], matrixRotation[1], matrixRotation[2]) - tc->rotation;
+            tc->position = glm::vec3(matrixTranslation[0], matrixTranslation[1], matrixTranslation[2]);
+            tc->rotation += deltaRotation;
+            tc->scale = glm::vec3(matrixScale[0], matrixScale[1], matrixScale[2]);
         }
-
-        /*ImGuizmo::SetRect(m_ViewportBounds[0].x, m_ViewportBounds[0].y, m_ViewportBounds[1].x - m_ViewportBounds[0].x, m_ViewportBounds[1].y - m_ViewportBounds[0].y);
-        ImGuizmo::Manipulate(glm::value_ptr(view), glm::value_ptr(projection), ImGuizmo::OPERATION::TRANSLATE, ImGuizmo::LOCAL, glm::value_ptr(matrix));
-
-        if (ImGuizmo::IsUsing())
-        {
-            tc->position = glm::vec3(matrix[3]);
-        }*/
 	}
 
 	ImGui::End();
