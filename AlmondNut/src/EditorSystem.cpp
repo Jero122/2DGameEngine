@@ -98,7 +98,7 @@ void EditorSystem::OnStart()
     Entity backpack = m_CurrentScene->CreateEntity("backpack");
     {
         auto transformComponent = backpack.GetComponent<Transform>();
-        *transformComponent = Transform{ glm::vec3(0,0,0), glm::vec3(0,0,0),glm::vec3(1,1,-1) };
+        *transformComponent = Transform{ glm::vec3(0,0,0), glm::vec3(0,0,0),glm::vec3(1,1,1) };
         auto backpackModel = std::make_shared<Model>("Resources/Models/backpack/backpack.obj");
         backpack.AddComponent(ModelRendererComponent{backpackModel});
     }
