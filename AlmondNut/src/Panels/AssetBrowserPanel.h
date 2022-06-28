@@ -10,10 +10,13 @@ public:
 	AssetBrowserPanel();
 
 	void OnStart();
+
+	void DrawFileNode(std::filesystem::directory_entry const& dir_entry, std::filesystem::path relativeDirectory);
 	void OnImGuiRender();
 
 private:
 	std::filesystem::path m_CurrentDirectory;
+    std::filesystem::path m_SelectedDirectory;
 
 	std::shared_ptr<Texture> m_FolderIcon;
 	std::shared_ptr<Texture> m_FolderOpenIcon;
