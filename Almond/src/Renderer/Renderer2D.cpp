@@ -9,7 +9,7 @@ Renderer2D::Renderer2D()
 	/*m_Batches = std::vector<Batch>();*/
 	m_CurrentBatch = new Batch();
 
-	std::string shaderPath("resources/shaders/BasicShader_CPUMatrices.glsl");
+	std::string shaderPath("assets/shaders/BasicShader_CPUMatrices.glsl");
 	m_Shader = std::make_unique<Shader>();
 	m_Shader->init(shaderPath);
 	m_Shader->use();

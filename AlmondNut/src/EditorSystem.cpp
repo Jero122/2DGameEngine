@@ -51,16 +51,15 @@ void EditorSystem::OnStart()
     m_CurrentScene = std::make_shared<Scene>();
     m_SceneHierarchyPanel.SetScene(m_CurrentScene);
 
-    m_PlayIcon = std::make_shared<Texture>("resources/textures/PlayButton.png");
-    m_StopIcon = std::make_shared<Texture>("resources/textures/StopButton.png");
+    m_PlayIcon = std::make_shared<Texture>("assets/textures/PlayButton.png");
+    m_StopIcon = std::make_shared<Texture>("assets/textures/StopButton.png");
 
-    m_TranslateIcon = std::make_shared<Texture>("resources/textures/Translate.png");
-    m_RotateIcon = std::make_shared<Texture>("resources/textures/Rotate.png");
-    m_ScaleIcon = std::make_shared<Texture>("resources/textures/Scale.png");
+    m_TranslateIcon = std::make_shared<Texture>("assets/textures/move.png");
+    m_RotateIcon = std::make_shared<Texture>("assets/textures/rotate.png");
+    m_ScaleIcon = std::make_shared<Texture>("assets/textures/scale.png");
+    std::shared_ptr<Texture> Crate = std::make_shared<Texture>("assets/textures/Crate.jpg");
 
-    std::shared_ptr<Texture> Crate = std::make_shared<Texture>("resources/textures/Crate.jpg");
-
-
+    m_AssetBrowserPanel.OnStart();
 
     /*Entity floor = m_CurrentScene->CreateEntity("Floor");
     {
@@ -99,7 +98,7 @@ void EditorSystem::OnStart()
     {
         auto transformComponent = backpack.GetComponent<Transform>();
         *transformComponent = Transform{ glm::vec3(0,0,0), glm::vec3(0,0,0),glm::vec3(1,1,1) };
-        auto backpackModel = std::make_shared<Model>("Resources/Models/backpack/backpack.obj");
+        auto backpackModel = std::make_shared<Model>("assets/Models/backpack/backpack.obj");
         backpack.AddComponent(ModelRendererComponent{backpackModel});
     }
 
@@ -119,7 +118,7 @@ void EditorSystem::OnStart()
         *transformComponent = Transform{ position, glm::vec3(0,0,0),glm::vec3(0.1f,0.1f,0.1f) };
         LightComponent lightcomponent{position,ambient,diffuse,specular,constant,linear,quadratic};
         pointlight1.AddComponent(lightcomponent);
-        auto cube = std::make_shared<Model>("Resources/Models/Cube.obj");
+        auto cube = std::make_shared<Model>("assets/Models/Cube.obj");
         pointlight1.AddComponent(ModelRendererComponent{ cube });
     }
 
@@ -139,7 +138,7 @@ void EditorSystem::OnStart()
         *transformComponent = Transform{ position, glm::vec3(0,0,0),glm::vec3(0.1f,0.1f,0.1f) };
         LightComponent lightcomponent{ position,ambient,diffuse,specular,constant,linear,quadratic };
         pointlight2.AddComponent(lightcomponent);
-        auto cube = std::make_shared<Model>("Resources/Models/Cube.obj");
+        auto cube = std::make_shared<Model>("assets/Models/Cube.obj");
         pointlight2.AddComponent(ModelRendererComponent{ cube });
     }
     /*SceneSerializer sceneSerializer(m_CurrentScene);
@@ -297,6 +296,7 @@ void EditorSystem::OnImGuiRender()
         ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
     }
 
+    //TOOLBAR
     auto& colors = ImGui::GetStyle().Colors;
     const auto& buttonHovered = colors[ImGuiCol_ButtonHovered];
     const auto& buttonActive = colors[ImGuiCol_ButtonActive];
@@ -305,7 +305,6 @@ void EditorSystem::OnImGuiRender()
     ImGui::PushStyleColor(ImGuiCol_Button,{0,0,0,0});
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{buttonHovered.x,buttonHovered.y,buttonHovered.z, 0.5f});
     ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ buttonActive.x,buttonActive.y,buttonActive.z, 0.5f });
-
 
     ImGui::Begin("##toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoResize);
     {
@@ -332,6 +331,7 @@ void EditorSystem::OnImGuiRender()
     ImGui::PopStyleVar(2);
     ImGui::PopStyleColor(3);
 
+    //Guizmo Bar
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0,0 });
     ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, { 0,0 });
     ImGui::PushStyleColor(ImGuiCol_Button, { 0,0,0,0 });
@@ -363,6 +363,7 @@ void EditorSystem::OnImGuiRender()
     ImGui::PopStyleVar(2);
     ImGui::PopStyleColor(3);
 
+    //Viewport
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
     ImGui::Begin("ViewPort");
     auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
@@ -407,18 +408,21 @@ void EditorSystem::OnImGuiRender()
             tc->scale = glm::vec3(matrixScale[0], matrixScale[1], matrixScale[2]);
         }
 	}
-
 	ImGui::End();
     ImGui::PopStyleVar();
 
+    //Asset Browser Panel
+    m_AssetBrowserPanel.OnImGuiRender();
+
+    //Scene Hierarchy Panel
 	if (show_sceneHierarchy)
 	{
 		m_SceneHierarchyPanel.OnImGuiRender();
 	}
 
-    ImGui::Begin("Asset Browser");
-    ImGui::End();
+   
 
+    //Application Stats
    {
         ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav;
         ImGui::SetNextWindowBgAlpha(0.35f);

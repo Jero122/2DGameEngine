@@ -10,7 +10,7 @@ struct GLRenderLines
 {
 	void Create()
 	{
-		std::string shaderPath("resources/shaders/DebugLine");
+		std::string shaderPath("assets/shaders/DebugLine");
 		m_shader = Shader();
 		m_shader.init(shaderPath);
 

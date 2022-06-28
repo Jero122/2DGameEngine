@@ -9,6 +9,7 @@
 #include "imgui/imgui.h"
 #include "imgui_internal.h"
 #include "ImGuizmo.h"
+#include "Panels/AssetBrowserPanel.h"
 
 class EditorSystem : public GameSystem
 {
@@ -32,6 +33,8 @@ private:
 	glm::vec2 m_ViewportBounds[2];
 
 	SceneHierarchyPanel m_SceneHierarchyPanel;
+	AssetBrowserPanel m_AssetBrowserPanel;
+
 	EditorCamera m_EditorCamera;
 
 	Entity m_HoveredEntity;

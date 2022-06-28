@@ -6,7 +6,7 @@ Renderer3D::Renderer3D()
 {
 
 	stbi_set_flip_vertically_on_load(true);
-	std::string shaderPath("resources/shaders/Lit3D.glsl");
+	std::string shaderPath("assets/shaders/Lit3D.glsl");
 	m_Shader = std::make_unique<Shader>();
 	m_Shader->init(shaderPath);
 	m_Shader->use();
