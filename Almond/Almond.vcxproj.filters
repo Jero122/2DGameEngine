@@ -13,6 +13,9 @@
     <Filter Include="src\ECS\Components">
       <UniqueIdentifier>{AC4A8D64-982E-4EBA-018F-480DED91383C}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Math">
+      <UniqueIdentifier>{261422CF-12E1-7CDA-3BFA-6A822726B268}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Physics2D">
       <UniqueIdentifier>{15F6A409-81B6-2040-4AF1-69BDB670651C}</UniqueIdentifier>
     </Filter>
@@ -126,6 +129,9 @@
     <ClInclude Include="src\ECS\SystemManager.h">
       <Filter>src\ECS</Filter>
     </ClInclude>
+    <ClInclude Include="src\Math\Math.h">
+      <Filter>src\Math</Filter>
+    </ClInclude>
     <ClInclude Include="src\Physics2D\DebugDrawBox2D.h">
       <Filter>src\Physics2D</Filter>
     </ClInclude>
@@ -210,7 +216,6 @@
     <ClInclude Include="vendor\stb\stb\stb_image.h">
       <Filter>vendor\stb\stb</Filter>
     </ClInclude>
-    <ClInclude Include="src\Math\Math.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\AlmondApplication.cpp">
@@ -224,6 +229,9 @@
     </ClCompile>
     <ClCompile Include="src\Core\Window.cpp">
       <Filter>src\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Math\Math.cpp">
+      <Filter>src\Math</Filter>
     </ClCompile>
     <ClCompile Include="src\Physics2D\DebugDrawBox2D.cpp">
       <Filter>src\Physics2D</Filter>
@@ -279,6 +287,5 @@
     <ClCompile Include="vendor\stb\stb\stb_image.cpp">
       <Filter>vendor\stb\stb</Filter>
     </ClCompile>
-    <ClCompile Include="src\Math\Math.cpp" />
   </ItemGroup>
 </Project>

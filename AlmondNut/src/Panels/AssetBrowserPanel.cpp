@@ -1,5 +1,7 @@
 #include "AssetBrowserPanel.h"
 
+#include <IconFontCppHeaders/IconsFontAwesome5.h>
+
 #include "imgui.h"
 const std::filesystem::path s_AssetsDirectory = "assets";
 
@@ -18,14 +20,17 @@ void AssetBrowserPanel::OnStart()
 void AssetBrowserPanel::DrawFileNode(std::filesystem::directory_entry const& dir_entry, std::filesystem::path relativeDirectory)
 {
 	const auto path = dir_entry.path();
-    const auto relativePath = std::filesystem::relative(path, relativeDirectory);
+     auto relativePath = std::filesystem::relative(path, relativeDirectory);
 
 	if (dir_entry.is_directory())
 	{
         static ImGuiTreeNodeFlags base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
 		ImGuiTreeNodeFlags flags = (m_CurrentDirectory == path) ? ImGuiTreeNodeFlags_Selected : 0 | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
 		ImGui::PushID(relativePath.string().c_str());
-		bool node_open = ImGui::TreeNodeEx((void*)relativePath.string().c_str(), flags, relativePath.string().c_str());
+
+        auto nodeName = ICON_FA_FOLDER + std::string(" ") + relativePath.string();
+		bool node_open = ImGui::TreeNodeEx((void*)relativePath.string().c_str(), flags, nodeName.c_str());
+
 
 		if (ImGui::IsItemClicked())
 		{
@@ -54,7 +59,6 @@ void AssetBrowserPanel::DrawFileNode(std::filesystem::directory_entry const& dir
 void AssetBrowserPanel::OnImGuiRender()
 {
 	ImGui::Begin("Asset Browser");
-
     // Left
     {
         float h = ImGui::GetWindowHeight() - 40;

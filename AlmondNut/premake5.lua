@@ -30,7 +30,8 @@ project "AlmondNut"
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.assimp}",
 		"%{IncludeDir.stb}",
-		"%{IncludeDir.ImGuizmo}"
+		"%{IncludeDir.ImGuizmo}",
+		"%{IncludeDir.IconFontCppHeaders}"
 	}
 
 	links
