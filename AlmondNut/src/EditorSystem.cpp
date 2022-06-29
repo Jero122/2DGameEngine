@@ -3,6 +3,7 @@
 #include <random>
 #include <GL/glew.h>
 #include <glm/gtc/type_ptr.hpp>
+#include <IconFontCppHeaders/IconsFontAwesome5.h>
 #include <Math/Math.h>
 
 #include "ECS/Components/BoxCollider2D.h"
@@ -308,11 +309,11 @@ void EditorSystem::OnImGuiRender()
 
     ImGui::Begin("##toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoResize);
     {
-        std::shared_ptr<Texture> icon = m_SceneState == SceneState::Edit ? m_PlayIcon : m_StopIcon;
+        auto icon = m_SceneState == SceneState::Edit ? ICON_FA_PLAY : ICON_FA_STOP;
         float size = ImGui::GetWindowHeight() - 4.0f;
 
 		ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
-		if (ImGui::ImageButton((ImTextureID)icon->ID(), { size, size }, { 0,0 }, { 1,1 }, 0))
+		if (ImGui::Button(icon, { size, size }))
 		{
 		    if (m_SceneState == SceneState::Edit)
 		    {
@@ -334,33 +335,37 @@ void EditorSystem::OnImGuiRender()
     //Guizmo Bar
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0,0 });
     ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, { 0,0 });
+    ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, { 0.5,0.75 });
     ImGui::PushStyleColor(ImGuiCol_Button, { 0,0,0,0 });
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ buttonHovered.x,buttonHovered.y,buttonHovered.z, 0.5f });
     ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ buttonActive.x,buttonActive.y,buttonActive.z, 0.5f });
 
-    ImGui::Begin("##GuizmoBar", nullptr,  ImGuiWindowFlags_NoDecoration |ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+    ImGui::Begin("##GuizmoBar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoNav);
     {
         ImGui::SetNextWindowBgAlpha(0.35f);
         float size = ImGui::GetWindowWidth();
+        auto font = ImGui::GetIO().Fonts;
 
-        if (ImGui::ImageButton((ImTextureID)m_TranslateIcon->ID(), { size, size }, { 0,0 }, { 1,1 }, 0))
+        ImGui::PushFont(font->Fonts[1]);
+        if (ImGui::Button(ICON_FA_ARROWS_ALT, { size, size }))
         {
             m_TranformationMode = ImGuizmo::OPERATION::TRANSLATE;
         }
    
-        if (ImGui::ImageButton((ImTextureID)m_RotateIcon->ID(), { size, size }, { 0,0 }, { 1,1 }, 0))
+        if (ImGui::Button(ICON_FA_SYNC_ALT, { size, size }))
         {
             m_TranformationMode = ImGuizmo::OPERATION::ROTATE;
         }
     
-        if (ImGui::ImageButton((ImTextureID)m_ScaleIcon->ID(), { size, size }, { 0,0 }, { 1,1 }, 0))
+        if (ImGui::Button(ICON_FA_EXPAND_ARROWS_ALT, { size, size }))
         {
             m_TranformationMode = ImGuizmo::OPERATION::SCALE;
         }
+        ImGui::PopFont();
 
         ImGui::End();
     }
-    ImGui::PopStyleVar(2);
+    ImGui::PopStyleVar(3);
     ImGui::PopStyleColor(3);
 
     //Viewport

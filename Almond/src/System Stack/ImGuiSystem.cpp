@@ -1,12 +1,14 @@
 #include "ImGuiSystem.h"
 
 #include "Core/AlmondApplication.h"
-#include "imgui/imgui.h"
+#include "GUI/ImGuiCustom.h"
 #include "imgui/backends/imgui_impl_sdl.h"
 #include "imgui/backends/imgui_impl_opengl3.h"
 #include "SDL/SDL.h"
 #include "ImGuizmo/ImGuizmo.h"
 #include "IconFontCppHeaders/IconsFontAwesome5.h"
+
+
 
 ImGuiSystem::~ImGuiSystem()
 {
@@ -32,13 +34,19 @@ void ImGuiSystem::OnStart()
 		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
 	}
 
-	io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/Fonts/RandyGG/RandyGGRegular.ttf", 16.0f);
+	io.FontDefault = io.Fonts->AddFontFromFileTTF("assets/Fonts/RandyGG/RandyGGRegular.ttf", 18.0f);
 
 	ImFontConfig config;
 	config.MergeMode = true;
 	config.GlyphMinAdvanceX = 13.0f; // Use if you want to make the icon monospaced
 	static const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
-	io.Fonts->AddFontFromFileTTF("assets/Fonts/fa-solid-900.ttf", 18.0f, &config, icon_ranges);
+	ImGuiCustom::IconFontSmall = io.Fonts->AddFontFromFileTTF("assets/Fonts/fa-solid-900.ttf", 18.0f, &config, icon_ranges);
+
+	io.Fonts->AddFontDefault();
+	ImFontConfig config2;
+	config2.MergeMode = true;
+	config2.GlyphMinAdvanceX = 13.0f; // Use if you want to make the icon monospaced
+	ImGuiCustom::IconFontLarge = io.Fonts->AddFontFromFileTTF("assets/Fonts/fa-solid-900.ttf", 36.0f, &config2, icon_ranges);
 
 	SetDarkTheme(Unity);
 

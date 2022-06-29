@@ -2,7 +2,7 @@
 
 #include <IconFontCppHeaders/IconsFontAwesome5.h>
 
-#include "imgui.h"
+#include "GUI/ImGuiCustom.h"
 const std::filesystem::path s_AssetsDirectory = "assets";
 
 AssetBrowserPanel::AssetBrowserPanel()
@@ -12,15 +12,14 @@ AssetBrowserPanel::AssetBrowserPanel()
 
 void AssetBrowserPanel::OnStart()
 {
-	m_FolderIcon = std::make_shared<Texture>("assets/textures/folderClosed.png");
-	m_FolderOpenIcon = std::make_shared<Texture>("assets/textures/folderOpen.png");
+
 }
 
 
 void AssetBrowserPanel::DrawFileNode(std::filesystem::directory_entry const& dir_entry, std::filesystem::path relativeDirectory)
 {
 	const auto path = dir_entry.path();
-     auto relativePath = std::filesystem::relative(path, relativeDirectory);
+	auto relativePath = std::filesystem::relative(path, relativeDirectory);
 
 	if (dir_entry.is_directory())
 	{
@@ -56,6 +55,27 @@ void AssetBrowserPanel::DrawFileNode(std::filesystem::directory_entry const& dir
 	}
 }
 
+const char* AssetBrowserPanel::GetIcon(const std::string& string)
+{
+	if (string == ".png" || string == ".jpg" || string == ".jpeg")
+	{
+		return ICON_FA_FILE_IMAGE;
+	}
+	else if (string == ".obj" || string == "" || string == ".fbx")
+	{
+		return ICON_FA_CUBE;
+	}
+	else if (string == ".txt")
+	{
+		return ICON_FA_FILE_ALT;
+	}
+	else if (string == ".ttf")
+	{
+		return ICON_FA_FONT;
+	}
+	return ICON_FA_WRENCH;
+}
+
 void AssetBrowserPanel::OnImGuiRender()
 {
 	ImGui::Begin("Asset Browser");
@@ -64,7 +84,7 @@ void AssetBrowserPanel::OnImGuiRender()
         float h = ImGui::GetWindowHeight() - 40;
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
 
-        DrawSplitter(0, 8.0f, &w, &h, 8, 8);
+        //DrawSplitter(0, 8.0f, &w, &h, 8, 8);
         ImGui::BeginChild("File Hierarchy Tree", ImVec2(w, h), true);
         {
             for (auto const& dir_entry : std::filesystem::directory_iterator(s_AssetsDirectory))
@@ -82,36 +102,96 @@ void AssetBrowserPanel::OnImGuiRender()
     // Right
     {
         ImGui::BeginGroup();
-        ImGui::BeginChild("right pane", ImVec2(0, -ImGui::GetFrameHeightWithSpacing())); // Leave room for 1 line below us
-        {
-	        if (exists(m_CurrentDirectory))
+		{
+			float h = ImGui::GetWindowHeight() - 40;
+        	ImGui::BeginChild("right pane", ImVec2(0, -ImGui::GetFrameHeightWithSpacing()), true); // Leave room for 1 line below us
 	        {
-                for (auto const& dir_entry : std::filesystem::directory_iterator(m_CurrentDirectory))
-                {
-                    auto path = dir_entry.path();
-                    auto relativePath = std::filesystem::relative(path, m_CurrentDirectory);
+				auto font = ImGui::GetIO().Fonts;
 
-                    if (dir_entry.is_directory())
-                    {
-                        ImGui::BeginGroup();
-                        ImGui::ImageButton((ImTextureID)m_FolderOpenIcon->ID(), { 50,50 }, { 0,1 }, { 1,0 });
-                        ImGui::NewLine();
-                        ImGui::Text(dir_entry.path().filename().string().c_str());
-                        ImGui::EndGroup();
-                        ImGui::SameLine();
-                    }
-                }
+		        ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, { 0.5,0.75f});
+				ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0,0 });
+				ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, { 0,0 });
+
+				auto icon = ICON_FA_FOLDER;
+
+				float ListViewThreshold = 35.0f;
+				static float padding = 16.0f;
+				static float thumbnailSize = 65.0f;
+				float cellSize = thumbnailSize + padding;
+
+				//Thumbnail Mode
+				if (thumbnailSize > ListViewThreshold)
+				{
+					float panelWidth = ImGui::GetContentRegionAvail().x;
+					int columnCount = (int)(panelWidth / cellSize);
+					if (columnCount < 1)
+						columnCount = 1;
+
+					ImGui::Columns(columnCount, 0, false);
+
+					for (auto& dir_entry : std::filesystem::directory_iterator(m_CurrentDirectory))
+					{
+						icon = ICON_FA_FOLDER;
+						auto path = dir_entry.path();
+						auto relativePath = std::filesystem::relative(path, m_CurrentDirectory);
+						std::string filenameString = relativePath.filename().string();
+
+						if (!dir_entry.is_directory())
+						{
+							icon = GetIcon(dir_entry.path().extension().string());
+						}
+						
+
+						ImGui::PushID(filenameString.c_str());
+						//Button
+						ImGui::PushFont(font->Fonts[1]);
+						ImGui::Button(icon, { thumbnailSize,thumbnailSize });
+						/*ImGui::ImageButton((ImTextureID)m_FolderIcon->ID(), { thumbnailSize, thumbnailSize }, { 0,1 }, { 1,0 });*/
+						ImGui::PopFont();
+						//Text
+						ImGui::TextWrapped(filenameString.c_str());
+						ImGui::NextColumn();
+
+						ImGui::PopID();
+					}
+
+					ImGui::Columns(1);
+				}
+				//Tree List Mode
+				else
+				{
+					for (auto& dir_entry : std::filesystem::directory_iterator(m_CurrentDirectory))
+					{
+						auto path = dir_entry.path();
+						auto relativePath = std::filesystem::relative(path, m_CurrentDirectory);
+						std::string filenameString = relativePath.filename().string();
+
+						auto nodeName = icon + std::string(" ") + relativePath.string();
+						ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+						bool node_open = ImGui::TreeNodeEx((void*)relativePath.string().c_str(), flags, nodeName.c_str());
+					}
+
+					ImGui::Columns(1);
+				}
+				
+
+				ImGui::PopStyleVar(3);
+				ImGui::EndChild();
+
+				// Thumnail Size Slider
+				ImGuiStyle& style = ImGui::GetStyle();
+				float size = 100 + style.FramePadding.x * 2.0f;
+				float avail = ImGui::GetContentRegionAvail().x;
+
+				float off = (avail - size) * 1.0f;
+				if (off > 0.0f)
+					ImGui::SetCursorPosX(ImGui::GetCursorPosX() + off);
+				ImGui::PushItemWidth(100);
+				ImGui::SliderFloat(" ", &thumbnailSize, 16, 150, "%.0f");
+				ImGui::PopItemWidth();
 	        }
-
-            ImGui::EndChild();
-            ImGui::EndGroup();
-        }
-       
+        	ImGui::EndGroup();
+		}
     }
-
-
-
-
-
 	ImGui::End();
 }

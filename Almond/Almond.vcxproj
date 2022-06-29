@@ -124,6 +124,7 @@
     <ClInclude Include="src\ECS\Entity.h" />
     <ClInclude Include="src\ECS\SceneView.h" />
     <ClInclude Include="src\ECS\SystemManager.h" />
+    <ClInclude Include="src\GUI\ImGuiCustom.h" />
     <ClInclude Include="src\Math\Math.h" />
     <ClInclude Include="src\Physics2D\DebugDrawBox2D.h" />
     <ClInclude Include="src\Physics2D\Geometry2D.h" />

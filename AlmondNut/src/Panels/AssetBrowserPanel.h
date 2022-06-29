@@ -12,16 +12,13 @@ public:
 	void OnStart();
 
 	void DrawFileNode(std::filesystem::directory_entry const& dir_entry, std::filesystem::path relativeDirectory);
+	const char* GetIcon(const std::string& string);
 	void OnImGuiRender();
 
 private:
 	std::filesystem::path m_CurrentDirectory;
     std::filesystem::path m_SelectedDirectory;
-
-	std::shared_ptr<Texture> m_FolderIcon;
-	std::shared_ptr<Texture> m_FolderOpenIcon;
-
-    float w = 200.0f;
+	float w = 200.0f;
 
 
     void DrawSplitter(int split_vertically, float thickness, float* size0, float* size1, float min_size0, float min_size1)
