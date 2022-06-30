@@ -243,6 +243,8 @@ void EditorSystem::OnImGuiRender()
     static bool opt_fullscreen = true;
     static bool opt_padding = false;
     static bool show_sceneHierarchy = true;
+    static bool show_AssetBrowser = true;
+
     static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
 
     // We are using the ImGuiWindowFlags_NoDocking flag to make the parent window not dockable into,
@@ -289,6 +291,32 @@ void EditorSystem::OnImGuiRender()
     {
         ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
         ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+    }
+
+    //MAIN MENU BAR
+    if (ImGui::BeginMainMenuBar())
+    {
+        if (ImGui::BeginMenu("File"))
+        {
+            ImGui::EndMenu();
+        }
+        if (ImGui::BeginMenu("Edit"))
+        {
+            if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
+            if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
+            ImGui::Separator();
+            if (ImGui::MenuItem("Cut", "CTRL+X")) {}
+            if (ImGui::MenuItem("Copy", "CTRL+C")) {}
+            if (ImGui::MenuItem("Paste", "CTRL+V")) {}
+            ImGui::EndMenu();
+        }
+        if (ImGui::BeginMenu("Editor"))
+        {
+            ImGui::MenuItem("Scene Hierarchy", NULL, &show_sceneHierarchy);
+            ImGui::MenuItem("Asset Browser", NULL, &show_AssetBrowser);
+            ImGui::EndMenu();
+        }
+        ImGui::EndMainMenuBar();
     }
 
     //TOOLBAR
@@ -411,7 +439,11 @@ void EditorSystem::OnImGuiRender()
     ImGui::PopStyleVar();
 
     //Asset Browser Panel
-    m_AssetBrowserPanel.OnImGuiRender();
+    if (show_AssetBrowser)
+    {
+        m_AssetBrowserPanel.OnImGuiRender();
+    }
+ 
 
     //Scene Hierarchy Panel
 	if (show_sceneHierarchy)
