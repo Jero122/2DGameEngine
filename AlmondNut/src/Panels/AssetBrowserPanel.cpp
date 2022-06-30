@@ -87,14 +87,22 @@ void AssetBrowserPanel::OnImGuiRender()
         //DrawSplitter(0, 8.0f, &w, &h, 8, 8);
         ImGui::BeginChild("File Hierarchy Tree", ImVec2(w, h), true);
         {
-            for (auto const& dir_entry : std::filesystem::directory_iterator(s_AssetsDirectory))
-            {
-                DrawFileNode(dir_entry, s_AssetsDirectory);
-            }
+			//Assets parent node
+			auto nodeName = ICON_FA_FOLDER + std::string(" ") + s_AssetsDirectory.string();
+			ImGuiTreeNodeFlags flags = (m_CurrentDirectory == s_AssetsDirectory) ? ImGuiTreeNodeFlags_Selected : 0 | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+			bool node_open = ImGui::TreeNodeEx((void*)s_AssetsDirectory.string().c_str(), flags, nodeName.c_str());
+			// If Parent open, expand Child nodes
+			if (node_open)
+			{
+				for (auto const& dir_entry : std::filesystem::directory_iterator(s_AssetsDirectory))
+				{
+					DrawFileNode(dir_entry, s_AssetsDirectory);
+				}
+				ImGui::TreePop();
+			}
             ImGui::EndChild();
             ImGui::SameLine();
         }
-
         ImGui::SameLine();
         ImGui::PopStyleVar(1);
     }
@@ -104,8 +112,11 @@ void AssetBrowserPanel::OnImGuiRender()
         ImGui::BeginGroup();
 		{
 			float h = ImGui::GetWindowHeight() - 40;
-        	ImGui::BeginChild("right pane", ImVec2(0, -ImGui::GetFrameHeightWithSpacing()), true); // Leave room for 1 line below us
+        	ImGui::BeginChild("File Explorer", ImVec2(0, -ImGui::GetFrameHeightWithSpacing()), true); // Leave room for 1 line below us
 	        {
+				ImGui::Text(m_CurrentDirectory.string().c_str());
+				ImGui::Separator();
+
 				auto font = ImGui::GetIO().Fonts;
 
 		        ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, { 0.5,0.75f});
