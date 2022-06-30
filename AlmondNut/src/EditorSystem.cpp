@@ -52,12 +52,6 @@ void EditorSystem::OnStart()
     m_CurrentScene = std::make_shared<Scene>();
     m_SceneHierarchyPanel.SetScene(m_CurrentScene);
 
-    m_PlayIcon = std::make_shared<Texture>("assets/textures/PlayButton.png");
-    m_StopIcon = std::make_shared<Texture>("assets/textures/StopButton.png");
-
-    m_TranslateIcon = std::make_shared<Texture>("assets/textures/move.png");
-    m_RotateIcon = std::make_shared<Texture>("assets/textures/rotate.png");
-    m_ScaleIcon = std::make_shared<Texture>("assets/textures/scale.png");
     std::shared_ptr<Texture> Crate = std::make_shared<Texture>("assets/textures/Crate.jpg");
 
     m_AssetBrowserPanel.OnStart();
