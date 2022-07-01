@@ -3,32 +3,58 @@
 #include <IconFontCppHeaders/IconsFontAwesome5.h>
 
 #include "GUI/ImGuiCustom.h"
-const std::filesystem::path s_AssetsDirectory = "assets";
+
 
 AssetBrowserPanel::AssetBrowserPanel()
 	:m_CurrentDirectory(s_AssetsDirectory), m_SelectedDirectory(s_AssetsDirectory)
 {
 }
 
+void AssetBrowserPanel::AddNode(FileNode& parentNode, std::filesystem::directory_entry const& dir_entry)
+{
+	FileNode node = FileNode(dir_entry);
+	
+	for (auto const& rec_dir_entry : std::filesystem::directory_iterator(dir_entry.path()))
+	{
+		if (rec_dir_entry.is_directory())
+		{
+			AddNode(node, rec_dir_entry);
+		}
+		else
+		{
+			node.childNodes.push_back(FileNode(rec_dir_entry));
+		}
+	}
+	
+	parentNode.childNodes.push_back(node);
+}
+
 void AssetBrowserPanel::OnStart()
 {
-
+	//TODO reconstruct tree every X seconds
+	//Rootnode is always assets;
+	for (auto& dir_entry : std::filesystem::directory_iterator(s_AssetsDirectory))
+	{
+		AddNode(RootNode, dir_entry);
+	}
 }
 
 
-void AssetBrowserPanel::DrawFileNode(std::filesystem::directory_entry const& dir_entry, std::filesystem::path relativeDirectory)
+void AssetBrowserPanel::DrawFileNode(FileNode const& node, std::filesystem::path relativeDirectory)
 {
+	auto dir_entry = node.dir_entry;
+	auto fileName = node.fileName;
 	const auto path = dir_entry.path();
-	auto relativePath = std::filesystem::relative(path, relativeDirectory);
 
+	
 	if (dir_entry.is_directory())
 	{
         static ImGuiTreeNodeFlags base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
 		ImGuiTreeNodeFlags flags = (m_CurrentDirectory == path) ? ImGuiTreeNodeFlags_Selected : 0 | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
-		ImGui::PushID(relativePath.string().c_str());
+		ImGui::PushID(fileName.c_str());
 
-        auto nodeName = ICON_FA_FOLDER + std::string(" ") + relativePath.string();
-		bool node_open = ImGui::TreeNodeEx((void*)relativePath.string().c_str(), flags, nodeName.c_str());
+        auto nodeName = ICON_FA_FOLDER + std::string(" ") + fileName;
+		bool node_open = ImGui::TreeNodeEx((void*)fileName.c_str(), flags, nodeName.c_str());
 
 
 		if (ImGui::IsItemClicked())
@@ -38,16 +64,10 @@ void AssetBrowserPanel::DrawFileNode(std::filesystem::directory_entry const& dir
 
 		if (node_open)
 		{
-			if (!is_empty(dir_entry))
+			//Recurse?
+			for (auto const& rec_node : node.childNodes)
 			{
-				//Recurse?
-                for (auto const& rec_dir_entry : std::filesystem::directory_iterator(path))
-                {
-                    if (rec_dir_entry.is_directory())
-                    {
-						DrawFileNode(rec_dir_entry,path);
-                    }
-                }
+				DrawFileNode(rec_node, path);
 			}
 			ImGui::TreePop();
 		}
@@ -94,10 +114,14 @@ void AssetBrowserPanel::OnImGuiRender()
 			// If Parent open, expand Child nodes
 			if (node_open)
 			{
-				for (auto const& dir_entry : std::filesystem::directory_iterator(s_AssetsDirectory))
+				for (auto const& node : RootNode.childNodes)
+				{
+					DrawFileNode(node, s_AssetsDirectory);
+				}
+				/*for (auto const& dir_entry : std::filesystem::directory_iterator(s_AssetsDirectory))
 				{
 					DrawFileNode(dir_entry, s_AssetsDirectory);
-				}
+				}*/
 				ImGui::TreePop();
 			}
             ImGui::EndChild();
@@ -139,28 +163,26 @@ void AssetBrowserPanel::OnImGuiRender()
 						columnCount = 1;
 
 					ImGui::Columns(columnCount, 0, false);
-
-					for (auto& dir_entry : std::filesystem::directory_iterator(m_CurrentDirectory))
+					//TODO Only shows rootnode, replace with a currentNode or get the node from currentDirectory.
+					for (auto const& node : RootNode.childNodes)
 					{
 						icon = ICON_FA_FOLDER;
-						auto path = dir_entry.path();
-						auto relativePath = std::filesystem::relative(path, m_CurrentDirectory);
-						std::string filenameString = relativePath.filename().string();
+						auto dir_entry = node.dir_entry;
+						auto filename = node.fileName;
 
 						if (!dir_entry.is_directory())
 						{
 							icon = GetIcon(dir_entry.path().extension().string());
 						}
-						
 
-						ImGui::PushID(filenameString.c_str());
+						ImGui::PushID(filename.c_str());
 						//Button
 						ImGui::PushFont(font->Fonts[1]);
 						ImGui::Button(icon, { thumbnailSize,thumbnailSize });
 						/*ImGui::ImageButton((ImTextureID)m_FolderIcon->ID(), { thumbnailSize, thumbnailSize }, { 0,1 }, { 1,0 });*/
 						ImGui::PopFont();
 						//Text
-						ImGui::TextWrapped(filenameString.c_str());
+						ImGui::TextWrapped(filename.c_str());
 						ImGui::NextColumn();
 
 						ImGui::PopID();
@@ -171,15 +193,15 @@ void AssetBrowserPanel::OnImGuiRender()
 				//Tree List Mode
 				else
 				{
-					for (auto& dir_entry : std::filesystem::directory_iterator(m_CurrentDirectory))
+					//TODO Only shows rootnode, replace with a currentNode or get the node from currentDirectory.
+					for (auto const& node : RootNode.childNodes)
 					{
-						auto path = dir_entry.path();
-						auto relativePath = std::filesystem::relative(path, m_CurrentDirectory);
-						std::string filenameString = relativePath.filename().string();
+						auto dir_entry = node.dir_entry;
+						auto filename = node.fileName;
 
-						auto nodeName = icon + std::string(" ") + relativePath.string();
+						auto nodeName = icon + std::string(" ") + filename;
 						ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
-						bool node_open = ImGui::TreeNodeEx((void*)relativePath.string().c_str(), flags, nodeName.c_str());
+						bool node_open = ImGui::TreeNodeEx((void*)filename.c_str(), flags, nodeName.c_str());
 					}
 
 					ImGui::Columns(1);

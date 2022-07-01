@@ -7,19 +7,39 @@
 class AssetBrowserPanel
 {
 public:
+    class FileNode
+    {
+    public:
+        FileNode() = default;
+        FileNode(std::filesystem::directory_entry entry)
+            :dir_entry(entry)
+        {
+            fileName = dir_entry.path().filename().string();
+        }
+        std::filesystem::directory_entry dir_entry;
+        std::vector<FileNode> childNodes;
+        std::string fileName;
+    };
+
 	AssetBrowserPanel();
+	void AddNode(FileNode& parentNode, std::filesystem::directory_entry const& dir_entry);
 
 	void OnStart();
 
-	void DrawFileNode(std::filesystem::directory_entry const& dir_entry, std::filesystem::path relativeDirectory);
+	void DrawFileNode(FileNode const& dir_entry, std::filesystem::path relativeDirectory);
 	const char* GetIcon(const std::string& string);
 	void OnImGuiRender();
 
+   
+
+
 private:
+    const std::filesystem::path s_AssetsDirectory = "assets";
 	std::filesystem::path m_CurrentDirectory;
     std::filesystem::path m_SelectedDirectory;
 	float w = 200.0f;
 
+    FileNode RootNode = FileNode();
 
     void DrawSplitter(int split_vertically, float thickness, float* size0, float* size1, float min_size0, float min_size1)
     {
