@@ -37,6 +37,8 @@ void AssetBrowserPanel::OnStart()
 	{
 		AddNode(RootNode, dir_entry);
 	}
+
+	CurrentNode = RootNode;
 }
 
 
@@ -60,6 +62,7 @@ void AssetBrowserPanel::DrawFileNode(FileNode const& node, std::filesystem::path
 		if (ImGui::IsItemClicked())
 		{
 			m_CurrentDirectory = path;
+			CurrentNode = node;
 		}
 
 		if (node_open)
@@ -111,17 +114,19 @@ void AssetBrowserPanel::OnImGuiRender()
 			auto nodeName = ICON_FA_FOLDER + std::string(" ") + s_AssetsDirectory.string();
 			ImGuiTreeNodeFlags flags = (m_CurrentDirectory == s_AssetsDirectory) ? ImGuiTreeNodeFlags_Selected : 0 | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
 			bool node_open = ImGui::TreeNodeEx((void*)s_AssetsDirectory.string().c_str(), flags, nodeName.c_str());
-			// If Parent open, expand Child nodes
+
+			if (ImGui::IsItemClicked())
+			{
+				m_CurrentDirectory = s_AssetsDirectory;
+				CurrentNode = RootNode;
+			}
+        	// If Parent open, expand Child nodes
 			if (node_open)
 			{
 				for (auto const& node : RootNode.childNodes)
 				{
 					DrawFileNode(node, s_AssetsDirectory);
 				}
-				/*for (auto const& dir_entry : std::filesystem::directory_iterator(s_AssetsDirectory))
-				{
-					DrawFileNode(dir_entry, s_AssetsDirectory);
-				}*/
 				ImGui::TreePop();
 			}
             ImGui::EndChild();
@@ -163,8 +168,8 @@ void AssetBrowserPanel::OnImGuiRender()
 						columnCount = 1;
 
 					ImGui::Columns(columnCount, 0, false);
-					//TODO Only shows rootnode, replace with a currentNode or get the node from currentDirectory.
-					for (auto const& node : RootNode.childNodes)
+					//TODO handle clicking on directory nodes
+					for (auto const& node : CurrentNode.childNodes)
 					{
 						icon = ICON_FA_FOLDER;
 						auto dir_entry = node.dir_entry;
@@ -190,11 +195,14 @@ void AssetBrowserPanel::OnImGuiRender()
 
 					ImGui::Columns(1);
 				}
+
+				//TODO fix list mode, handle icons for leaf nodes
+				//TODO leaf nodes should not be able to be clicked
 				//Tree List Mode
 				else
 				{
-					//TODO Only shows rootnode, replace with a currentNode or get the node from currentDirectory.
-					for (auto const& node : RootNode.childNodes)
+					//TODO handle clicking on directory nodes
+					for (auto const& node : CurrentNode.childNodes)
 					{
 						auto dir_entry = node.dir_entry;
 						auto filename = node.fileName;

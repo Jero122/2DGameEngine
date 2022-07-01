@@ -40,6 +40,7 @@ private:
 	float w = 200.0f;
 
     FileNode RootNode = FileNode();
+    FileNode CurrentNode;
 
     void DrawSplitter(int split_vertically, float thickness, float* size0, float* size1, float min_size0, float min_size1)
     {
