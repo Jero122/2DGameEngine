@@ -19,6 +19,7 @@ public:
         std::filesystem::directory_entry dir_entry;
         std::vector<FileNode> childNodes;
         std::string fileName;
+        std::string icon;
     };
 
 	AssetBrowserPanel();
@@ -26,7 +27,7 @@ public:
 
 	void OnStart();
 
-	void DrawFileNode(FileNode const& dir_entry, std::filesystem::path relativeDirectory);
+	void DrawFileNode(FileNode& dir_entry, std::filesystem::path relativeDirectory);
 	const char* GetIcon(const std::string& string);
 	void OnImGuiRender();
 

@@ -42,7 +42,7 @@ void AssetBrowserPanel::OnStart()
 }
 
 
-void AssetBrowserPanel::DrawFileNode(FileNode const& node, std::filesystem::path relativeDirectory)
+void AssetBrowserPanel::DrawFileNode(FileNode& node, std::filesystem::path relativeDirectory)
 {
 	auto dir_entry = node.dir_entry;
 	auto fileName = node.fileName;
@@ -55,7 +55,7 @@ void AssetBrowserPanel::DrawFileNode(FileNode const& node, std::filesystem::path
 		ImGuiTreeNodeFlags flags = (m_CurrentDirectory == path) ? ImGuiTreeNodeFlags_Selected : 0 | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
 		ImGui::PushID(fileName.c_str());
 
-        auto nodeName = ICON_FA_FOLDER + std::string(" ") + fileName;
+        auto nodeName = node.icon + std::string(" ") + fileName;
 		bool node_open = ImGui::TreeNodeEx((void*)fileName.c_str(), flags, nodeName.c_str());
 
 
@@ -67,12 +67,17 @@ void AssetBrowserPanel::DrawFileNode(FileNode const& node, std::filesystem::path
 
 		if (node_open)
 		{
+			node.icon = std::string(ICON_FA_FOLDER_OPEN);
 			//Recurse?
-			for (auto const& rec_node : node.childNodes)
+			for (auto& rec_node : node.childNodes)
 			{
 				DrawFileNode(rec_node, path);
 			}
 			ImGui::TreePop();
+		}
+		else
+		{
+			node.icon = std::string(ICON_FA_FOLDER);
 		}
 		ImGui::PopID();
 	}
@@ -114,7 +119,7 @@ void AssetBrowserPanel::OnImGuiRender()
         ImGui::BeginChild("File Hierarchy Tree", ImVec2(w, h), true);
         {
 			//Assets parent node
-			auto nodeName = ICON_FA_FOLDER + std::string(" ") + s_AssetsDirectory.string();
+			auto nodeName = RootNode.icon + std::string(" ") + s_AssetsDirectory.string();
 			ImGuiTreeNodeFlags flags = (m_CurrentDirectory == s_AssetsDirectory) ? ImGuiTreeNodeFlags_Selected : 0 | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
 			bool node_open = ImGui::TreeNodeEx((void*)s_AssetsDirectory.string().c_str(), flags, nodeName.c_str());
 
@@ -126,11 +131,16 @@ void AssetBrowserPanel::OnImGuiRender()
         	// If Parent open, expand Child nodes
 			if (node_open)
 			{
-				for (auto const& node : RootNode.childNodes)
+				RootNode.icon = ICON_FA_FOLDER_OPEN;
+				for (auto& node : RootNode.childNodes)
 				{
 					DrawFileNode(node, s_AssetsDirectory);
 				}
 				ImGui::TreePop();
+			}
+			else
+			{
+				RootNode.icon = ICON_FA_FOLDER;
 			}
             ImGui::EndChild();
             ImGui::SameLine();
