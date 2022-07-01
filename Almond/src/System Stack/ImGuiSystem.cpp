@@ -132,7 +132,12 @@ void ImGuiSystem::End()
 
 void ImGuiSystem::SetDarkTheme(Theme theme)
 {
-	auto& colors = ImGui::GetStyle().Colors;
+	auto& style = ImGui::GetStyle();
+	auto& colors = style.Colors;
+	
+	//Grabs
+	style.GrabRounding = 12;
+
 	switch (theme)
 	{
 	case Cherno:
@@ -195,8 +200,25 @@ void ImGuiSystem::SetDarkTheme(Theme theme)
 		colors[ImGuiCol_TitleBgCollapsed] = ImVec4{ 0.15f, 0.1505f, 0.151f, 1.0f };
 
 		//Seperator
-
 		colors[ImGuiCol_Separator] = ImVec4{ 0.10f,0.10f,0.10f,1 };
+
+		//Border
+		colors[ImGuiCol_Border] = ImVec4{ 0.10f,0.10f,0.10f,1 };
+
+		//Title
+		colors[ImGuiCol_TitleBg] = ImVec4{ 40.0f / 255.0f,40.0f / 255.0f,40.0f / 255.0f,1 };
+		colors[ImGuiCol_TitleBgActive] = ImVec4{ 40.0f / 255.0f,40.0f / 255.0f,40.0f / 255.0f,1 };
+		colors[ImGuiCol_TitleBgCollapsed] = ImVec4{ 40.0f / 255.0f,40.0f / 255.0f,40.0f / 255.0f,1 };
+
+		//Tab
+		colors[ImGuiCol_Tab] = ImVec4{ 40.0f/255.0f,40.0f / 255.0f,40.0f / 255.0f,1 };
+		colors[ImGuiCol_TabActive] = ImVec4{ 0.172f,0.364f,0.529f,1 };
+		colors[ImGuiCol_TabUnfocusedActive] = ImVec4{ 60.0f/255.0f,60.0f / 255.0f,60.0f / 255.0f,1 };
+
+		//Slider
+		colors[ImGuiCol_SliderGrab] = ImVec4{ 153.0f / 255.0f,153.0f / 255.0f,153.0f / 255.0f,1 };
+		colors[ImGuiCol_SliderGrabActive] = ImVec4{ 153.0f / 255.0f,153.0f / 255.0f,153.0f / 255.0f,1 };
+
 		break;
 	case Unreal:
 		break;
