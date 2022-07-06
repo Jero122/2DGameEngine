@@ -52,12 +52,16 @@ void AssetBrowserPanel::DrawFileNode(std::shared_ptr<FileNode> node, std::filesy
 	
 	if (dir_entry.is_directory())
 	{
-        static ImGuiTreeNodeFlags base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
-		ImGuiTreeNodeFlags flags = (m_CurrentDirectory == path) ? ImGuiTreeNodeFlags_Selected : 0 | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+		ImGuiTreeNodeFlags base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
+		ImGuiTreeNodeFlags node_flags = base_flags;
+		const bool is_selected = (m_CurrentDirectory == s_AssetsDirectory);
+		if (is_selected)
+			node_flags |= ImGuiTreeNodeFlags_Selected;
+
 		ImGui::PushID(fileName.c_str());
 
         auto nodeName = node->icon + std::string(" ") + fileName;
-		bool node_open = ImGui::TreeNodeEx((void*)fileName.c_str(), flags, nodeName.c_str());
+		bool node_open = ImGui::TreeNodeEx((void*)fileName.c_str(), node_flags, nodeName.c_str());
 
 
 		if (ImGui::IsItemClicked())
@@ -120,9 +124,14 @@ void AssetBrowserPanel::OnImGuiRender()
         ImGui::BeginChild("File Hierarchy Tree", ImVec2(w, h), true);
         {
 			//Assets parent node
+			ImGuiTreeNodeFlags base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
 			auto nodeName = RootNode->icon + std::string(" ") + s_AssetsDirectory.string();
-			ImGuiTreeNodeFlags flags = (m_CurrentDirectory == s_AssetsDirectory) ? ImGuiTreeNodeFlags_Selected : 0 | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
-			bool node_open = ImGui::TreeNodeEx((void*)s_AssetsDirectory.string().c_str(), flags, nodeName.c_str());
+			ImGuiTreeNodeFlags node_flags = base_flags;
+			const bool is_selected = (m_CurrentDirectory == s_AssetsDirectory);
+			if (is_selected)
+				node_flags |= ImGuiTreeNodeFlags_Selected;
+
+			bool node_open = ImGui::TreeNodeEx((void*)s_AssetsDirectory.string().c_str(), node_flags, nodeName.c_str());
 
 			if (ImGui::IsItemClicked())
 			{
@@ -162,6 +171,7 @@ void AssetBrowserPanel::OnImGuiRender()
 		ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4{ 64.0f / 255.0f, 64.0f / 255.0f, 64.0f / 255.0f, 1.0f });
 		ImGui::BeginChild("Top Bar", { 0, ImGui::GetFrameHeightWithSpacing() }, true);
 		{
+			
 			//Current Directory
 			ImGui::Text(m_CurrentDirectory.string().c_str());
 			ImGui::SameLine();
@@ -246,8 +256,8 @@ void AssetBrowserPanel::OnImGuiRender()
 						
 					}
 					ImGui::PopStyleColor(1);
-					/*ImGui::ImageButton((ImTextureID)m_FolderIcon->ID(), { thumbnailSize, thumbnailSize }, { 0,1 }, { 1,0 });*/
 					ImGui::PopFont();
+
 					//Text
 					ImGui::TextWrapped(filename.c_str());
 					ImGui::NextColumn();
@@ -258,20 +268,36 @@ void AssetBrowserPanel::OnImGuiRender()
 				ImGui::Columns(1);
 			}
 
-			//TODO fix list mode, handle icons for leaf nodes
-			//TODO leaf nodes should not be able to be clicked
 			//Tree List Mode
 			else
 			{
-				//TODO handle clicking on directory nodes
-				for (auto node : CurrentNode->childNodes)
+				for (auto node : nodeList)
 				{
 					auto dir_entry = node->dir_entry;
 					auto filename = node->fileName;
 
+					if (!dir_entry.is_directory())
+					{
+						icon = GetIcon(dir_entry.path().extension().string());
+					}
 					auto nodeName = icon + std::string(" ") + filename;
 					ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
 					bool node_open = ImGui::TreeNodeEx((void*)filename.c_str(), flags, nodeName.c_str());
+
+					if (ImGui::IsItemClicked())
+					{
+						if (dir_entry.is_directory())
+						{
+							CurrentNode = node;
+							searchString = "";
+						}
+					}
+
+					if (node_open)
+					{
+						ImGui::TreePop();
+					}
+
 				}
 
 				ImGui::Columns(1);
