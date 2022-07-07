@@ -170,7 +170,7 @@ void EditorSystem::OnUpdate(TimeStep timeStep)
 
     //Clear attachments
     m_GLFrameBuffer->Bind();
-    GLRenderCommand::ClearColor(62.0f / 255.0f, 62.0f / 255.0f, 58.0f / 255.0f, 1.0f);
+    GLRenderCommand::ClearColor(117 / 255.0f, 155 / 255.0f, 210 / 255.0f, 1.0f);
     GLRenderCommand::Clear();
     m_GLFrameBuffer->ClearColourAttachment(1, -1);
     glViewport(0, 0, m_ViewportSize.x, m_ViewportSize.y);
@@ -241,7 +241,6 @@ void EditorSystem::OnImGuiRender()
    //ImGui::ShowDemoWindow();
     bool p_open = true;
     static bool opt_fullscreen = true;
-    static bool opt_padding = false;
     static bool show_sceneHierarchy = true;
     static bool show_AssetBrowser = true;
 
@@ -276,11 +275,7 @@ void EditorSystem::OnImGuiRender()
     // all active windows docked into it will lose their parent and become undocked.
     // We cannot preserve the docking relationship between an active window and an inactive docking, otherwise
     // any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
-    if (!opt_padding)
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
     ImGui::Begin("DockSpace Demo", &p_open, window_flags);
-    if (!opt_padding)
-        ImGui::PopStyleVar();
 
     if (opt_fullscreen)
         ImGui::PopStyleVar(2);
@@ -354,42 +349,6 @@ void EditorSystem::OnImGuiRender()
     ImGui::PopStyleVar(2);
     ImGui::PopStyleColor(3);
 
-    //Guizmo Bar
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0,0 });
-    ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, { 0,0 });
-    ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, { 0.5,0.75 });
-    ImGui::PushStyleColor(ImGuiCol_Button, { 0,0,0,0 });
-    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ buttonHovered.x,buttonHovered.y,buttonHovered.z, 0.5f });
-    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ buttonActive.x,buttonActive.y,buttonActive.z, 0.5f });
-
-    ImGui::Begin("##GuizmoBar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoNav);
-    {
-        ImGui::SetNextWindowBgAlpha(0.35f);
-        float size = ImGui::GetWindowWidth();
-        auto font = ImGui::GetIO().Fonts;
-
-        ImGui::PushFont(font->Fonts[1]);
-        if (ImGui::Button(ICON_FA_ARROWS_ALT, { size, size }))
-        {
-            m_TranformationMode = ImGuizmo::OPERATION::TRANSLATE;
-        }
-   
-        if (ImGui::Button(ICON_FA_SYNC_ALT, { size, size }))
-        {
-            m_TranformationMode = ImGuizmo::OPERATION::ROTATE;
-        }
-    
-        if (ImGui::Button(ICON_FA_EXPAND_ARROWS_ALT, { size, size }))
-        {
-            m_TranformationMode = ImGuizmo::OPERATION::SCALE;
-        }
-        ImGui::PopFont();
-
-        ImGui::End();
-    }
-    ImGui::PopStyleVar(3);
-    ImGui::PopStyleColor(3);
-
     //Viewport
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
     ImGui::Begin("ViewPort");
@@ -439,6 +398,52 @@ void EditorSystem::OnImGuiRender()
 	}
 	ImGui::End();
     ImGui::PopStyleVar();
+
+   
+    //GUIZMO BAR
+    //position
+    float padding = 5.0f;
+    ImGui::SetNextWindowPos(ImVec2(m_ViewportBounds[0].x + padding, m_ViewportBounds[0].y + padding), ImGuiCond_Always, ImVec2(0.0f, 0.0f));
+    ImGui::SetNextWindowBgAlpha(0.50f);
+    //Style
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0,0 });
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, { 0,0 });
+    ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, { 0.5,0.5 });
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0);
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 1);
+    //Color
+    ImGui::PushStyleColor(ImGuiCol_Button, { 0,0,0,0 });
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ buttonHovered.x,buttonHovered.y,buttonHovered.z, 0.5f });
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ buttonActive.x,buttonActive.y,buttonActive.z, 0.5f });
+    ImGui::Begin("##GuizmoBar", nullptr, ImGuiWindowFlags_AlwaysAutoResize |ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav);
+    {
+      
+        float size = 35.0f;
+        auto font = ImGui::GetIO().Fonts;
+
+        if (ImGui::Button(ICON_FA_ARROWS_ALT, { size, size }))
+        {
+            m_TranformationMode = ImGuizmo::OPERATION::TRANSLATE;
+        }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button(ICON_FA_SYNC_ALT, { size, size }))
+        {
+            m_TranformationMode = ImGuizmo::OPERATION::ROTATE;
+        }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button(ICON_FA_EXPAND_ARROWS_ALT, { size, size }))
+        {
+            m_TranformationMode = ImGuizmo::OPERATION::SCALE;
+        }
+
+        ImGui::End();
+    }
+    ImGui::PopStyleVar(5);
+    ImGui::PopStyleColor(3);
 
     //Asset Browser Panel
     if (show_AssetBrowser)
