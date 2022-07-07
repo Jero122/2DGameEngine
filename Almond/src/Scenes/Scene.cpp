@@ -122,14 +122,11 @@ void Scene::OnRuntimeUpdate(TimeStep timestep, EditorCamera& editorCamera)
 	
 	//Physcs
 	m_Physics2D->OnUpdate();
-
-	editorCamera.OnUpdate(timestep);
 }
 
 void Scene::OnEditorUpdate(TimeStep timestep, EditorCamera& editorCamera)
 {
 	Render(editorCamera);
-	editorCamera.OnUpdate(timestep);
 }
 
 void Scene::Render(EditorCamera& editorCamera)

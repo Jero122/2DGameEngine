@@ -92,7 +92,7 @@ void EditorSystem::OnStart()
     Entity backpack = m_CurrentScene->CreateEntity("backpack");
     {
         auto transformComponent = backpack.GetComponent<Transform>();
-        *transformComponent = Transform{ glm::vec3(0,0,0), glm::vec3(0,0,0),glm::vec3(1,1,1) };
+        *transformComponent = Transform{ glm::vec3(0,0,0), glm::vec3(0,180,0),glm::vec3(1,1,1) };
         auto backpackModel = std::make_shared<Model>("assets/Models/backpack/backpack.obj");
         backpack.AddComponent(ModelRendererComponent{backpackModel});
     }
@@ -149,6 +149,10 @@ void EditorSystem::OnEnd()
 
 void EditorSystem::OnUpdate(TimeStep timeStep)
 {
+	if (m_ViewportHovered)
+	{
+        m_EditorCamera.OnUpdate(timeStep);
+	}
 
 	//Resizing
 	if (m_GLFrameBuffer->GetWidth() != m_ViewportSize.x || m_GLFrameBuffer->GetHeight() != m_ViewportSize.y)
@@ -164,16 +168,12 @@ void EditorSystem::OnUpdate(TimeStep timeStep)
         m_GLFrameBuffer->Invalidate(m_ViewportSize.x, m_ViewportSize.y);
     }
 
+    //Clear attachments
     m_GLFrameBuffer->Bind();
-
     GLRenderCommand::ClearColor(62.0f / 255.0f, 62.0f / 255.0f, 58.0f / 255.0f, 1.0f);
     GLRenderCommand::Clear();
-
     m_GLFrameBuffer->ClearColourAttachment(1, -1);
- 
     glViewport(0, 0, m_ViewportSize.x, m_ViewportSize.y);
-
-   
 
 	switch (m_SceneState)
 	{
@@ -192,7 +192,7 @@ void EditorSystem::OnUpdate(TimeStep timeStep)
     auto Input = Input::GetInstance();
 
     //Mouse Picking
-	if (Input->GetMouseButtonDown(Input::MouseButton::left))
+	if (Input->GetMouseButtonDown(Input::MouseButton::left) && !ImGuizmo::IsOver())
 	{
         auto [mx, my] = ImGui::GetMousePos();
         mx -= m_ViewportBounds[0].x;
@@ -398,6 +398,8 @@ void EditorSystem::OnImGuiRender()
     auto viewportOffset = ImGui::GetWindowPos();
     m_ViewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
     m_ViewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
+    m_ViewportHovered = ImGui::IsWindowHovered();
+    m_ViewportFocused = ImGui::IsWindowFocused();
 
     ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
     m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };

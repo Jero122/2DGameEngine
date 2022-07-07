@@ -29,8 +29,11 @@ public:
 
 private:
 	std::unique_ptr<GLFrameBuffer> m_GLFrameBuffer;
+
 	glm::vec2 m_ViewportSize = {1280.0f, 720.0f};
 	glm::vec2 m_ViewportBounds[2];
+	bool m_ViewportHovered;
+	bool m_ViewportFocused;
 
 	SceneHierarchyPanel m_SceneHierarchyPanel;
 	AssetBrowserPanel m_AssetBrowserPanel;
