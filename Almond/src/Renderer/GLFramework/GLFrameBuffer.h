@@ -30,7 +30,7 @@ public:
 
 	void AddColourAttachment(GLenum internalFormat, GLint filterMode)
 	{
-		m_ColourAttachments.push_back(std::make_unique<GLTexture>(GL_TEXTURE_2D, m_Width, m_Height, internalFormat, filterMode));
+		m_ColourAttachments.push_back(std::make_unique<GLTexture>(GL_TEXTURE_2D, m_Width, m_Height, internalFormat));
 		auto& attachment = m_ColourAttachments[ColourAttachmentIdx];
 		glNamedFramebufferTexture(id, GL_COLOR_ATTACHMENT0 + ColourAttachmentIdx, attachment->ID(), 0);
 		m_AttachmentTargets.push_back(GL_COLOR_ATTACHMENT0 + ColourAttachmentIdx);

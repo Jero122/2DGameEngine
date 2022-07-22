@@ -52,8 +52,6 @@ void EditorSystem::OnStart()
     m_CurrentScene = std::make_shared<Scene>();
     m_SceneHierarchyPanel.SetScene(m_CurrentScene);
 
-    std::shared_ptr<Texture> Crate = std::make_shared<Texture>("assets/textures/Crate.jpg");
-
     m_AssetBrowserPanel.OnStart();
 
     /*Entity floor = m_CurrentScene->CreateEntity("Floor");
