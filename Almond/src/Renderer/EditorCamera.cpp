@@ -26,7 +26,8 @@ void EditorCamera::UpdateView()
 
 	auto centre = m_Position - m_Front;
 
-	m_ViewMatrix = glm::inverse(glm::lookAt(m_Position, centre, m_Up));
+
+	m_ViewMatrix = (glm::lookAt(m_Position, m_Position + m_Front, m_Up));
 }
 
 
@@ -57,25 +58,25 @@ void EditorCamera::OnUpdate(TimeStep timeStep)
 		//Zoom
 		if (input->GetMouseButton(Input::MouseButton::right))
 		{
-			m_Position.z += input->GetMouseX() * m_ZoomSensitivity * timeStep.GetSeconds();
+			m_Position.z -= input->GetMouseX() * m_ZoomSensitivity * timeStep.GetSeconds();
 		}
 	}
 
 	//Pan
 	if (input->GetMouseButton(Input::MouseButton::middle))
 	{
-		m_Position.x -= input->GetMouseX() * panSensitivity;
+		m_Position.x += input->GetMouseX() * panSensitivity;
 		m_Position.y += input->GetMouseY() * panSensitivity;
 	}
 
 	//Zoom
 	if (input->getWheelY() > 0)
 	{
-		m_Position.z += 1.0f * m_ZoomSensitivity;
+		m_Position.z -= 1.0f * m_ZoomSensitivity;
 	}
 	if (input->getWheelY() < 0)
 	{
-		m_Position.z -= 1.0f * m_ZoomSensitivity;
+		m_Position.z += 1.0f * m_ZoomSensitivity;
 	}
 	
 	if (input->GetKeyDown(SDL_SCANCODE_X))

@@ -19,7 +19,7 @@ private:
 	void UpdateProjection();
 	void UpdateView();
 	
-	glm::vec3 m_Position = {0.0f, 0.0f, -10.0f};
+	glm::vec3 m_Position = {0.0f, 0.0f, 10.0f};
 	glm::vec3 m_Front = glm::vec3(0.0f, 0.0f, -1.0f);
 	glm::vec3 m_Up = glm::vec3(0.0f, 1.0f, 0.0f);
 
