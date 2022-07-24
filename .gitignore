@@ -7,6 +7,9 @@ bin-int/
 **.png
 **.jpeg
 **.jpg
+**.bmp
+**.hdr
+**.exr
 
 # Visual Studio files and folder
 .vs/
