@@ -22,9 +22,10 @@ public:
 	int GetHeight() const;
 	GLenum GetInternalFormat();
 	int ID() const;
+	unsigned int id;
 
 private:
-	unsigned int id;
+
 	GLenum m_Type;
 	GLenum m_InternalFormat;
 	GLint m_FilterMode = GL_LINEAR;

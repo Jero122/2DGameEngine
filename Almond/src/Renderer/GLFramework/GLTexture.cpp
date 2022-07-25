@@ -2,6 +2,8 @@
 
 #include <cassert>
 
+#include "Renderer/Bitmap.h"
+#include "Renderer/UtilCubeMap.h"
 #include "stb/stb_image.h"
 
 int getNumMipMapLevels2D(int w, int h)
@@ -47,33 +49,76 @@ GLTexture::GLTexture(GLenum type, const char* fileName)
 GLTexture::GLTexture(GLenum type, const char* fileName, GLenum clamp)
 	:m_Type(type)
 {
-	glCreateTextures(type, 1, &id);
-	glTextureParameteri(id, GL_TEXTURE_MAX_LEVEL, 0);
-	glTextureParameteri(id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTextureParameteri(id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTextureParameteri(id, GL_TEXTURE_WRAP_S, clamp);
-	glTextureParameteri(id, GL_TEXTURE_WRAP_T, clamp);
-
-	int numMipmaps = 0;
-
-	uint8_t* img = stbi_load(fileName, &m_Width, &m_Height, nullptr, STBI_rgb_alpha);
-
-	// If file is not found, a fallback texture is used
-	if (!img)
+	switch (type)
 	{
-		fprintf(stderr, "WARNING: could not load image `%s`, using a fallback.\n", fileName);
-		img = genDefaultCheckerboardImage(&m_Width, &m_Height);
+	case GL_TEXTURE_2D:
+	{
+		glCreateTextures(type, 1, &id);
+		glTextureParameteri(id, GL_TEXTURE_MAX_LEVEL, 0);
+		glTextureParameteri(id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTextureParameteri(id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTextureParameteri(id, GL_TEXTURE_WRAP_S, clamp);
+		glTextureParameteri(id, GL_TEXTURE_WRAP_T, clamp);
+
+		int numMipmaps = 0;
+
+		uint8_t* img = stbi_load(fileName, &m_Width, &m_Height, nullptr, STBI_rgb_alpha);
+
+		// If file is not found, a fallback texture is used
 		if (!img)
 		{
-			fprintf(stderr, "FATAL ERROR: out of memory allocating image for fallback texture\n");
-			exit(EXIT_FAILURE);
+			fprintf(stderr, "WARNING: could not load image `%s`, using a fallback.\n", fileName);
+			img = genDefaultCheckerboardImage(&m_Width, &m_Height);
+			if (!img)
+			{
+				fprintf(stderr, "FATAL ERROR: out of memory allocating image for fallback texture\n");
+				exit(EXIT_FAILURE);
+			}
 		}
+
+		numMipmaps = getNumMipMapLevels2D(m_Width, m_Height);
+		glTextureStorage2D(id, numMipmaps, GL_RGBA8, m_Width, m_Height);
+		glTextureSubImage2D(id, 0, 0, 0, m_Width, m_Height, GL_RGBA, GL_UNSIGNED_BYTE, img);
+		stbi_image_free((void*)img);
+	}
+	case GL_TEXTURE_CUBE_MAP:
+	{
+		int w, h, comp;
+		const float* img = stbi_loadf(fileName, &w, &h, &comp, 3);
+		assert(img);
+		Bitmap in(w, h, comp, eBitmapFormat_Float, img);
+		const bool isEquirectangular = w == 2 * h;
+		Bitmap out = isEquirectangular ? convertEquirectangularMapToVerticalCross(in) : in;
+		stbi_image_free((void*)img);
+
+		Bitmap cubemap = convertVerticalCrossToCubeMapFaces(out);
+
+		const int numMipmaps = getNumMipMapLevels2D(cubemap.w_, cubemap.h_);
+
+		glTextureParameteri(id, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTextureParameteri(id, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTextureParameteri(id, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+		glTextureParameteri(id, GL_TEXTURE_BASE_LEVEL, 0);
+		glTextureParameteri(id, GL_TEXTURE_MAX_LEVEL, numMipmaps - 1);
+		glTextureParameteri(id, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTextureParameteri(id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+		glTextureStorage2D(id, numMipmaps, GL_RGB32F, cubemap.w_, cubemap.h_);
+		const uint8_t* data = cubemap.data_.data();
+
+		for (unsigned i = 0; i != 6; ++i)
+		{
+			glTextureSubImage3D(id, 0, 0, 0, i, cubemap.w_, cubemap.h_, 1, GL_RGB, GL_FLOAT, data);
+			data += cubemap.w_ * cubemap.h_ * cubemap.comp_ * Bitmap::getBytesPerComponent(cubemap.fmt_);
+		}
+
+		glGenerateTextureMipmap(id);
+		break;
+	}
+	default:
+		assert(false);
 	}
 
-	numMipmaps = getNumMipMapLevels2D(m_Width, m_Height);
-	glTextureStorage2D(id, numMipmaps, GL_RGBA8, m_Width, m_Height);
-	glTextureSubImage2D(id, 0, 0, 0, m_Width, m_Height, GL_RGBA, GL_UNSIGNED_BYTE, img);
-	stbi_image_free((void*)img);
 }
 
 GLTexture::GLTexture(GLenum type, int width, int height, GLenum internalFormat)

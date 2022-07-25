@@ -43,7 +43,7 @@ public:
 			//glBindTextureUnit(i, textures[i].id);
 			texIDs.push_back(textures[i].ID());
 		}
-		GLRenderCommand::BindTextures(0, textures.size(), texIDs.data());
+		GLRenderCommand::BindTextures(1, textures.size(), texIDs.data());
 
 		// draw mesh
 		m_VertexArray->Bind();

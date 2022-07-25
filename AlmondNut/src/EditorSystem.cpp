@@ -90,7 +90,7 @@ void EditorSystem::OnStart()
     Entity backpack = m_CurrentScene->CreateEntity("backpack");
     {
         auto transformComponent = backpack.GetComponent<Transform>();
-        *transformComponent = Transform{ glm::vec3(0,0,0), glm::vec3(0,180,0),glm::vec3(1,1,1) };
+        *transformComponent = Transform{ glm::vec3(0,0,0), glm::vec3(0,0,0),glm::vec3(1,1,1) };
         auto backpackModel = std::make_shared<Model>("assets/Models/backpack/backpack.obj");
         backpack.AddComponent(ModelRendererComponent{backpackModel});
     }
@@ -99,7 +99,7 @@ void EditorSystem::OnStart()
     {
         auto transformComponent = pointlight1.GetComponent<Transform>();
 
-        glm::vec3 position = { 1.05, 0.0f, -1.0f };
+        glm::vec3 position = { 1.05, 0.0f, 1.0f };
         glm::vec3 ambient = { 0.2f, 0.2f, 0.2f };
         glm::vec3 diffuse = { 0.5f, 0.5f, 0.5f };
         glm::vec3 specular = { 1.0f, 1.0f, 1.0f};
@@ -119,7 +119,7 @@ void EditorSystem::OnStart()
     {
         auto transformComponent = pointlight2.GetComponent<Transform>();
 
-        glm::vec3 position = { -1.05, 0.0f, -1.0f };
+        glm::vec3 position = { -1.05, 0.0f, 1.0f };
         glm::vec3 ambient = { 0.2f, 0.2f, 0.2f };
         glm::vec3 diffuse = { 0.5f, 0.5f, 0.5f };
         glm::vec3 specular = { 1.0f, 1.0f, 1.0f };
@@ -158,7 +158,7 @@ void EditorSystem::OnUpdate(TimeStep timeStep)
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
       
-        m_EditorCamera.SetViewPortSize(m_ViewportSize.x, m_ViewportSize.y);
+        m_EditorCamera.SetViewportSize(m_ViewportSize.x, m_ViewportSize.y);
         gluPerspective(45.0,  m_ViewportSize.x/ m_ViewportSize.y, -1.0f, 1000.0f);
         glMatrixMode(GL_MODELVIEW);
 

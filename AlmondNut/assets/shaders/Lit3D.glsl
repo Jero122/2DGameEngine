@@ -63,7 +63,10 @@ in vec2 TexCoords;
 uniform Material material;
 uniform DirLight dirLight;
 uniform vec3 viewPos;
+
 uniform int entityID;
+
+uniform samplerCube skybox;
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
 {
@@ -123,6 +126,22 @@ void main()
     //result += CalcSpotLight(spotLight, norm, FragPos, viewDir);    
 
     Colour1 = vec4(result, 1.0);
+
+
+	
+    
+    vec3 I = normalize(FragPos - viewPos);
+    vec3 R = reflect(I, normalize(Normal));
+    vec4 reflectedColour = (texture(skybox, R));
+
+    reflectedColour = reflectedColour * vec4(texture(material.specular, TexCoords)) * 0.5;
+	Colour1 = Colour1 + reflectedColour;
+   
+  
+
+
+
+
     int id =-1;
 
     if (Colour1.a >= 0.5)

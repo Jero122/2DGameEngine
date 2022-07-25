@@ -50,6 +50,13 @@ private:
 	std::vector<PointLight> m_pointLights;
 	DirectionalLight m_directional_light = {{0,0,0} , {0,0,0} ,{0,0,0} , {0,0,0} , false};
 
+	std::unique_ptr<Shader> m_SkyboxShader;
+	std::unique_ptr<GLVertexArray> m_SkyboxVAO;
+	std::unique_ptr<GLVertexBuffer> m_SkyboxVBO;
+	unsigned int SkyboxTexture;
+
+
+
 public:
 	Renderer3D();
 	~Renderer3D() override;
