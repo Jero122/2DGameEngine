@@ -1,89 +1,133 @@
 ﻿#include "EditorCamera.h"
+
+#include <glm/gtx/quaternion.hpp>
+
 #include "Core/Input.h"
 
-EditorCamera::EditorCamera(float fov, float aspectRatio, float near, float far)
-	:m_Fov(fov), m_AspectRatio(aspectRatio), m_NearClip(near), m_FarClip(far)
+EditorCamera::EditorCamera(float fov, float aspectRatio, float nearClip, float farClip)
+	: m_FOV(fov), m_AspectRatio(aspectRatio), m_NearClip(nearClip), m_FarClip(farClip), Camera(glm::perspective(glm::radians(fov), aspectRatio, nearClip, farClip))
 {
-	UpdateProjection();
 	UpdateView();
 }
 
 void EditorCamera::UpdateProjection()
 {
 	m_AspectRatio = m_ViewportWidth / m_ViewportHeight;
-	m_Projection = glm::perspective(m_Fov, m_AspectRatio, m_NearClip, m_FarClip);
-	//gluPerspective(m_Fov, m_AspectRatio, m_NearClip, m_FarClip);
-	m_Projection = glm::scale(m_Projection, { -1,1,1 });
+	m_Projection = glm::perspective(glm::radians(m_FOV), m_AspectRatio, m_NearClip, m_FarClip);
 }
 
 void EditorCamera::UpdateView()
 {
-	glm::vec3 direction;
-	direction.x = cos(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
-	direction.y = sin(glm::radians(m_Pitch));
-	direction.z = sin(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
-	m_Front = glm::normalize(direction);
+	// m_Yaw = m_Pitch = 0.0f; // Lock the camera's rotation
+	m_Position = CalculatePosition();
 
-	auto centre = m_Position - m_Front;
-
-
-	m_ViewMatrix = (glm::lookAt(m_Position, m_Position + m_Front, m_Up));
+	glm::quat orientation = GetOrientation();
+	m_ViewMatrix = glm::translate(glm::mat4(1.0f), m_Position) * glm::toMat4(orientation);
+	m_ViewMatrix = glm::inverse(m_ViewMatrix);
 }
 
-
-void EditorCamera::SetViewPortSize(float width, float height)
+std::pair<float, float> EditorCamera::PanSpeed() const
 {
-	m_ViewportWidth = width;
-	m_ViewportHeight = height;
-	
-	
-	UpdateProjection();
+	float x = std::min(m_ViewportWidth / 1000.0f, 2.4f); // max = 2.4f
+	float xFactor = 0.0366f * (x * x) - 0.1778f * x + 0.3021f;
+
+	float y = std::min(m_ViewportHeight / 1000.0f, 2.4f); // max = 2.4f
+	float yFactor = 0.0366f * (y * y) - 0.1778f * y + 0.3021f;
+
+	return { xFactor, yFactor };
 }
 
+float EditorCamera::RotationSpeed() const
+{
+	return 0.8f;
+}
 
-void EditorCamera::OnUpdate(TimeStep timeStep)
+float EditorCamera::ZoomSpeed() const
+{
+	float distance = m_Distance * 0.2f;
+	distance = std::max(distance, 0.0f);
+	float speed = distance * distance;
+	speed = std::min(speed, 100.0f); // max speed = 100
+	return speed;
+}
+
+void EditorCamera::OnUpdate(TimeStep ts)
 {
 	auto input = Input::GetInstance();
-	auto const lookSensitivity = m_LookSensitivity * timeStep.GetSeconds();
-	auto const panSensitivity = m_PanSensitivity * timeStep.GetSeconds();
-	
 	if (input->GetKey(SDL_SCANCODE_LALT))
 	{
-		//Yaw and Pitch
-		if (input->GetMouseButton(Input::MouseButton::left))
+		//Pan
+		if (input->GetMouseButton(Input::MouseButton::middle))
 		{
-			m_Yaw += input->GetMouseX() * lookSensitivity;
-			m_Pitch += input->GetMouseY() * lookSensitivity;
+			auto [xSpeed, ySpeed] = PanSpeed();
+			m_FocalPoint += -GetRightDirection() * (float)input->GetMouseX() * xSpeed * m_Distance * ts.GetSeconds();
+			m_FocalPoint += GetUpDirection() * (float)input->GetMouseY() * ySpeed * m_Distance * ts.GetSeconds();
+
+		}
+		//Yaw and Pitch
+		else if (input->GetMouseButton(Input::MouseButton::left))
+		{
+			float yawSign = GetUpDirection().y < 0 ? -1.0f : 1.0f;
+			m_Yaw += yawSign * input->GetMouseX() * RotationSpeed() * ts.GetSeconds();
+			m_Pitch += input->GetMouseY() * RotationSpeed() * ts.GetSeconds();
 		}
 		//Zoom
-		if (input->GetMouseButton(Input::MouseButton::right))
+		else if (input->GetMouseButton(Input::MouseButton::right))
 		{
-			m_Position.z -= input->GetMouseX() * m_ZoomSensitivity * timeStep.GetSeconds();
+			m_Distance -= input->GetMouseX() * ZoomSpeed() * ts.GetSeconds();
 		}
-	}
-
-	//Pan
-	if (input->GetMouseButton(Input::MouseButton::middle))
-	{
-		m_Position.x += input->GetMouseX() * panSensitivity;
-		m_Position.y += input->GetMouseY() * panSensitivity;
+		if (m_Distance < 1.0f)
+		{
+			m_FocalPoint += GetForwardDirection();
+			m_Distance = 1.0f;
+		}
 	}
 
 	//Zoom
 	if (input->getWheelY() > 0)
 	{
-		m_Position.z -= 1.0f * m_ZoomSensitivity;
+		m_Distance -= 1.0f;
 	}
 	if (input->getWheelY() < 0)
 	{
-		m_Position.z += 1.0f * m_ZoomSensitivity;
+		m_Distance += 1.0f ;
 	}
-	
+
 	if (input->GetKeyDown(SDL_SCANCODE_X))
 	{
-		m_Yaw = -90.0f;
+		m_Yaw = 0.0f;
 		m_Pitch = 0.0f;
+		m_Distance = 1.0f;
 	}
-	
+
+
+
 	UpdateView();
 }
+
+
+glm::vec3 EditorCamera::GetUpDirection() const
+{
+	return glm::rotate(GetOrientation(), glm::vec3(0.0f, 1.0f, 0.0f));
+}
+
+glm::vec3 EditorCamera::GetRightDirection() const
+{
+	return glm::rotate(GetOrientation(), glm::vec3(1.0f, 0.0f, 0.0f));
+}
+
+glm::vec3 EditorCamera::GetForwardDirection() const
+{
+	return glm::rotate(GetOrientation(), glm::vec3(0.0f, 0.0f, -1.0f));
+}
+
+glm::vec3 EditorCamera::CalculatePosition() const
+{
+	return m_FocalPoint - GetForwardDirection() * m_Distance;
+}
+
+glm::quat EditorCamera::GetOrientation() const
+{
+	return glm::quat(glm::vec3(-m_Pitch, -m_Yaw, 0.0f));
+}
+
