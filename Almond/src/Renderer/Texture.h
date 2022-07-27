@@ -27,7 +27,6 @@ public:
 	std::string m_FilePath;
 	std::string type;
 private:
-	unsigned int id;
 	std::shared_ptr<GLTexture> m_Texture;
 	int m_Width;
 	int m_Height;

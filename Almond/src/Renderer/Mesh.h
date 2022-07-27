@@ -49,6 +49,8 @@ public:
 		m_VertexArray->Bind();
 		GLRenderCommand::DrawElementsTriangle(indices.size(), 0);
 		m_VertexArray->UnBind();
+
+		GLRenderCommand::BindTextures(1, textures.size(), 0);
 	}
 private:
 	std::unique_ptr<GLVertexArray> m_VertexArray;
