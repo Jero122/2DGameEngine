@@ -25,6 +25,7 @@ IncludeDir["ImGuizmo"] = "%{wks.location}/Almond/vendor/ImGuizmo"
 IncludeDir["yaml"] = "%{wks.location}/Almond/vendor/yaml-cpp/include"
 IncludeDir["assimp"] = "%{wks.location}/Almond/dependencies/include/assimp"
 IncludeDir["IconFontCppHeaders"] = "%{wks.location}/Almond/vendor/IconFontCppHeaders"
+IncludeDir["spdlog"] = "%{wks.location}/Almond/vendor/spdlog/include"
 
 include "Almond/vendor/imgui"
 include "Almond/vendor/yaml-cpp"
@@ -66,7 +67,8 @@ project "Almond"
 		"%{IncludeDir.yaml}",
 		"%{IncludeDir.assimp}",
 		"%{IncludeDir.ImGuizmo}",
-		"%{IncludeDir.IconFontCppHeaders}"
+		"%{IncludeDir.IconFontCppHeaders}",
+		"%{IncludeDir.spdlog}"
 	}
 
 	links

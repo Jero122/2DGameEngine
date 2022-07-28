@@ -10,3 +10,6 @@
 [submodule "Almond/vendor/ImGuizmo"]
 	path = Almond/vendor/ImGuizmo
 	url = https://github.com/Jero122/ImGuizmo
+[submodule "Almond/vendor/spdlog"]
+	path = Almond/vendor/spdlog
+	url = https://github.com/gabime/spdlog
