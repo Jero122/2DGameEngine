@@ -10,6 +10,7 @@
 #include <vector>
 #include "Mesh.h"
 #include "Shader.h"
+#include "Core/Log.h"
 
 class Model
 {
@@ -41,12 +42,14 @@ private:
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
-			std::cout << "ERROR::ASSIMP::" << import.GetErrorString() << std::endl;
+			AL_ENGINE_ERROR("ASSIMP{0}:", import.GetErrorString());
 			return;
 		}
 		directory = path.substr(0, path.find_last_of('/'));
 
 		processNode(scene->mRootNode, scene);
+
+		AL_ENGINE_INFO("Model loaded at path:{0}", path);
 	}
 	void processNode(aiNode* node, const aiScene* scene)
 	{
@@ -57,7 +60,7 @@ private:
 			// the scene contains all the data, node is just to keep stuff organized (like relations between nodes).
 			aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 			meshes.push_back(processMesh(mesh, scene));
-			std::cout << "Processing Mesh\n";
+			AL_ENGINE_TRACE("Processed Mesh:{0}", mesh->mName.C_Str());
 		}
 		// after we've processed all of the meshes (if any) we then recursively process each of the children nodes
 		for (unsigned int i = 0; i < node->mNumChildren; i++)
@@ -173,7 +176,6 @@ private:
 				texture.type= typeName;
 				textures.push_back(texture);
 				textures_loaded.push_back(texture);  // store it as texture loaded for entire model, to ensure we won't unnecesery load duplicate textures.
-				std::cout << "Texture Loaded\n";
 			}
 		}
 		return textures;

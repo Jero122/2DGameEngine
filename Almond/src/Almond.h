@@ -17,11 +17,11 @@
 #include "Scenes/Scene.h"
 #include "ECS/SceneView.h"
 
-
 /// Core ///
 #include "Core/Input.h"
 #include "Core/GameSystem.h"
 #include "Core/TimeStep.h"
+#include "Core/Log.h"
 
 /// RENDERER ///
 #include "Renderer/Camera.h"

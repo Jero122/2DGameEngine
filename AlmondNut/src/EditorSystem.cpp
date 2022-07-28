@@ -14,6 +14,8 @@
 #include "Scenes/SceneSerializer.h"
 
 #include "iostream"
+#include "Core/Log.h"
+
 
 EditorSystem::EditorSystem()
 {
@@ -27,7 +29,10 @@ EditorSystem::EditorSystem()
 	//m_GLFrameBuffer->AddColourAttachment(GL_R8I, GL_NEAREST);
     m_GLFrameBuffer->AddDepthAttachment();
     if (glCheckNamedFramebufferStatus(m_GLFrameBuffer->ID(), GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-        std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+    {
+        AL_ERROR("Framebuffer failed to compile");
+    }
+       
     m_GLFrameBuffer->UnBind();
 }
 std::default_random_engine generator;
@@ -201,7 +206,6 @@ void EditorSystem::OnUpdate(TimeStep timeStep)
         int mouseY = (int)my;
 
         int pixel = m_GLFrameBuffer->ReadColourAttachment(1, mouseX, mouseY);
-        std::cout << pixel << "\n";
 
         if (pixel <= -1)
         {
@@ -210,6 +214,7 @@ void EditorSystem::OnUpdate(TimeStep timeStep)
         else
         {
             m_HoveredEntity = Entity{(EntityID)pixel, m_CurrentScene.get() };
+            AL_ENGINE_TRACE("Entity: {0} selected", m_HoveredEntity.GetHandle());
             m_SceneHierarchyPanel.SetSelectedEntity(m_HoveredEntity);
         }
 	}

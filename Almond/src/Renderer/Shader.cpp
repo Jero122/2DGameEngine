@@ -4,6 +4,8 @@
 #include <fstream>
 #include <GL/glew.h> // include glad to get all the required OpenGL headers
 
+#include "Core/Log.h"
+
 void Shader::init(std::string& sourcePath)
 {
 
@@ -111,8 +113,9 @@ unsigned Shader::compileShader(unsigned type, const std::string& source)
 
 		glGetShaderInfoLog(id, length, &length, message);
 
-		std::cout << "SHADER DID NOT COMPILE: " << (type == GL_VERTEX_SHADER ? "VERTEX" : "FRAGMENT") << std::endl;
-		std::cout << message << std::endl;
+		AL_ENGINE_ERROR("SHADER DID NOT COMPILE: {0} \n{1}", (type == GL_VERTEX_SHADER ? "VERTEX" : "FRAGMENT"), message);
+		AL_ENGINE_ERROR("{0}", (type == GL_VERTEX_SHADER ? "VERTEX" : "FRAGMENT"));
+
 		glDeleteShader(id);
 		return 0;
 	}

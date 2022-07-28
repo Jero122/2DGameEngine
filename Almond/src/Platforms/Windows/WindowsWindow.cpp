@@ -2,6 +2,8 @@
 #define GLEW_STATIC
 #include <GL/glew.h>
 
+#include "Core/Log.h"
+
 WindowsWindow::WindowsWindow(const WindowProps& props)
 {
 	Init(props);
@@ -34,7 +36,7 @@ void WindowsWindow::Init(const WindowProps& props)
 	gl_context = SDL_GL_CreateContext(m_window);
 	if (glewInit() != GLEW_OK)
 	{
-		std::cout << "GLEW DIDNT INIT";
+		AL_ENGINE_CRITICAL("GLEW DID NOT INITIALISE");
 	}
 
 

@@ -1,5 +1,6 @@
 #include "GLCubeMap.h"
 
+#include "Core/Log.h"
 #include "Renderer/Bitmap.h"
 #include "Renderer/UtilCubeMap.h"
 #include "stb/stb_image.h"
@@ -33,6 +34,8 @@ GLCubeMap::GLCubeMap(const char* fileName)
 		data += cubemap.w_ * cubemap.h_ * cubemap.comp_ * Bitmap::getBytesPerComponent(cubemap.fmt_);
 	}
 
+	AL_ENGINE_INFO("Cubemap loaded at path:{0}", fileName);
+
 	glGenerateTextureMipmap(id);
 }
 
@@ -52,10 +55,12 @@ GLCubeMap::GLCubeMap(std::vector<std::string> faces)
 			glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 			stbi_image_free(data);
+
+			AL_ENGINE_INFO("Cubemap texture loaded at path:{0}", faces[i]);
 		}
 		else
 		{
-			std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
+			AL_ENGINE_ERROR("Cubemap texture failed to load at path: {0}", faces[i]);
 			stbi_image_free(data);
 		}
 	}

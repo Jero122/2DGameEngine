@@ -87,8 +87,9 @@ public:
 			// Only depth-pass
 			glDrawBuffer(GL_NONE);
 		}
-		if (glCheckNamedFramebufferStatus(id,GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-			std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+		if (glCheckNamedFramebufferStatus(id, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+			AL_ENGINE_ERROR("Frambuffer is not complete!");
+
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 

@@ -29,13 +29,6 @@ public:
 	virtual void* GetNativeWindow() const = 0;
 	virtual void* GetGLContext() const = 0;
 
-	/*
-	Camera camera = Camera();*/
 private:
-	/*Window()
-	{
-		std::cout << "Window manager initialised" << std::endl;
-		camera.init(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	}*/
 };
 

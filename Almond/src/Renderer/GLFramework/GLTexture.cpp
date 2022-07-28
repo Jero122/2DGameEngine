@@ -1,5 +1,7 @@
 #include "GLTexture.h"
 #include <cassert>
+
+#include "Core/Log.h"
 #include "stb/stb_image.h"
 
 int getNumMipMapLevels2D(int w, int h)
@@ -63,11 +65,11 @@ GLTexture::GLTexture(GLenum type, const char* fileName, GLenum clamp)
 		// If file is not found, a fallback texture is used
 		if (!img)
 		{
-			fprintf(stderr, "WARNING: could not load image `%s`, using a fallback.\n", fileName);
+			AL_ENGINE_WARN("GLTexture could not load image {0} , using a fallback", fileName);
 			img = genDefaultCheckerboardImage(&m_Width, &m_Height);
 			if (!img)
 			{
-				fprintf(stderr, "FATAL ERROR: out of memory allocating image for fallback texture\n");
+				AL_ENGINE_ERROR("GLTexture out of memory allocating image for fallback texture");
 				exit(EXIT_FAILURE);
 			}
 		}
@@ -76,6 +78,8 @@ GLTexture::GLTexture(GLenum type, const char* fileName, GLenum clamp)
 		glTextureStorage2D(id, numMipmaps, GL_RGBA8, m_Width, m_Height);
 		glTextureSubImage2D(id, 0, 0, 0, m_Width, m_Height, GL_RGBA, GL_UNSIGNED_BYTE, img);
 		stbi_image_free((void*)img);
+
+		AL_ENGINE_INFO("Texture loaded at path:{0}", fileName);
 		break;
 	}
 	default:

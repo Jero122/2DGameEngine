@@ -242,7 +242,8 @@ void SceneHierarchyPanel::DrawEntityNode(Entity entity)
 	
 	if (ImGui::IsItemClicked())
 	{
-		std::cout << entity.GetHandle() << "\n";
+		AL_ENGINE_TRACE("Entity: {0} selected", entity.GetHandle());
+
 		m_SelectedEntity = entity;
 	}
 
