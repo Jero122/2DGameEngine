@@ -95,26 +95,23 @@ void EditorSystem::OnStart()
     Entity backpack = m_CurrentScene->CreateEntity("backpack");
     {
         auto transformComponent = backpack.GetComponent<Transform>();
-        *transformComponent = Transform{ glm::vec3(0,0,0), glm::vec3(0,0,0),glm::vec3(1,1,1) };
-        auto backpackModel = std::make_shared<Model>("assets/Models/backpack/backpack.obj");
+        *transformComponent = Transform{ glm::vec3(0,0,0), glm::vec3(0,0,0),glm::vec3(0.1,0.1,0.1) };
+        auto backpackModel = std::make_shared<Model>("assets/Models/Sponza/sponza.obj");
         backpack.AddComponent(ModelRendererComponent{backpackModel});
     }
 
-    Entity pointlight1 = m_CurrentScene->CreateEntity("pointlight");
+    Entity pointlight1 = m_CurrentScene->CreateEntity("direction light");
     {
         auto transformComponent = pointlight1.GetComponent<Transform>();
 
         glm::vec3 position = { 1.05, 0.0f, 1.0f };
-        glm::vec3 ambient = { 0.2f, 0.2f, 0.2f };
+        glm::vec3 ambient = { 1.0f, 233.0f/255.0f, 219.0f/255.0f};
         glm::vec3 diffuse = { 0.5f, 0.5f, 0.5f };
         glm::vec3 specular = { 1.0f, 1.0f, 1.0f};
-        float constant = 1.0f;
-        float linear = 0.09f;
-        float quadratic = 0.032f;
-
+        glm::vec3 direction = { 144,128,272 };
 
         *transformComponent = Transform{ position, glm::vec3(0,0,0),glm::vec3(0.1f,0.1f,0.1f) };
-        LightComponent lightcomponent{position,ambient,diffuse,specular,constant,linear,quadratic};
+        LightComponent lightcomponent{ambient,diffuse,specular,direction};
         pointlight1.AddComponent(lightcomponent);
         auto cube = std::make_shared<Model>("assets/Models/Cube.obj");
         pointlight1.AddComponent(ModelRendererComponent{ cube });

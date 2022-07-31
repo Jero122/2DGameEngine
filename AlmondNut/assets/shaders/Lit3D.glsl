@@ -129,14 +129,14 @@ void main()
 
 
 	
-    
+  /*  
     vec3 I = normalize(FragPos - viewPos);
     vec3 R = reflect(I, normalize(Normal));
     vec4 reflectedColour = (texture(skybox, R));
 
     reflectedColour = reflectedColour * vec4(texture(material.specular, TexCoords)) * 0.5;
 	Colour1 = Colour1 + reflectedColour;
-   
+   */
   
 
 
