@@ -15,6 +15,8 @@
 
 #include "iostream"
 #include "Core/Log.h"
+#include "ECS/Components/MeshRendererComponent.h"
+#include "Renderer/Mesh/AMesh.h"
 
 
 EditorSystem::EditorSystem()
@@ -59,45 +61,26 @@ void EditorSystem::OnStart()
 
     m_AssetBrowserPanel.OnStart();
 
-    /*Entity floor = m_CurrentScene->CreateEntity("Floor");
+    //Custom Mesh Format
+    Entity sponza = m_CurrentScene->CreateEntity("sponza");
     {
-        auto transformComponent = floor.GetComponent<Transform>();
-        *transformComponent = Transform{ glm::vec3(0,-3.5,0), glm::vec3(0,0,0),glm::vec3(16,1,1) };
+        auto transformComponent = sponza.GetComponent<Transform>();
+        *transformComponent = Transform{ glm::vec3(0,-5,0), glm::vec3(0,0,0),glm::vec3(0.1,0.1,0.1) };
 
-        floor.AddComponent(SpriteRenderer{ 16, 1, {1,1,1,1.0f} });
+        auto backpackMesh = std::make_shared<AMesh>("assets/Models/Sponza/sponza.obj");
 
-        RigidBody rb = RigidBody{};
-        rb.FixedRotation = false;
-        rb.Type = RigidBody::BodyType::Static;
-        floor.AddComponent(rb);
-
-        BoxCollider2D collider = BoxCollider2D{ {0.0f,0.0f}, {0.5f, 0.5f} };
-        floor.AddComponent(collider);
+        sponza.AddComponent(MeshRendererComponent{backpackMesh});
     }
 
-    Entity enttA = m_CurrentScene->CreateEntity("crate");
-    {
-        auto transformComponent = enttA.GetComponent<Transform>();
-        *transformComponent = Transform{ glm::vec3(0,10,0), glm::vec3(0,0,0),glm::vec3(1,1,1) };
-
-        enttA.AddComponent(SpriteRenderer{ 1, 1, Crate->ID() });
-
-        RigidBody rb = RigidBody{};
-        rb.FixedRotation = false;
-        rb.Type = RigidBody::BodyType::Dynamic;
-        enttA.AddComponent(rb);
-
-        BoxCollider2D collider = BoxCollider2D{ {0.0f,0.0f}, {0.5f, 0.5f} };
-        collider.Friction = 0.1f;
-        enttA.AddComponent(collider);
-    }*/
-
+    //Model Format
     Entity backpack = m_CurrentScene->CreateEntity("backpack");
     {
         auto transformComponent = backpack.GetComponent<Transform>();
-        *transformComponent = Transform{ glm::vec3(0,0,0), glm::vec3(0,0,0),glm::vec3(0.1,0.1,0.1) };
-        auto backpackModel = std::make_shared<Model>("assets/Models/Sponza/sponza.obj");
-        backpack.AddComponent(ModelRendererComponent{backpackModel});
+        *transformComponent = Transform{ glm::vec3(0,0,0), glm::vec3(0,0,0),glm::vec3(1,1,1) };
+
+        auto backpackMesh = std::make_shared<Model>("assets/Models/backpack/backpack.obj");
+
+        backpack.AddComponent(ModelRendererComponent{ backpackMesh });
     }
 
     Entity pointlight1 = m_CurrentScene->CreateEntity("direction light");
@@ -105,7 +88,7 @@ void EditorSystem::OnStart()
         auto transformComponent = pointlight1.GetComponent<Transform>();
 
         glm::vec3 position = { 1.05, 0.0f, 1.0f };
-        glm::vec3 ambient = { 1.0f, 233.0f/255.0f, 219.0f/255.0f};
+        glm::vec3 ambient = { 96.0f/255.0f, 96.0f/255.0f, 96.0f/255.0f};
         glm::vec3 diffuse = { 0.5f, 0.5f, 0.5f };
         glm::vec3 specular = { 1.0f, 1.0f, 1.0f};
         glm::vec3 direction = { 144,128,272 };

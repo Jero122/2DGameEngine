@@ -151,6 +151,33 @@ void Renderer3D::EndScene()
 		model_tuple.model->Draw(*m_Shader);
 	}
 
+	//Draw Meshes
+	for (auto mesh_tuple : m_Meshes)
+	{
+		glm::mat4 modelMatrix{ 1.0f };
+		modelMatrix = glm::translate(glm::mat4(1.0f), mesh_tuple.position);
+
+		if (mesh_tuple.rotation.x != 0)
+		{
+			modelMatrix = modelMatrix * glm::rotate(glm::mat4(1.0f), glm::radians(mesh_tuple.rotation.x), { 1,0,0 });
+		}
+		if (mesh_tuple.rotation.y != 0)
+		{
+			modelMatrix = modelMatrix * glm::rotate(glm::mat4(1.0f), glm::radians(mesh_tuple.rotation.y), { 0,1,0 });
+		}
+		if (mesh_tuple.rotation.z != 0)
+		{
+			modelMatrix = modelMatrix * glm::rotate(glm::mat4(1.0f), glm::radians(mesh_tuple.rotation.z), { 0,0,1 });
+		}
+
+		modelMatrix = modelMatrix * glm::scale(glm::mat4(1.0f), mesh_tuple.scale);
+
+		m_Shader->setMat4("model", modelMatrix);
+		m_Shader->setInt("entityID", mesh_tuple.entityID);
+
+		mesh_tuple.mesh->Draw();
+	}
+
 	// draw skybox as last
 	glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
 	m_SkyboxShader->use();
@@ -185,6 +212,7 @@ void Renderer3D::EndScene()
 	m_Shader->setInt("numPointLights", 0);
 
 	m_Models.clear();
+	m_Meshes.clear();
 	m_pointLights.clear();
 }
 
@@ -197,6 +225,19 @@ void Renderer3D::Submit(std::shared_ptr<Model> model, const glm::vec3 position, 
 	const glm::vec3 scale)
 {
 }
+
+void Renderer3D::Submit(std::shared_ptr<GLMesh> mesh, const glm::vec3 position, const glm::vec3 rotation,
+	const glm::vec3 scale, int entityID)
+{
+	m_Meshes.push_back({ mesh,position,rotation,scale, entityID });
+}
+
+void Renderer3D::Submit(std::shared_ptr<GLMesh> mesh, const glm::vec3 position, const glm::vec3 rotation,
+	const glm::vec3 scale)
+{
+}
+
+
 
 void Renderer3D::SubmitPointLight(glm::vec3 position, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular,
                                   float constant, float linear, float quadratic)

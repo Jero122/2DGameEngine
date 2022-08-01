@@ -11,6 +11,9 @@ bin-int/
 **.hdr
 **.exr
 
+#Custom Binaries
+**.mesh
+
 # Visual Studio files and folder
 .vs/
 **.sln

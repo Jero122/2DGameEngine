@@ -4,6 +4,7 @@
 #include <box2d/b2_polygon_shape.h>
 #include "ECS/Components/BoxCollider2D.h"
 #include "ECS/Components/LightComponent.h"
+#include "ECS/Components/MeshRendererComponent.h"
 #include "ECS/Components/ModelRendererComponent.h"
 #include "ECS/Components/MovementComponent.h"
 #include "ECS/Components/RigidBody.h"
@@ -24,6 +25,7 @@ Scene::Scene()
 	m_Ecs.CreateComponent<BoxCollider2D>();
 	m_Ecs.CreateComponent<MovementComponent>();
 	m_Ecs.CreateComponent<ModelRendererComponent>();
+	m_Ecs.CreateComponent<MeshRendererComponent>();
 	m_Ecs.CreateComponent<LightComponent>();
 
 	m_Renderer3D = new Renderer3D();
@@ -146,6 +148,15 @@ void Scene::Render(EditorCamera& editorCamera)
 		auto modelRenderer = m_Ecs.GetComponent<ModelRendererComponent>(ent);
 		m_Renderer3D->Submit(modelRenderer->model, transform->position, transform->rotation, transform->scale, ent);
 	}
+
+	for (EntityID ent : SceneView<Transform, MeshRendererComponent>(m_Ecs))
+	{
+		auto transform = m_Ecs.GetComponent<Transform>(ent);
+		auto meshRenderer = m_Ecs.GetComponent<MeshRendererComponent>(ent);
+		m_Renderer3D->Submit(meshRenderer->glMesh, transform->position, transform->rotation, transform->scale, ent);
+	}
+
+
 
 	for (EntityID entt : SceneView<Transform, LightComponent>(m_Ecs))
 	{

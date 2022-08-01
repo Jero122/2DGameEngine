@@ -1,5 +1,7 @@
 #pragma once
 #include "GLFramework/GLCubeMap.h"
+#include "GLFramework/GLMesh.h"
+#include "Mesh/AMesh.h"
 #include "Renderer/Renderer.h"
 
 class Renderer3D : public Renderer
@@ -8,6 +10,17 @@ private:
 	struct ModelTuple
 	{
 		std::shared_ptr<Model> model;
+		glm::vec3 position;
+		glm::vec3 rotation;
+		glm::vec3 scale;
+
+		//editor only
+		int entityID;
+	};
+
+	struct MeshTuple
+	{
+		std::shared_ptr<GLMesh> mesh;
 		glm::vec3 position;
 		glm::vec3 rotation;
 		glm::vec3 scale;
@@ -48,6 +61,8 @@ private:
 	};
 
 	std::vector<ModelTuple> m_Models;
+	std::vector<MeshTuple> m_Meshes;
+
 	std::vector<PointLight> m_pointLights;
 	DirectionalLight m_directional_light = {{0,0,0} , {0,0,0} ,{0,0,0} , {0,0,0} , false};
 
@@ -65,9 +80,16 @@ public:
 	void ResetStats() override;
 	RenderStats GetStats() override;
 
+	//Old Models
 	void Submit(std::shared_ptr<Model> model, const glm::vec3 position, const glm::vec3 rotation,
 		const glm::vec3 scale);
 	void Submit(std::shared_ptr<Model> model, const glm::vec3 position, const glm::vec3 rotation,
+		const glm::vec3 scale, int entityID);
+
+	//New Mesh Format
+	void Submit(std::shared_ptr<GLMesh> mesh, const glm::vec3 position, const glm::vec3 rotation,
+		const glm::vec3 scale);
+	void Submit(std::shared_ptr<GLMesh> mesh, const glm::vec3 position, const glm::vec3 rotation,
 		const glm::vec3 scale, int entityID);
 
 	void SubmitPointLight(glm::vec3 position, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic);
