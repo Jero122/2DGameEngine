@@ -26,6 +26,7 @@ IncludeDir["yaml"] = "%{wks.location}/Almond/vendor/yaml-cpp/include"
 IncludeDir["assimp"] = "%{wks.location}/Almond/dependencies/include/assimp"
 IncludeDir["IconFontCppHeaders"] = "%{wks.location}/Almond/vendor/IconFontCppHeaders"
 IncludeDir["spdlog"] = "%{wks.location}/Almond/vendor/spdlog/include"
+IncludeDir["efsw"] = "%{wks.location}/Almond/vendor/efsw/include"
 
 include "Almond/vendor/imgui"
 include "Almond/vendor/yaml-cpp"
@@ -68,7 +69,8 @@ project "Almond"
 		"%{IncludeDir.assimp}",
 		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.IconFontCppHeaders}",
-		"%{IncludeDir.spdlog}"
+		"%{IncludeDir.spdlog}",
+		"%{IncludeDir.efsw}"
 	}
 
 	links
@@ -81,7 +83,8 @@ project "Almond"
 		"box2d",
 		"ImGui",
 		"yaml-cpp",
-		"assimp-vc143-mt"
+		"assimp-vc143-mt",
+		"efsw-static-release"
 	}
 
 	filter "system:windows"

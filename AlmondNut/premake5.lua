@@ -32,7 +32,8 @@ project "AlmondNut"
 		"%{IncludeDir.stb}",
 		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.IconFontCppHeaders}",
-		"%{IncludeDir.spdlog}"
+		"%{IncludeDir.spdlog}",
+		"%{IncludeDir.efsw}"
 	}
 
 	links
@@ -45,7 +46,8 @@ project "AlmondNut"
 		"opengl32",
 		"ImGui",
 		"box2d",
-		"assimp-vc143-mt"
+		"assimp-vc143-mt",
+		"efsw-static-release"
 	}
 
 	filter "system:windows"

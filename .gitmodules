@@ -13,3 +13,6 @@
 [submodule "Almond/vendor/spdlog"]
 	path = Almond/vendor/spdlog
 	url = https://github.com/gabime/spdlog
+[submodule "Almond/vendor/efsw"]
+	path = Almond/vendor/efsw
+	url = https://github.com/SpartanJ/efsw
