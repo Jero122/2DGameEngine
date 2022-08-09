@@ -3,11 +3,12 @@
 
 #include "TimeStep.h"
 
-class GameSystem
+class SubSystem
 {
 public:
+	SubSystem() = default;
+	~SubSystem() = default;
 
-	virtual ~GameSystem() = default;
 	virtual void OnStart() {}
 	virtual void OnEnd(){}
 	virtual void OnUpdate(TimeStep timeStep){}

@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 
-#include "GameSystem.h"
+#include "SubSystem.h"
 
 class SystemStack
 {
@@ -9,19 +9,19 @@ public:
 	SystemStack() = default;
 	~SystemStack();
 
-	void PushSystem(GameSystem* system);
-	void PopSystem(GameSystem* system);
+	void PushSystem(SubSystem* system);
+	void PopSystem(SubSystem* system);
 
-	void PushOverLay(GameSystem* overlay);
-	void PopOverlay(GameSystem* overlay);
+	void PushOverLay(SubSystem* overlay);
+	void PopOverlay(SubSystem* overlay);
 
-	std::vector<GameSystem*>::iterator begin() { return m_Systems.begin(); }
-	std::vector<GameSystem*>::iterator end() { return m_Systems.end(); }
+	std::vector<SubSystem*>::iterator begin() { return m_Systems.begin(); }
+	std::vector<SubSystem*>::iterator end() { return m_Systems.end(); }
 
-	std::vector<GameSystem*>::const_iterator Begin() const { return m_Systems.begin(); }
-	std::vector<GameSystem*>::const_iterator End() const { return m_Systems.end(); }
+	std::vector<SubSystem*>::const_iterator Begin() const { return m_Systems.begin(); }
+	std::vector<SubSystem*>::const_iterator End() const { return m_Systems.end(); }
 
 private:
-	std::vector<GameSystem*> m_Systems;
+	std::vector<SubSystem*> m_Systems;
 	unsigned int m_SystemInsertIndex = 0;
 };

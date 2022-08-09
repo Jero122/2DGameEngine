@@ -11,11 +11,11 @@
 #include "ImGuizmo.h"
 #include "Panels/AssetBrowserPanel.h"
 
-class EditorSystem : public GameSystem
+class EditorSystem : public SubSystem
 {
 public:
 	EditorSystem();
-	~EditorSystem() override;
+	~EditorSystem();
 	
 	void OnStart() override;
 	void OnEnd() override;

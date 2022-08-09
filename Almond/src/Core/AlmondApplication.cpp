@@ -2,6 +2,7 @@
 #include "TimeStep.h"
 #include "System Stack/ImGuiSystem.h"
 #include "System Stack/InputSystem.h"
+#include "FileSystem/FileSystem.h"
 
 AlmondApplication* AlmondApplication::s_Instance = nullptr;
 int s_componentCounter = 0;
@@ -15,7 +16,9 @@ AlmondApplication::AlmondApplication()
 	InputSystem* input = new InputSystem();
 	m_SystemStack.PushSystem(input);
 
-	
+	FileSystem* fileSystem = new FileSystem();
+	m_SystemStack.PushSystem(fileSystem);
+
 	//IMGUI
 	m_ImGuiSystem = new ImGuiSystem();
 	m_SystemStack.PushOverLay(m_ImGuiSystem);
@@ -31,13 +34,13 @@ AlmondApplication::~AlmondApplication()
 	//TODO destruction of application
 }
 
-void AlmondApplication::PushSystem(GameSystem* system)
+void AlmondApplication::PushSystem(SubSystem* system)
 {
 	m_SystemStack.PushSystem(system);
 	system->OnStart();
 }
 
-void AlmondApplication::PushOverlay(GameSystem* overlay)
+void AlmondApplication::PushOverlay(SubSystem* overlay)
 {
 	m_SystemStack.PopOverlay(overlay);
 	overlay->OnStart();

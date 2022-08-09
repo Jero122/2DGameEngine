@@ -15,8 +15,8 @@ public:
 	ImGuiSystem* GetImGuiSystem() { return m_ImGuiSystem; }
 
 
-	void PushSystem(GameSystem* system);
-	void PushOverlay(GameSystem* overlay);
+	void PushSystem(SubSystem* system);
+	void PushOverlay(SubSystem* overlay);
 
 	void Close();
 	void Run();

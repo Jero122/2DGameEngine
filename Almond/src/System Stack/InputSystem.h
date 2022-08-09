@@ -1,19 +1,12 @@
 #pragma once
 #include "Core/Input.h"
-#include "Core/GameSystem.h"
+#include "Core/SubSystem.h"
 
-class InputSystem : public GameSystem
+class InputSystem : public SubSystem
 {
 public:
-	InputSystem()
-	{
-		
-	}
-	
-	~InputSystem() override
-	{
-		
-	}
+	InputSystem() = default;
+	~InputSystem() = default;
 
 	void OnUpdate(TimeStep timeStep) override
 	{

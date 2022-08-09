@@ -9,11 +9,6 @@
 #include "IconFontCppHeaders/IconsFontAwesome5.h"
 
 
-
-ImGuiSystem::~ImGuiSystem()
-{
-}
-
 void ImGuiSystem::OnStart()
 {
 	IMGUI_CHECKVERSION();

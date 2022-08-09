@@ -1,7 +1,7 @@
 #pragma once
-#include "Core/GameSystem.h"
+#include "Core/SubSystem.h"
 
-class ImGuiSystem : public GameSystem
+class ImGuiSystem : public SubSystem
 {
 public:
 	enum Theme
@@ -11,12 +11,9 @@ public:
 		Unreal
 	};
 	
-	ImGuiSystem()
-	{
-		
-	}
+	ImGuiSystem() = default;
+	~ImGuiSystem() = default;
 
-	~ImGuiSystem() override;
 	void OnStart() override;
 	
 	void OnEnd() override;
