@@ -16,31 +16,7 @@ public:
 	class UpdateListener : public efsw::FileWatchListener
 	{
 	public:
-		void handleFileAction(efsw::WatchID watchid, const std::string& dir, const std::string& filename, efsw::Action action, std::string oldFilename) override
-		{
-			switch (action)
-			{
-			case efsw::Actions::Add:
-				AL_ENGINE_TRACE("DIR ({0}): FILE ({1}) has been added", dir, filename);
-				//std::cout << "DIR (" << dir << ") FILE (" << filename << ") has event Added" << std::endl;
-				break;
-			case efsw::Actions::Delete:
-				AL_ENGINE_TRACE("DIR ({0}): FILE ({1}) has been deleted", dir, filename);
-				//std::cout << "DIR (" << dir << ") FILE (" << filename << ") has event Delete" << std::endl;
-				break;
-			case efsw::Actions::Modified:
-				AL_ENGINE_TRACE("DIR ({0}): FILE ({1}) has been modified", dir, filename);
-				//std::cout << "DIR (" << dir << ") FILE (" << filename << ") has event Modified" << std::endl;
-				break;
-			case efsw::Actions::Moved:
-				AL_ENGINE_TRACE("DIR ({0}): FILE ({1}) has been moved from ({2})", dir, filename, oldFilename);
-				//std::cout << "DIR (" << dir << ") FILE (" << filename << ") has event Moved from (" << oldFilename << ")" << std::endl;
-				break;
-			default:
-				std::cout << "Should never happen!" << std::endl;
-			}
-			dirty = true;
-		}
+		void handleFileAction(efsw::WatchID watchid, const std::string& dir, const std::string& filename, efsw::Action action, std::string oldFilename);
 	};
 
 	class FileNode
