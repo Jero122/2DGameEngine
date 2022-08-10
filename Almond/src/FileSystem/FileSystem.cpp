@@ -1,5 +1,9 @@
 #include "FileSystem.h"
 
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
+#include <assimp/scene.h>
+
 #include "Core/Input.h"
 #include "efsw/efsw.hpp"
 #include "Core/Log.h"
@@ -12,24 +16,171 @@ void FileSystem::UpdateListener::handleFileAction(efsw::WatchID watchid, const s
 	{
 	case efsw::Actions::Add:
 		AL_ENGINE_TRACE("DIR ({0}): FILE ({1}) has been added", dir, filename);
-		//std::cout << "DIR (" << dir << ") FILE (" << filename << ") has event Added" << std::endl;
 		break;
 	case efsw::Actions::Delete:
 		AL_ENGINE_TRACE("DIR ({0}): FILE ({1}) has been deleted", dir, filename);
-		//std::cout << "DIR (" << dir << ") FILE (" << filename << ") has event Delete" << std::endl;
 		break;
 	case efsw::Actions::Modified:
 		AL_ENGINE_TRACE("DIR ({0}): FILE ({1}) has been modified", dir, filename);
-		//std::cout << "DIR (" << dir << ") FILE (" << filename << ") has event Modified" << std::endl;
 		break;
 	case efsw::Actions::Moved:
 		AL_ENGINE_TRACE("DIR ({0}): FILE ({1}) has been moved from ({2})", dir, filename, oldFilename);
-		//std::cout << "DIR (" << dir << ") FILE (" << filename << ") has event Moved from (" << oldFilename << ")" << std::endl;
 		break;
 	default:
-		std::cout << "Should never happen!" << std::endl;
+		AL_ENGINE_ERROR("Unexpected handleFileAction");
 	}
 	dirty = true;
+}
+
+void FileSystem::ConvertAssets()
+{
+	//TEXTURE CONVERSION
+
+	//MODEL CONVERSION
+	auto models = SearchSubString(".obj", RootNode);
+
+	for (auto model : models)
+	{
+		std::string path = model->dir_entry.path().generic_string();
+		std::string filename = model->dir_entry.path().filename().string();
+
+		
+		auto meshName = filename.substr(0, filename.find_last_of(".")) + ".mesh";
+		auto meshPath = path.substr(0, path.find_last_of(".")) + ".mesh";
+
+		AL_ENGINE_TRACE("Searching for mesh: {0} in {1}", meshName, model->parentNode->dir_entry.path().string());
+		auto mesh = SearchString(meshName, model->parentNode);
+		//TODO Regenerate Mesh if found, but modified date does not match with object file
+		if (!mesh)
+		{
+			//Generate mesh file
+			AL_ENGINE_WARN("Mesh File: {0} Not Found, Generating...", meshName);
+			//Read FBX/OBJ and save into mesh file
+			const unsigned int flags = 0 |
+				aiProcess_JoinIdenticalVertices |
+				aiProcess_Triangulate |
+				aiProcess_GenSmoothNormals |
+				aiProcess_LimitBoneWeights |
+				aiProcess_SplitLargeMeshes |
+				aiProcess_ImproveCacheLocality |
+				aiProcess_RemoveRedundantMaterials |
+				aiProcess_FindDegenerates |
+				aiProcess_FindInvalidData |
+				aiProcess_GenUVCoords;
+
+			Assimp::Importer import;
+			const aiScene* scene = import.ReadFile(path.c_str(), flags);
+
+			if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+			{
+				AL_ENGINE_ERROR("ASSIMP{0}:", import.GetErrorString());
+				return;
+			}
+
+			MeshData mesh_data;
+
+			//resize meshdata meshes array
+			mesh_data.meshDescriptions.reserve(scene->mNumMeshes);
+
+			//Convert AIMeshes to internal MeshData format
+			for (unsigned int i = 0; i != scene->mNumMeshes; i++)
+			{
+				AL_ENGINE_INFO("Converting mesh: {0} ", scene->mMeshes[i]->mName.C_Str());
+				mesh_data.meshDescriptions.push_back(ConvertAIMesh(mesh_data, scene->mMeshes[i]));
+			}
+
+			//Save mesh data
+			AL_ENGINE_INFO("Writing .mesh file for: {0} ", meshName);
+			SaveMeshFile(mesh_data , meshPath.c_str());
+
+			//Reset index/vertex offset
+			m_IndexOffset = 0;
+			m_VertexOffset = 0;
+		}
+		else
+		{
+			AL_ENGINE_WARN("Mesh File: {0} Found", meshName);
+		}
+	}
+}
+
+void FileSystem::SaveMeshFile(MeshData meshData, const char* filename)
+{
+	FILE* f = fopen(filename, "wb");
+
+	uint32_t magicValue = 0x12345678;
+	uint32_t meshCount = (uint32_t)meshData.meshDescriptions.size();
+	uint32_t dataBlockOffset = (uint32_t)(sizeof(MeshFileHeader) + meshCount * sizeof(MeshDescription));
+	uint32_t indexDataSize = meshData.indexData.size() * sizeof(uint32_t);
+	uint32_t vertexDataSize = meshData.vertexData.size() * sizeof(float);
+
+	const MeshFileHeader header = {
+		magicValue, meshCount,dataBlockOffset,indexDataSize,vertexDataSize
+	};
+
+	//save header
+	fwrite(&header, 1, sizeof(header), f);
+
+	//save mesh descriptions
+	fwrite(meshData.meshDescriptions.data(), header.meshCount, sizeof(MeshDescription), f);
+	//save index data
+	fwrite(meshData.indexData.data(), 1, header.indexDataSize, f);
+	//save vertex data
+	fwrite(meshData.vertexData.data(), 1, header.vertexDataSize, f);
+
+	fclose(f);
+}
+
+MeshDescription FileSystem::ConvertAIMesh(MeshData& meshData, const aiMesh* m)
+{
+	const bool hasTexCoords = m->HasTextureCoords(0);
+	const uint32_t numIndices = m->mNumFaces * 3;
+
+	const uint32_t streamElementSize = numElementsToStore * sizeof(float);
+
+	for (int i = 0; i != m->mNumVertices; ++i)
+	{
+		const aiVector3D v = m->mVertices[i];
+		const aiVector3D n = m->mNormals[i];
+		const aiVector3D t = hasTexCoords ? m->mTextureCoords[0][i] : aiVector3D();
+
+		meshData.vertexData.push_back(v.x);
+		meshData.vertexData.push_back(v.y);
+		meshData.vertexData.push_back(v.z);
+
+		meshData.vertexData.push_back(n.x);
+		meshData.vertexData.push_back(n.y);
+		meshData.vertexData.push_back(n.z);
+
+		meshData.vertexData.push_back(t.x);
+		meshData.vertexData.push_back(t.y);
+	}
+
+	for (int i = 0; i != m->mNumFaces; ++i)
+	{
+		const aiFace& F = m->mFaces[i];
+
+		meshData.indexData.push_back(F.mIndices[0] + m_VertexOffset);
+		meshData.indexData.push_back(F.mIndices[1] + m_VertexOffset);
+		meshData.indexData.push_back(F.mIndices[2] + m_VertexOffset);
+	}
+
+	MeshDescription result = MeshDescription();
+
+	result.lodCount = 1;
+	result.streamCount = 1;
+	result.indexOffset = m_IndexOffset;
+	result.vertexOffset = m_VertexOffset;
+	result.vertexCount = m->mNumVertices;
+	result.lodOffset[0] = m_IndexOffset * sizeof(uint32_t);
+	result.lodOffset[1] = (m_IndexOffset + numIndices) * sizeof(uint32_t);
+	result.streamOffset[0] = m_VertexOffset * streamElementSize;
+	result.streamElementSize[0] = streamElementSize;
+
+
+	m_IndexOffset += numIndices;
+	m_VertexOffset += m->mNumVertices;
+	return result;
 }
 
 void FileSystem::OnStart()
@@ -45,8 +196,10 @@ void FileSystem::OnStart()
 	{
 		AddNode(RootNode, dir_entry);
 	}
-
 	CurrentNode = RootNode;
+
+	//Asset conversion
+	ConvertAssets();
 }
 
 void FileSystem::OnEnd()
@@ -69,6 +222,8 @@ void FileSystem::OnLateUpdate()
 	if (dirty)
 	{
 		ReconstructFileTree();
+		//Asset conversion
+		ConvertAssets();
 		dirty = false;
 	}
 }
@@ -92,6 +247,7 @@ void FileSystem::ReconstructFileTree()
 
 	//Clear the file tree
 	RootNode->childNodes = {};
+	CurrentNode = nullptr;
 
 	//Regenerate tree
 	for (auto& dir_entry : std::filesystem::directory_iterator(s_AssetsDirectory))
@@ -100,6 +256,7 @@ void FileSystem::ReconstructFileTree()
 	}
 
 	//Restore current node
+	CurrentNode = CurrentNodeCached;
 }
 
 void FileSystem::AddNode(std::shared_ptr<FileNode> parentNode, std::filesystem::directory_entry const& dir_entry)
@@ -116,10 +273,13 @@ void FileSystem::AddNode(std::shared_ptr<FileNode> parentNode, std::filesystem::
 			}
 			else
 			{
-				node->childNodes.push_back(std::make_shared<FileNode>(rec_dir_entry));
+				auto childNode = std::make_shared<FileNode>(rec_dir_entry);
+				childNode->parentNode = node;
+				node->childNodes.push_back(childNode);
 			}
 		}
 	}
+	node->parentNode = parentNode;
 	parentNode->childNodes.push_back(node);
 }
 
@@ -174,6 +334,10 @@ std::shared_ptr<FileSystem::FileNode> FileSystem::SearchString(const std::string
 			{
 				return find;
 			}
+		}
+		else if (child_node->fileName == string)
+		{
+			return child_node;
 		}
  	}
 	return nullptr;

@@ -1,12 +1,12 @@
 #pragma once
 #include <filesystem>
-#include <iostream>
 #include <memory>
 
 #include <efsw/efsw.hpp>
 
 #include "Core/Log.h"
 #include "Core/SubSystem.h"
+#include "Renderer/Mesh/AMesh.h"
 
 
 class FileSystem : public SubSystem
@@ -30,6 +30,7 @@ public:
 		}
 		std::filesystem::directory_entry dir_entry;
 		std::vector<std::shared_ptr<FileNode>> childNodes;
+		std::shared_ptr<FileNode> parentNode = nullptr;
 		std::string fileName;
 		std::string icon;
 	};
@@ -41,6 +42,7 @@ public:
 	FileSystem() = default;
 	~FileSystem() = default;
 
+	void ConvertAssets();
 	void OnStart() override;
 	void OnEnd() override;
 	void OnUpdate(TimeStep timeStep) override;
@@ -55,7 +57,11 @@ private:
 	static void ReconstructFileTree();
 	static void AddNode(std::shared_ptr<FileNode> parentNode, std::filesystem::directory_entry const& dir_entry);
 
-	
+	void SaveMeshFile(MeshData meshData, const char* filename);
+	MeshDescription ConvertAIMesh(MeshData& meshData, const aiMesh* m);
+	uint32_t m_IndexOffset = 0;
+	uint32_t m_VertexOffset = 0;
+
 
 	std::unique_ptr<efsw::FileWatcher> m_FileWatcher;
 	std::unique_ptr<UpdateListener> m_Listener ;

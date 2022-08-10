@@ -187,15 +187,14 @@ void AssetBrowserPanel::OnImGuiRender()
 
 			//SEARCH LOGIC
 			std::vector<std::shared_ptr<FileSystem::FileNode>> nodeList;
-			nodeList = CurrentNode->childNodes;
-			/*if (searchString.empty())
+			if (searchString.empty())
 			{
 				nodeList = CurrentNode->childNodes;
 			}
 			else
 			{
-				nodeList = Search(searchString, RootNode);
-			}*/
+				nodeList = FileSystem::SearchSubString(searchString, RootNode);
+			}
 
 			//Thumbnail Mode
 			if (thumbnailSize > ListViewThreshold)

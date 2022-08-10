@@ -102,8 +102,6 @@ private:
 	//Look for a .mesh file first, if exists, read
 	//Else load FBX/OBJ, save .mesh file
 	void Load(std::string const& path);
-	void SaveMeshFile(const char* filename);
 	void LoadMeshFile(const char* filename);
-	MeshDescription ConvertAIMesh(const aiMesh* m);
 
 };
