@@ -11,39 +11,15 @@ AssetBrowserPanel::AssetBrowserPanel()
 {
 }
 
-void AssetBrowserPanel::AddNode(std::shared_ptr<FileNode> parentNode, std::filesystem::directory_entry const& dir_entry)
-{
-	auto node = std::make_shared<FileNode>(dir_entry);
-	
-	for (auto const& rec_dir_entry : std::filesystem::directory_iterator(dir_entry.path()))
-	{
-		if (rec_dir_entry.is_directory())
-		{
-			AddNode(node, rec_dir_entry);
-		}
-		else
-		{
-			node->childNodes.push_back(std::make_shared<FileNode>(rec_dir_entry));
-		}
-	}
-	
-	parentNode->childNodes.push_back(node);
-}
 
 void AssetBrowserPanel::OnStart()
 {
 	//TODO reconstruct tree every X seconds
-	//Rootnode is always assets;
-	for (auto& dir_entry : std::filesystem::directory_iterator(s_AssetsDirectory))
-	{
-		AddNode(RootNode, dir_entry);
-	}
-
 	CurrentNode = RootNode;
 }
 
 
-void AssetBrowserPanel::DrawFileNode(std::shared_ptr<FileNode> node, std::filesystem::path relativeDirectory)
+void AssetBrowserPanel::DrawFileNode(std::shared_ptr<FileSystem::FileNode> node, std::filesystem::path relativeDirectory)
 {
 	auto dir_entry = node->dir_entry;
 	auto fileName = node->fileName;
@@ -210,16 +186,16 @@ void AssetBrowserPanel::OnImGuiRender()
 			float cellSize = thumbnailSize + padding;
 
 			//SEARCH LOGIC
-			std::vector<std::shared_ptr<FileNode>> nodeList;
-			if (searchString.empty())
+			std::vector<std::shared_ptr<FileSystem::FileNode>> nodeList;
+			nodeList = CurrentNode->childNodes;
+			/*if (searchString.empty())
 			{
 				nodeList = CurrentNode->childNodes;
 			}
 			else
 			{
-				//TODO perform search
 				nodeList = Search(searchString, RootNode);
-			}
+			}*/
 
 			//Thumbnail Mode
 			if (thumbnailSize > ListViewThreshold)

@@ -47,7 +47,7 @@ project "AlmondNut"
 		"ImGui",
 		"box2d",
 		"assimp-vc143-mt",
-		"efsw-static-release"
+		"efsw-static"
 	}
 
 	filter "system:windows"

@@ -84,7 +84,7 @@ project "Almond"
 		"ImGui",
 		"yaml-cpp",
 		"assimp-vc143-mt",
-		"efsw-static-release"
+		"efsw-static"
 	}
 
 	filter "system:windows"
