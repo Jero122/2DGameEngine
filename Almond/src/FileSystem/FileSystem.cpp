@@ -8,7 +8,6 @@
 #include "efsw/efsw.hpp"
 #include "Core/Log.h"
 
-
 void FileSystem::UpdateListener::handleFileAction(efsw::WatchID watchid, const std::string& dir,
 	const std::string& filename, efsw::Action action, std::string oldFilename)
 {
@@ -32,30 +31,45 @@ void FileSystem::UpdateListener::handleFileAction(efsw::WatchID watchid, const s
 	dirty = true;
 }
 
-void FileSystem::ConvertAssets()
+
+void FileSystem::ProcessAssets()
 {
 	//TEXTURE CONVERSION
-
+	std::vector<std::shared_ptr<FileNode>> textures = SearchSubStrings({ ".png", ".jpg", ".jpeg",  ".tga", ".bmp" }, RootNode);
+	AL_ENGINE_INFO("FileSystem: Found {0} textures", textures.size());
 	//MODEL CONVERSION
-	auto models = SearchSubString(".obj", RootNode);
+	std::vector<std::shared_ptr<FileNode>> models = SearchSubStrings({ ".obj", ".fbx" }, RootNode);
+	AL_ENGINE_INFO("FileSystem: Found {0} models", models.size());
 
 	for (auto model : models)
 	{
-		std::string path = model->dir_entry.path().generic_string();
+		std::string modelPath = model->dir_entry.path().generic_string();
 		std::string filename = model->dir_entry.path().filename().string();
 
-		
 		auto meshName = filename.substr(0, filename.find_last_of(".")) + ".mesh";
-		auto meshPath = path.substr(0, path.find_last_of(".")) + ".mesh";
+		auto meshPath = modelPath.substr(0, modelPath.find_last_of(".")) + ".mesh";
 
 		AL_ENGINE_TRACE("Searching for mesh: {0} in {1}", meshName, model->parentNode->dir_entry.path().string());
-		auto mesh = SearchString(meshName, model->parentNode);
-		//TODO Regenerate Mesh if found, but modified date does not match with object file
-		if (!mesh)
+
+		//Check if mesh file exists or if the model file was modified
+		std::shared_ptr<FileNode> mesh = SearchString(meshName, model->parentNode);
+		bool modelModified = false;
+		if (mesh)
 		{
-			//Generate mesh file
-			AL_ENGINE_WARN("Mesh File: {0} Not Found, Generating...", meshName);
-			//Read FBX/OBJ and save into mesh file
+			std::filesystem::file_time_type meshLastModified = mesh->dir_entry.last_write_time();
+			std::filesystem::file_time_type modelLastModified = model->dir_entry.last_write_time();
+			if(modelLastModified > meshLastModified)
+			{
+				modelModified = true;
+			}
+
+		}
+
+		if (!mesh || modelModified)
+		{
+			!mesh ? AL_ENGINE_WARN("Mesh File: {0} Not Found, Generating...", meshName) : AL_ENGINE_WARN("Model File Modifed: {0}, Regenerating...", filename);
+
+			//LOAD OBJ AND GENERATE MESH
 			const unsigned int flags = 0 |
 				aiProcess_JoinIdenticalVertices |
 				aiProcess_Triangulate |
@@ -69,7 +83,7 @@ void FileSystem::ConvertAssets()
 				aiProcess_GenUVCoords;
 
 			Assimp::Importer import;
-			const aiScene* scene = import.ReadFile(path.c_str(), flags);
+			const aiScene* scene = import.ReadFile(modelPath.c_str(), flags);
 
 			if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 			{
@@ -78,19 +92,18 @@ void FileSystem::ConvertAssets()
 			}
 
 			MeshData mesh_data;
-
 			//resize meshdata meshes array
 			mesh_data.meshDescriptions.reserve(scene->mNumMeshes);
 
 			//Convert AIMeshes to internal MeshData format
 			for (unsigned int i = 0; i != scene->mNumMeshes; i++)
 			{
-				AL_ENGINE_INFO("Converting mesh: {0} ", scene->mMeshes[i]->mName.C_Str());
+				AL_ENGINE_TRACE("Converting mesh: {0} ", scene->mMeshes[i]->mName.C_Str());
 				mesh_data.meshDescriptions.push_back(ConvertAIMesh(mesh_data, scene->mMeshes[i]));
 			}
 
 			//Save mesh data
-			AL_ENGINE_INFO("Writing .mesh file for: {0} ", meshName);
+			AL_ENGINE_TRACE("Writing .mesh file for: {0} ", meshName);
 			SaveMeshFile(mesh_data , meshPath.c_str());
 
 			//Reset index/vertex offset
@@ -99,7 +112,7 @@ void FileSystem::ConvertAssets()
 		}
 		else
 		{
-			AL_ENGINE_WARN("Mesh File: {0} Found", meshName);
+			AL_ENGINE_INFO("Mesh File: {0} Found", meshName);
 		}
 	}
 }
@@ -120,7 +133,6 @@ void FileSystem::SaveMeshFile(MeshData meshData, const char* filename)
 
 	//save header
 	fwrite(&header, 1, sizeof(header), f);
-
 	//save mesh descriptions
 	fwrite(meshData.meshDescriptions.data(), header.meshCount, sizeof(MeshDescription), f);
 	//save index data
@@ -199,7 +211,7 @@ void FileSystem::OnStart()
 	CurrentNode = RootNode;
 
 	//Asset conversion
-	ConvertAssets();
+	ProcessAssets();
 }
 
 void FileSystem::OnEnd()
@@ -223,7 +235,9 @@ void FileSystem::OnLateUpdate()
 	{
 		ReconstructFileTree();
 		//Asset conversion
-		ConvertAssets();
+		ProcessAssets();
+		//TODO Asset Cleanup
+		//delete any meta file for objects that dont exist
 		dirty = false;
 	}
 }
@@ -317,8 +331,21 @@ std::vector<std::shared_ptr<FileSystem::FileNode>> FileSystem::SearchSubString(c
 	return result;
 }
 
+
+std::vector<std::shared_ptr<FileSystem::FileNode>> FileSystem::SearchSubStrings(
+	const std::vector<std::string> subStrings, std::shared_ptr<FileNode> searchRoot)
+{
+	std::vector<std::shared_ptr<FileNode>> result;
+	for (auto subString : subStrings)
+	{
+		std::vector<std::shared_ptr<FileNode>>subStringSearch = SearchSubString(subString, searchRoot);
+		result.insert(result.end(), subStringSearch.begin(), subStringSearch.end());
+	}
+	return result;
+}
+
 std::shared_ptr<FileSystem::FileNode> FileSystem::SearchString(const std::string string,
-	std::shared_ptr<FileNode> searchRoot)
+                                                               std::shared_ptr<FileNode> searchRoot)
 {
 	if (searchRoot->fileName == string)
 	{
@@ -342,4 +369,5 @@ std::shared_ptr<FileSystem::FileNode> FileSystem::SearchString(const std::string
  	}
 	return nullptr;
 }
+
 

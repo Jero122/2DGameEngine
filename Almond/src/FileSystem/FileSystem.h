@@ -42,7 +42,7 @@ public:
 	FileSystem() = default;
 	~FileSystem() = default;
 
-	void ConvertAssets();
+	void ProcessAssets();
 	void OnStart() override;
 	void OnEnd() override;
 	void OnUpdate(TimeStep timeStep) override;
@@ -50,6 +50,7 @@ public:
 	void OnLateUpdate() override;
 
 	static std::vector<std::shared_ptr<FileNode>> SearchSubString(const std::string subString, std::shared_ptr<FileNode> searchRoot);
+	static std::vector<std::shared_ptr<FileNode>> SearchSubStrings(const std::vector<std::string> subStrings, std::shared_ptr<FileNode> searchRoot);
 	static std::shared_ptr<FileNode> SearchString(const std::string string, std::shared_ptr<FileNode> searchRoot);
 private:
 	inline static bool dirty = false;
