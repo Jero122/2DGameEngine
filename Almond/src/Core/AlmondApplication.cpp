@@ -1,8 +1,9 @@
 #include "AlmondApplication.h"
 #include "TimeStep.h"
-#include "System Stack/ImGuiSystem.h"
-#include "System Stack/InputSystem.h"
-#include "FileSystem/FileSystem.h"
+#include "Systems/ImGuiSystem.h"
+#include "Systems/InputSystem.h"
+#include "Systems/FileSystem.h"
+#include "Systems/TextureSystem.h"
 
 AlmondApplication* AlmondApplication::s_Instance = nullptr;
 int s_componentCounter = 0;
@@ -18,6 +19,9 @@ AlmondApplication::AlmondApplication()
 
 	FileSystem* fileSystem = new FileSystem();
 	m_SystemStack.PushSystem(fileSystem);
+
+	TextureSystem* textureSystem = new TextureSystem(65536);
+	m_SystemStack.PushSystem(textureSystem);
 
 	//IMGUI
 	m_ImGuiSystem = new ImGuiSystem();

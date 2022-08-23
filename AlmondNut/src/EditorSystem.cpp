@@ -17,6 +17,7 @@
 #include "Core/Log.h"
 #include "ECS/Components/MeshRendererComponent.h"
 #include "Renderer/Mesh/AMesh.h"
+#include "Systems/TextureSystem.h"
 
 
 EditorSystem::EditorSystem()
@@ -60,6 +61,9 @@ void EditorSystem::OnStart()
     m_SceneHierarchyPanel.SetScene(m_CurrentScene);
 
     m_AssetBrowserPanel.OnStart();
+
+    auto texture = TextureSystem::Accquire("assets/textures/UpArrow.png", false);
+    TextureSystem::Release("assets/textures/UpArrow.png");
 
     //Custom Mesh Format
     Entity sponza = m_CurrentScene->CreateEntity("sponza");

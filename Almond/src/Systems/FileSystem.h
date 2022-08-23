@@ -42,12 +42,14 @@ public:
 	FileSystem() = default;
 	~FileSystem() = default;
 
-	void ProcessAssets();
 	void OnStart() override;
 	void OnEnd() override;
 	void OnUpdate(TimeStep timeStep) override;
 	void OnImGuiRender() override;
 	void OnLateUpdate() override;
+
+
+	void ProcessAssets();
 
 	static std::vector<std::shared_ptr<FileNode>> SearchSubString(const std::string subString, std::shared_ptr<FileNode> searchRoot);
 	static std::vector<std::shared_ptr<FileNode>> SearchSubStrings(const std::vector<std::string> subStrings, std::shared_ptr<FileNode> searchRoot);
@@ -62,7 +64,6 @@ private:
 	MeshDescription ConvertAIMesh(MeshData& meshData, const aiMesh* m);
 	uint32_t m_IndexOffset = 0;
 	uint32_t m_VertexOffset = 0;
-
 
 	std::unique_ptr<efsw::FileWatcher> m_FileWatcher;
 	std::unique_ptr<UpdateListener> m_Listener ;

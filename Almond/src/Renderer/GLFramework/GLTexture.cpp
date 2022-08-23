@@ -172,7 +172,6 @@ GLTexture::GLTexture(GLTexture&& other)
 
 GLTexture::~GLTexture()
 {
-	//TODO manage deletion of textures in a resource manager
 	if (id != 0)
 	{
 		glDeleteTextures(1, &id);

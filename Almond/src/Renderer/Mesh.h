@@ -20,10 +20,10 @@ class Mesh
 public:
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
-	std::vector<Texture> textures;
+	std::vector<std::shared_ptr<Texture>> textures;
 
 	Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned>& indices,
-		const std::vector<Texture>& textures)
+		std::vector<std::shared_ptr<Texture>> textures)
 		: vertices(vertices),
 		indices(indices),
 		textures(textures)
@@ -41,7 +41,7 @@ public:
 		for (unsigned int i = 0; i < textures.size(); i++)
 		{
 			//glBindTextureUnit(i, textures[i].id);
-			texIDs.push_back(textures[i].ID());
+			texIDs.push_back(textures[i]->ID());
 		}
 		GLRenderCommand::BindTextures(1, textures.size(), texIDs.data());
 
