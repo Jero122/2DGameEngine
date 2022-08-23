@@ -17,7 +17,7 @@ public:
 		s_registeredTextureTable.reserve(maxTextureCount);
 	}
 
-	~TextureSystem() = default;
+	~TextureSystem();
 
 	void OnStart() override;
 	void OnEnd() override;
@@ -39,7 +39,5 @@ private:
 	inline static std::unordered_map<std::string, TextureReference> s_registeredTextureTable;
 
 	int m_MaxTextureCount = 0;
-	inline static int s_NumRegisteredTextures = 0;
-
 };
 

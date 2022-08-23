@@ -32,7 +32,6 @@ std::shared_ptr<Texture> TextureSystem::Accquire(std::string filePath, bool auto
 		//Texture not found
 		//create texture
 		std::shared_ptr<Texture> texture = std::make_shared<Texture>(filePath);
-		s_NumRegisteredTextures++;
 		TextureReference textureReference;
 		textureReference.autoRelease = autoRelease;
 		textureReference.referenceCount = 1;
@@ -94,9 +93,20 @@ void TextureSystem::Release(std::string filePath)
 			{
 				s_registeredTextures[ref.index] = nullptr;
 				s_registeredTextureTable.erase(filePath);
-				s_NumRegisteredTextures--;
 			}
 		}
 	}
+}
 
+TextureSystem::~TextureSystem()
+{
+	//remove all textures from the registered texture table
+	for (auto & pair : s_registeredTextureTable)
+	{
+		auto& reference = pair.second;
+		s_registeredTextures[reference.index] = nullptr;
+	}
+
+	//Remove all entries from the texture lookup table
+	s_registeredTextureTable.erase(s_registeredTextureTable.begin(), s_registeredTextureTable.end());
 }
