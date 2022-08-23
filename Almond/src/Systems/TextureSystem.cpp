@@ -17,15 +17,7 @@ void TextureSystem::OnUpdate(TimeStep timeStep)
 
 void TextureSystem::OnImGuiRender()
 {
-	ImGui::Begin("Texture System");
-	ImGui::Text("Registered Textures");
 
-	for (auto& texture : s_registeredTextures)
-	{
-		ImGui::Text("1");
-	}
-
-	ImGui::End();
 }
 
 void TextureSystem::OnLateUpdate()
@@ -40,6 +32,7 @@ std::shared_ptr<Texture> TextureSystem::Accquire(std::string filePath, bool auto
 		//Texture not found
 		//create texture
 		std::shared_ptr<Texture> texture = std::make_shared<Texture>(filePath);
+		s_NumRegisteredTextures++;
 		TextureReference textureReference;
 		textureReference.autoRelease = autoRelease;
 		textureReference.referenceCount = 1;
@@ -69,6 +62,9 @@ std::shared_ptr<Texture> TextureSystem::Accquire(std::string filePath, bool auto
 
 		return s_registeredTextures[ref.index];
 	}
+
+	//TODO handle edge case?
+	return nullptr;
 }
 
 void TextureSystem::Release(std::string filePath)
@@ -98,6 +94,7 @@ void TextureSystem::Release(std::string filePath)
 			{
 				s_registeredTextures[ref.index] = nullptr;
 				s_registeredTextureTable.erase(filePath);
+				s_NumRegisteredTextures--;
 			}
 		}
 	}
