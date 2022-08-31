@@ -43,8 +43,7 @@ std::vector<std::string> faces
 
 Renderer3D::Renderer3D()
 {
-	stbi_set_flip_vertically_on_load(true);
-	std::string shaderPath("assets/shaders/Lit3D.glsl");
+	std::string shaderPath("assets/shaders/Lambert.glsl");
 	m_Shader = std::make_unique<Shader>();
 	m_Shader->init(shaderPath);
 	m_Shader->use();
@@ -96,10 +95,10 @@ void Renderer3D::EndScene()
 	m_Shader->setVec3("viewPos", m_ViewPosition);
 
 	m_Shader->setInt("skybox", 0);
-	m_Shader->setInt("material.diffuse", 1);
-	m_Shader->setInt("material.specular", 2);
-	m_Shader->setFloat("material.shininess", 512.0f);
-
+	m_Shader->setInt("material.albedoMap", 1);
+	m_Shader->setInt("material.aoRoughnessMetallicMap", 2);
+	m_Shader->setInt("material.normalMap", 3);
+	m_Shader->setInt("material.emissiveMap", 4);
 	//Directional Light
 	if (m_directional_light.enabled)
 	{

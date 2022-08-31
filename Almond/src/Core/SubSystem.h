@@ -7,7 +7,7 @@ class SubSystem
 {
 public:
 	SubSystem() = default;
-	~SubSystem() = default;
+	virtual ~SubSystem() = default;
 
 	virtual void OnStart() {}
 	virtual void OnEnd(){}

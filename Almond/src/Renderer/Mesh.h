@@ -20,13 +20,13 @@ class Mesh
 public:
 	std::vector<Vertex> vertices;
 	std::vector<unsigned int> indices;
-	std::vector<std::shared_ptr<Texture>> textures;
+	std::shared_ptr<Material> material;
 
 	Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned>& indices,
-		std::vector<std::shared_ptr<Texture>> textures)
+		std::shared_ptr<Material> material)
 		: vertices(vertices),
 		indices(indices),
-		textures(textures)
+		material(material)
 	{
 		setupMesh();
 	}
@@ -36,21 +36,27 @@ public:
 	{
 		unsigned int diffuseNr = 1;
 		unsigned int specularNr = 1;
+		int texCount = 4;
 
 		std::vector<unsigned int> texIDs;
-		for (unsigned int i = 0; i < textures.size(); i++)
-		{
-			//glBindTextureUnit(i, textures[i].id);
-			texIDs.push_back(textures[i]->ID());
-		}
-		GLRenderCommand::BindTextures(1, textures.size(), texIDs.data());
+
+		texIDs.push_back(material->albedoMap->ID());
+		texIDs.push_back(material->aoRoughnessMetallicMap->ID());
+		texIDs.push_back(material->normalMap->ID());
+		texIDs.push_back(material->emissiveMap->ID());
+
+		GLRenderCommand::BindTextures(1,texCount , texIDs.data());
+		shader.setVec4("material.albedoColour", material->albedoColour);
+		shader.setVec4("material.emissiveColour", material->emissiveColour);
+		shader.setFloat("material.metallic", material->metallic);
+		shader.setFloat("material.roughness", material->roughness);
 
 		// draw mesh
 		m_VertexArray->Bind();
 		GLRenderCommand::DrawElementsTriangle(indices.size(), 0);
 		m_VertexArray->UnBind();
 
-		GLRenderCommand::BindTextures(1, textures.size(), 0);
+		GLRenderCommand::BindTextures(1, texCount, 0);
 	}
 private:
 	std::unique_ptr<GLVertexArray> m_VertexArray;

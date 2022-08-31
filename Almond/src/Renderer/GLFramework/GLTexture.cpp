@@ -59,18 +59,21 @@ GLTexture::GLTexture(GLenum type, const char* fileName, GLenum clamp)
 		glTextureParameteri(id, GL_TEXTURE_WRAP_T, clamp);
 
 		int numMipmaps = 0;
-
+		stbi_set_flip_vertically_on_load(true);
 		uint8_t* img = stbi_load(fileName, &m_Width, &m_Height, nullptr, STBI_rgb_alpha);
-
 		// If file is not found, a fallback texture is used
 		if (!img)
 		{
 			AL_ENGINE_WARN("GLTexture could not load image {0} , using a fallback", fileName);
-			img = genDefaultCheckerboardImage(&m_Width, &m_Height);
+			img = stbi_load("assets/models/diffuse.jpg", &m_Width, &m_Height, nullptr, STBI_rgb_alpha);
 			if (!img)
 			{
-				AL_ENGINE_ERROR("GLTexture out of memory allocating image for fallback texture");
-				exit(EXIT_FAILURE);
+				img = genDefaultCheckerboardImage(&m_Width, &m_Height);
+				if (!img)
+				{
+					AL_ENGINE_ERROR("GLTexture out of memory allocating image for fallback texture");
+					exit(EXIT_FAILURE);
+				}
 			}
 		}
 

@@ -81,7 +81,7 @@ void TextureSystem::Release(std::string filePath)
 		//Releasing a texture with 0 references
 		if (ref.referenceCount == 0)
 		{
-			AL_ENGINE_ERROR("Texture System: Trying to release a non auto-release texture: {0}", filePath);
+			AL_ENGINE_WARN("Texture System: Trying to release a non auto-release texture: {0}", filePath);
 			return;
 		}
 		else

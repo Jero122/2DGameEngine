@@ -10,6 +10,9 @@ bin-int/
 **.bmp
 **.hdr
 **.exr
+**.gltf
+**.glb
+**.bin
 
 #Custom Binaries
 **.mesh

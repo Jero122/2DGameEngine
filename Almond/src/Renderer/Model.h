@@ -1,16 +1,22 @@
 #pragma once
 #include <glm/glm.hpp>
-#include <assimp/Importer.hpp>
+
+#include <assimp/mesh.h>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <assimp/cimport.h>
+
 #include <string>
 #include <fstream>
 #include <iostream>
 #include <unordered_map>
 #include <vector>
+
+#include "Material.h"
 #include "Mesh.h"
 #include "Shader.h"
 #include "Core/Log.h"
+#include "Systems/MaterialSystem.h"
 #include "Systems/TextureSystem.h"
 
 class Model
@@ -36,14 +42,32 @@ private:
 
 	void loadModel(std::string path)
 	{
-		Assimp::Importer import;
-		const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+		const unsigned int flags = aiProcess_CalcTangentSpace | // calculate tangents and bitangents if possible
+			aiProcess_JoinIdenticalVertices | // join identical vertices/ optimize indexing
+			//aiProcess_ValidateDataStructure  | // perform a full validation of the loader's output
+			aiProcess_Triangulate | // Ensure all verticies are triangulated (each 3 vertices are triangle)
+			aiProcess_SortByPType | // ?
+			aiProcess_ImproveCacheLocality | // improve the cache locality of the output vertices
+			aiProcess_RemoveRedundantMaterials | // remove redundant materials
+			aiProcess_FindDegenerates | // remove degenerated polygons from the import
+			aiProcess_FindInvalidData | // detect invalid model data, such as invalid normal vectors
+			aiProcess_GenUVCoords | // convert spherical, cylindrical, box and planar mapping to proper UVs
+			aiProcess_TransformUVCoords | // preprocess UV transformations (scaling, translation ...)
+			aiProcess_FindInstances | // search for instanced meshes and remove them by references to one master
+			aiProcess_LimitBoneWeights | // limit bone weights to 4 per vertex
+			aiProcess_OptimizeMeshes | // join small meshes, if possible;
+			aiProcess_SplitByBoneCount | // split meshes with too many bones. Necessary for our (limited) hardware skinning shader
+			0;
 
-		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
-		{
-			AL_ENGINE_ERROR("ASSIMP{0}:", import.GetErrorString());
+		const aiScene* scene = aiImportFile(path.c_str(), flags);
+
+		if (!scene || !scene->HasMeshes()) {
+
+			printf("Unable to load '%s'\n", path.c_str());
+
 			return;
 		}
+
 		directory = path.substr(0, path.find_last_of('/'));
 
 		processNode(scene->mRootNode, scene);
@@ -116,39 +140,138 @@ private:
 				indices.push_back(face.mIndices[j]);
 		}
 		// process materials
-		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-		// we assume a convention for sampler names in the shaders. Each diffuse texture should be named
-		// as 'texture_diffuseN' where N is a sequential number ranging from 1 to MAX_SAMPLER_NUMBER. 
-		// Same applies to other texture as the following list summarizes:
-		// diffuse: texture_diffuseN
-		// specular: texture_specularN
-		// normal: texture_normalN
+		aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
 
-		// 1. diffuse maps
-		auto diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
-		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-		// 2. specular maps
-		auto specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
-		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-		// 3. normal maps
-		auto normalMaps = loadMaterialTextures(material, aiTextureType_NORMALS, "texture_normal");
-		textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
-		// 4. height maps
-		auto heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
-		textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+		MaterialConfig config;
+		aiString matName;
+		mat->Get(AI_MATKEY_NAME, matName);
+		config.name = std::string(matName.C_Str());
 
-		if (textures.empty())
+		aiColor4D color(0, 0, 0, 0);
+
+		//Ambient
+		if (mat->Get(AI_MATKEY_COLOR_AMBIENT, color) == AI_SUCCESS)
+		{
+			config.emissiveColour = { color.r, color.g, color.b, color.a };
+			if (config.emissiveColour.a > 1.0f)
+			{
+				config.emissiveColour.a = 1.0f;
+			}
+		}
+
+		//Diffuse/albedo
+		if (mat->Get(AI_MATKEY_COLOR_DIFFUSE, color) == AI_SUCCESS)
+		{
+			config.albedoColour = { color.r, color.g, color.b, color.a };
+			if (config.albedoColour.a > 1.0f)
+			{
+				config.albedoColour.a = 1.0f;
+			}
+		}
+
+		//Emissive
+		if (mat->Get(AI_MATKEY_COLOR_EMISSIVE, color) == AI_SUCCESS)
+		{
+			config.emissiveColour += glm::vec4{ color.r, color.g, color.b, color.a };
+		}
+		//Opaqueness/Transparency
+		const float opaquenessThreshold = 0.05f;
+		float Opacity = 1.0f;
+		if (mat->Get(AI_MATKEY_OPACITY, Opacity) == AI_SUCCESS) {
+
+			config.transparencyFactor = glm::clamp(1.0f - Opacity, 0.0f, 1.0f);
+
+			if (config.transparencyFactor >= 1.0f - opaquenessThreshold)
+			{
+				config.transparencyFactor = 0.0f;
+			}
+		}
+
+		if (mat->Get(AI_MATKEY_COLOR_TRANSPARENT, color) == AI_SUCCESS) {
+
+			const float Opacity = std::max(std::max(color.r, color.g), color.b);
+
+			config.transparencyFactor = glm::clamp(Opacity, 0.0f, 1.0f);
+
+			if (config.transparencyFactor >= 1.0f - opaquenessThreshold)
+			{
+				config.transparencyFactor = 0.0f;
+			}
+			config.alphaTest= 0.5f;
+		}
+		//Metallic Factor
+		float tmp = 1.0f;
+		if (mat->Get(AI_MATKEY_METALLIC_FACTOR	, tmp) == AI_SUCCESS)
+		{
+			config.metallic = tmp;
+		}
+		//Roughness Factor
+		if (mat->Get(AI_MATKEY_ROUGHNESS_FACTOR, tmp) == AI_SUCCESS)
+		{
+			config.roughness = tmp;
+		}
+
+		//MAPS
+		//albedo map
+		config.albedo_map_name = GetMaterialTextureFilePath(mat, aiTextureType_DIFFUSE);
+		//normal/height map
+		auto normalMapName = GetMaterialTextureFilePath(mat, aiTextureType_NORMALS);
+		config.normal_map_name = normalMapName;
+		if (normalMapName.empty())
+		{
+			auto heightMapName = GetMaterialTextureFilePath(mat, aiTextureType_HEIGHT);
+			config.normal_map_name = heightMapName;
+		}
+		aiString metallic, roughness;
+		mat->GetTexture(AI_MATKEY_METALLIC_TEXTURE, &metallic);
+		mat->GetTexture(AI_MATKEY_ROUGHNESS_TEXTURE, &roughness);
+		auto metallicPath = std::string(metallic.C_Str());
+		auto roughnessPath = std::string(metallic.C_Str());
+
+		//aoMetallicRoughness map
+		if (!metallicPath.empty())
+		{
+			config.ao_roughness_metallic_name = metallicPath;
+		}
+		else
+		{
+			config.ao_roughness_metallic_name = roughnessPath;
+		}
+
+		//Emissive map
+		config.emissive_map_name = GetMaterialTextureFilePath(mat, aiTextureType_EMISSIVE);
+		
+		std::shared_ptr<Material> material = MaterialSystem::Accquire(config);
+
+		/*if (textures.empty())
 		{
 			textures.push_back(TextureSystem::Accquire("assets/Models/Diffuse.jpg",true));
 		}
-		// return a mesh object created from the extracted mesh data
-		return Mesh(vertices, indices, textures);
+		// return a mesh object created from the extracted mesh data*/
+		return Mesh(vertices, indices, material);
+	}
+
+	std::string GetMaterialTextureFilePath(aiMaterial* mat, aiTextureType type)
+	{
+		for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
+		{
+			aiString str;
+			mat->GetTexture(type, i, &str);
+
+			if (str.length > 0)
+			{
+				std::string filepath = std::string(str.C_Str());
+				filepath = this->directory + '/' + filepath;
+				return filepath;
+			}
+		}
+		return "";
 	}
 
 
-	std::vector<std::shared_ptr<Texture>> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)
+	std::vector<std::string> loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)
 	{
-		std::vector<std::shared_ptr<Texture>> textures;
+		std::vector<std::string> textures;
 		for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
 		{
 			aiString str;
@@ -158,11 +281,7 @@ private:
 
 			std::string filepath = std::string(str.C_Str());
 			filepath = this->directory + '/' + filepath;
-
-			auto texture = TextureSystem::Accquire(filepath, true);
-			texture->type= typeName;
-			textures.push_back(texture);
-
+			textures.push_back(filepath);
 		}
 		return textures;
 	}

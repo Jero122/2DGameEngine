@@ -82,13 +82,23 @@ void FileSystem::ProcessAssets()
 				aiProcess_FindInvalidData |
 				aiProcess_GenUVCoords;
 
-			Assimp::Importer import;
-			const aiScene* scene = import.ReadFile(modelPath.c_str(), flags);
+			/*Assimp::Importer import;*/
+			/*const aiScene* scene = import.ReadFile(modelPath.c_str(), flags);
 
 			if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 			{
 				AL_ENGINE_ERROR("ASSIMP{0}:", import.GetErrorString());
 				return;
+			}*/
+
+			const aiScene* scene = aiImportFile(modelPath.c_str(), flags);
+
+			if (!scene || !scene->HasMeshes()) {
+
+				printf("Unable to load '%s'\n", modelPath.c_str());
+
+				return;
+
 			}
 
 			MeshData mesh_data;
@@ -168,14 +178,17 @@ MeshDescription FileSystem::ConvertAIMesh(MeshData& meshData, const aiMesh* m)
 		meshData.vertexData.push_back(t.y);
 	}
 
-	for (int i = 0; i != m->mNumFaces; ++i)
+	for (size_t i = 0; i < m->mNumFaces; i++)
 	{
-		const aiFace& F = m->mFaces[i];
-
-		meshData.indexData.push_back(F.mIndices[0] + m_VertexOffset);
-		meshData.indexData.push_back(F.mIndices[1] + m_VertexOffset);
-		meshData.indexData.push_back(F.mIndices[2] + m_VertexOffset);
+		aiFace face = m->mFaces[i];
+		if (face.mNumIndices < 3) {
+			continue;
+		}
+		for (size_t j = 0; j < face.mNumIndices; j++)
+			meshData.indexData.push_back(face.mIndices[j] + m_VertexOffset);
 	}
+
+
 
 	MeshDescription result = MeshDescription();
 

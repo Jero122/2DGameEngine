@@ -13,8 +13,8 @@ public:
 	TextureSystem(int maxTextureCount)
 		:m_MaxTextureCount(maxTextureCount)
 	{
-		s_registeredTextures.resize(maxTextureCount);
-		s_registeredTextureTable.reserve(maxTextureCount);
+		s_registeredTextures.resize(m_MaxTextureCount);
+		s_registeredTextureTable.reserve(m_MaxTextureCount);
 	}
 
 	~TextureSystem();

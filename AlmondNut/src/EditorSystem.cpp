@@ -65,24 +65,38 @@ void EditorSystem::OnStart()
     auto texture = TextureSystem::Accquire("assets/textures/UpArrow.png", false);
     TextureSystem::Release("assets/textures/UpArrow.png");
 
+    /*
     //Custom Mesh Format
     Entity sponza = m_CurrentScene->CreateEntity("sponza");
     {
         auto transformComponent = sponza.GetComponent<Transform>();
         *transformComponent = Transform{ glm::vec3(0,-5,0), glm::vec3(0,0,0),glm::vec3(0.1,0.1,0.1) };
 
-        auto backpackMesh = std::make_shared<AMesh>("assets/Models/Sponza/sponza.obj");
+        auto sponzaMesh = std::make_shared<AMesh>("assets/Models/Sponza/sponza.obj");
 
-        sponza.AddComponent(MeshRendererComponent{backpackMesh});
+        sponza.AddComponent(MeshRendererComponent{sponzaMesh});
     }
+    */
 
+    /*
     //Model Format
+    Entity sponza = m_CurrentScene->CreateEntity("sponza");
+    {
+        auto transformComponent = sponza.GetComponent<Transform>();
+        *transformComponent = Transform{ glm::vec3(0,-5,0), glm::vec3(0,0,0),glm::vec3(0.1,0.1,0.1) };
+
+        auto sponzaMesh = std::make_shared<Model>("assets/Models/Sponza/sponza.obj");
+
+        sponza.AddComponent(ModelRendererComponent{ sponzaMesh });
+    }
+    */
+
     Entity backpack = m_CurrentScene->CreateEntity("backpack");
     {
         auto transformComponent = backpack.GetComponent<Transform>();
-        *transformComponent = Transform{ glm::vec3(0,0,0), glm::vec3(0,0,0),glm::vec3(1,1,1) };
+        *transformComponent = Transform{ glm::vec3(0,0,0), glm::vec3(0,0,0),glm::vec3(0.1f,0.1f,0.1f) };
 
-        auto backpackMesh = std::make_shared<Model>("assets/Models/backpack/backpack.obj");
+        auto backpackMesh = std::make_shared<Model>("assets/Models/backpack/scene.gltf");
 
         backpack.AddComponent(ModelRendererComponent{ backpackMesh });
     }

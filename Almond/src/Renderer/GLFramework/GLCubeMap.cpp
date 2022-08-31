@@ -13,7 +13,6 @@ GLCubeMap::GLCubeMap(const char* fileName)
 	Bitmap in(w, h, comp, eBitmapFormat_Float, img);
 	Bitmap out = convertEquirectangularMapToVerticalCross(in);
 	stbi_image_free((void*)img);
-	stbi_set_flip_vertically_on_load(true);
 	Bitmap cubemap = convertVerticalCrossToCubeMapFaces(out);
 
 	glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &id);
@@ -49,7 +48,6 @@ GLCubeMap::GLCubeMap(std::vector<std::string> faces)
 	{
 		stbi_set_flip_vertically_on_load(false);
 		unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrComponents, 0);
-		stbi_set_flip_vertically_on_load(true);
 		if (data)
 		{
 			glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
