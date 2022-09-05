@@ -11,33 +11,6 @@ std::vector<std::string> faces
 
 	"assets/textures/Skybox/Cold Sunset/front.png",
 	"assets/textures/Skybox/Cold Sunset/back.png"
-
-	/*"assets/textures/Skybox/Epic_GloriousPink/right.png",
-	"assets/textures/Skybox/Epic_GloriousPink/left.png",
-
-	"assets/textures/Skybox/Epic_GloriousPink/top.png",
-	"assets/textures/Skybox/Epic_GloriousPink/bottom.png",
-
-	"assets/textures/Skybox/Epic_GloriousPink/front.png",
-	"assets/textures/Skybox/Epic_GloriousPink/back.png"*/
-
-	/*"assets/textures/right.jpg",
-	"assets/textures/left.jpg",
-
-	"assets/textures/top.jpg",
-	"assets/textures/bottom.jpg",
-
-	"assets/textures/front.jpg",
-	"assets/textures/back.jpg"*/
-
-	/*"assets/textures/Skybox/right.bmp",
-	"assets/textures/Skybox/left.bmp",
-
-	"assets/textures/Skybox/top.bmp",
-	"assets/textures/Skybox/bottom.bmp",
-
-	"assets/textures/Skybox/front.bmp",
-	"assets/textures/Skybox/back.bmp"*/
 };
 
 
@@ -52,7 +25,7 @@ Renderer3D::Renderer3D()
 	m_SkyboxShader = std::make_unique<Shader>();
 	m_SkyboxShader->init(std::string("assets/shaders/SkyBox.glsl"));
 	m_SkyboxShader->use();
-	m_SkyboxTexture = std::make_shared<GLCubeMap>(faces);
+	m_SkyboxTexture = std::make_shared<GLCubeMap>("assets/textures/Skybox/Cold Sunset/Cold-Sunset-Equirect.hdr");
 	glBindTextures(0, 1, &m_SkyboxTexture->id);
 
 	m_VertexArray = std::make_unique<GLVertexArray>();

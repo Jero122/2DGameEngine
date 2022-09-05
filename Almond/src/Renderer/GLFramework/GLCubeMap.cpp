@@ -4,36 +4,83 @@
 #include "Renderer/Bitmap.h"
 #include "Renderer/UtilCubeMap.h"
 #include "stb/stb_image.h"
+#include "stb/stb_image_write.h"
 
 GLCubeMap::GLCubeMap(const char* fileName)
 {
 	int w, h, comp;
 	stbi_set_flip_vertically_on_load(false);
-	const float* img = stbi_loadf(fileName, &w, &h, &comp, 3);
-	Bitmap in(w, h, comp, eBitmapFormat_Float, img);
-	Bitmap out = convertEquirectangularMapToVerticalCross(in);
-	stbi_image_free((void*)img);
-	Bitmap cubemap = convertVerticalCrossToCubeMapFaces(out);
 
-	glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &id);
-	glTextureParameteri(id, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTextureParameteri(id, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTextureParameteri(id, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	glTextureParameteri(id, GL_TEXTURE_BASE_LEVEL, 0);
-	glTextureParameteri(id, GL_TEXTURE_MAX_LEVEL, 0);
-	glTextureParameteri(id, GL_TEXTURE_MAX_LEVEL, 0);
-	glTextureParameteri(id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTextureParameteri(id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTextureStorage2D(id, 1, GL_RGB32F, cubemap.w_, cubemap.h_);
-	const uint8_t* data = cubemap.data_.data();
+	std::string filePathString = fileName;
+	std::string fileNameString = filePathString.substr(filePathString.find_last_of("/") + 1, filePathString.size());
+	fileNameString = fileNameString.substr(0, fileNameString.find_last_of("."));
+	std::string cubeMap = filePathString.substr(0, filePathString.find_last_of("/")) + "/" + fileNameString + ".cubemap";
 
-	for (unsigned i = 0; i != 6; ++i)
+	const float* img = stbi_loadf(cubeMap.c_str(), &w, &h, &comp, 3);
+
+	if (!img)
 	{
-		glTextureSubImage3D(id, 0, 0, 0, i, cubemap.w_, cubemap.h_, 1, GL_RGB, GL_FLOAT, data);
-		data += cubemap.w_ * cubemap.h_ * cubemap.comp_ * Bitmap::getBytesPerComponent(cubemap.fmt_);
+		const float* img = stbi_loadf(fileName, &w, &h, &comp, 3);
+
+		Bitmap in(w, h, comp, eBitmapFormat_Float, img);
+		Bitmap out = convertEquirectangularMapToVerticalCross(in);
+		stbi_image_free((void*)img);
+		Bitmap cubemap = convertVerticalCrossToCubeMapFaces(out);
+
+		glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &id);
+		glTextureParameteri(id, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTextureParameteri(id, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTextureParameteri(id, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+		glTextureParameteri(id, GL_TEXTURE_BASE_LEVEL, 0);
+		glTextureParameteri(id, GL_TEXTURE_MAX_LEVEL, 0);
+		glTextureParameteri(id, GL_TEXTURE_MAX_LEVEL, 0);
+		glTextureParameteri(id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTextureParameteri(id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTextureStorage2D(id, 1, GL_RGB32F, cubemap.w_, cubemap.h_);
+		const uint8_t* data = cubemap.data_.data();
+
+		for (unsigned i = 0; i != 6; ++i)
+		{
+			glTextureSubImage3D(id, 0, 0, 0, i, cubemap.w_, cubemap.h_, 1, GL_RGB, GL_FLOAT, data);
+			data += cubemap.w_ * cubemap.h_ * cubemap.comp_ * Bitmap::getBytesPerComponent(cubemap.fmt_);
+		}
+
+		stbi_write_hdr(cubeMap.c_str(), out.w_, out.h_, out.comp_, reinterpret_cast<const float*>(out.data_.data()));
+	}
+	else
+	{
+		Bitmap out(w, h, comp, eBitmapFormat_Float, img);
+		Bitmap cubemap = convertVerticalCrossToCubeMapFaces(out);
+
+		glCreateTextures(GL_TEXTURE_CUBE_MAP, 1, &id);
+		glTextureParameteri(id, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTextureParameteri(id, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTextureParameteri(id, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+		glTextureParameteri(id, GL_TEXTURE_BASE_LEVEL, 0);
+		glTextureParameteri(id, GL_TEXTURE_MAX_LEVEL, 0);
+		glTextureParameteri(id, GL_TEXTURE_MAX_LEVEL, 0);
+		glTextureParameteri(id, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTextureParameteri(id, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTextureStorage2D(id, 1, GL_RGB32F, cubemap.w_, cubemap.h_);
+		const uint8_t* data = cubemap.data_.data();
+
+		for (unsigned i = 0; i != 6; ++i)
+		{
+			glTextureSubImage3D(id, 0, 0, 0, i, cubemap.w_, cubemap.h_, 1, GL_RGB, GL_FLOAT, data);
+			data += cubemap.w_ * cubemap.h_ * cubemap.comp_ * Bitmap::getBytesPerComponent(cubemap.fmt_);
+		}
 	}
 
+	
+
 	AL_ENGINE_INFO("Cubemap loaded at path:{0}", fileName);
+
+
+
+	
+	
+
+	
 
 	glGenerateTextureMipmap(id);
 }
