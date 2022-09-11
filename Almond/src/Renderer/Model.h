@@ -226,16 +226,16 @@ private:
 		mat->GetTexture(AI_MATKEY_METALLIC_TEXTURE, &metallic);
 		mat->GetTexture(AI_MATKEY_ROUGHNESS_TEXTURE, &roughness);
 		auto metallicPath = std::string(metallic.C_Str());
-		auto roughnessPath = std::string(metallic.C_Str());
+		auto roughnessPath = std::string(roughness.C_Str());
 
 		//aoMetallicRoughness map
 		if (!metallicPath.empty())
 		{
-			config.ao_roughness_metallic_name = metallicPath;
+			config.ao_roughness_metallic_name = this->directory + '/' + metallicPath;
 		}
 		else
 		{
-			config.ao_roughness_metallic_name = roughnessPath;
+			config.ao_roughness_metallic_name = this->directory + '/' + roughnessPath;
 		}
 
 		//Emissive map

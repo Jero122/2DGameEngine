@@ -66,7 +66,7 @@ uniform vec3 viewPos;
 
 uniform int entityID;
 
-uniform samplerCube skybox;
+uniform samplerCube irradianceMap;
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
 {

@@ -5,6 +5,7 @@
 
 #include "GLTexture.h"
 #include "GLRenderBuffer.h"
+#include "Core/Log.h"
 
 class GLFrameBuffer
 {
@@ -85,7 +86,7 @@ public:
 		else if (m_ColourAttachments.empty())
 		{
 			// Only depth-pass
-			glDrawBuffer(GL_NONE);
+			//glDrawBuffer(GL_NONE);
 		}
 		if (glCheckNamedFramebufferStatus(id, GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 			AL_ENGINE_ERROR("Frambuffer is not complete!");

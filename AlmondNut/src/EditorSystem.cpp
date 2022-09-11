@@ -91,15 +91,38 @@ void EditorSystem::OnStart()
     }
     */
 
+    Entity damagedHelmet = m_CurrentScene->CreateEntity("damaged helmet");
+    {
+        auto transformComponent = damagedHelmet.GetComponent<Transform>();
+        *transformComponent = Transform{ glm::vec3(3,0,0), glm::vec3(90,0,0),glm::vec3(1.5f,1.5f,1.5f) };
+
+        auto hetlmetMesh = std::make_shared<Model>("assets/Models/DamagedHelmet/DamagedHelmet.gltf");
+
+        damagedHelmet.AddComponent(ModelRendererComponent{ hetlmetMesh });
+    }
+
+    Entity suzanne = m_CurrentScene->CreateEntity("suzanne");
+    {
+        auto transformComponent = suzanne.GetComponent<Transform>();
+        *transformComponent = Transform{ glm::vec3(0,0,0), glm::vec3(0,0,0),glm::vec3(1,1,1) };
+
+        auto suzanneMesh = std::make_shared<Model>("assets/Models/Suzanne/Suzanne.gltf");
+
+        suzanne.AddComponent(ModelRendererComponent{ suzanneMesh });
+    }
+
+
     Entity backpack = m_CurrentScene->CreateEntity("backpack");
     {
         auto transformComponent = backpack.GetComponent<Transform>();
-        *transformComponent = Transform{ glm::vec3(0,0,0), glm::vec3(0,0,0),glm::vec3(0.1f,0.1f,0.1f) };
+        *transformComponent = Transform{ glm::vec3(-3,0,0), glm::vec3(0,0,0),glm::vec3(0.1f,0.1f,0.1f) };
 
         auto backpackMesh = std::make_shared<Model>("assets/Models/backpack/scene.gltf");
 
         backpack.AddComponent(ModelRendererComponent{ backpackMesh });
     }
+
+ 
 
     Entity pointlight1 = m_CurrentScene->CreateEntity("direction light");
     {

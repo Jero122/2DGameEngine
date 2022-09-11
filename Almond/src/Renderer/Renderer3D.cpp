@@ -1,5 +1,8 @@
 #include "Renderer/Renderer3D.h"
+
+#include "GLFramework/GLFrameBuffer.h"
 #include "stb/stb_image.h"
+#include "stb/stb_image_write.h"
 
 std::vector<std::string> faces
 {
@@ -16,7 +19,7 @@ std::vector<std::string> faces
 
 Renderer3D::Renderer3D()
 {
-	std::string shaderPath("assets/shaders/Lambert.glsl");
+	std::string shaderPath("assets/shaders/PBR_GLTF.glsl");
 	m_Shader = std::make_unique<Shader>();
 	m_Shader->init(shaderPath);
 	m_Shader->use();
@@ -38,9 +41,10 @@ Renderer3D::Renderer3D()
 	layout.AddAttribute({ "aTexCoord", BufferAttribType::Float2, false });
 	m_VertexBuffer->SetLayout(layout);
 
-
 	m_SkyboxVAO = std::make_unique<GLVertexArray>();
 	m_SkyboxVAO->Bind();
+
+	m_brdf = std::make_shared<Texture>("assets/textures/lut_ggx.png");
 }
 
 Renderer3D::~Renderer3D()
@@ -62,16 +66,25 @@ void Renderer3D::BeginScene(EditorCamera& camera)
 void Renderer3D::EndScene()
 {
 	m_Shader->use();
-	//glBindTexture(GL_TEXTURE_CUBE_MAP, m_SkyboxTexture->id);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, m_SkyboxTexture->irradiance);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, m_SkyboxTexture->prefilterMap);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, m_brdf->ID());
+
 	m_Shader->setMat4("view", m_ViewMatrix);
 	m_Shader->setMat4("projection", m_ProjectionMatrix);
 	m_Shader->setVec3("viewPos", m_ViewPosition);
 
-	m_Shader->setInt("skybox", 0);
-	m_Shader->setInt("material.albedoMap", 1);
-	m_Shader->setInt("material.aoRoughnessMetallicMap", 2);
-	m_Shader->setInt("material.normalMap", 3);
-	m_Shader->setInt("material.emissiveMap", 4);
+	m_Shader->setInt("irradianceMap", 0);
+	m_Shader->setInt("prefilterMap", 1);
+	m_Shader->setInt("brdfLUT", 2);
+
+	m_Shader->setInt("material.albedoMap", 3);
+	m_Shader->setInt("material.aoRoughnessMetallicMap", 4);
+	m_Shader->setInt("material.normalMap", 5);
+	m_Shader->setInt("material.emissiveMap", 6);
 	//Directional Light
 	if (m_directional_light.enabled)
 	{
@@ -151,6 +164,9 @@ void Renderer3D::EndScene()
 	}
 
 	// draw skybox as last
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, m_SkyboxTexture->id);
+
 	glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
 	m_SkyboxShader->use();
 	auto view = glm::mat4(glm::mat3(m_ViewMatrix)); // remove translation from the view matrix
@@ -176,7 +192,6 @@ void Renderer3D::EndScene()
 		m_Shader->setFloat("pointLights[0].linear", 0);
 		m_Shader->setFloat("pointLights[0].quadratic", 0);
 	}
-
 
 	//Disable Directional Light
 	m_Shader->setBool("dirLight.enabled", false);

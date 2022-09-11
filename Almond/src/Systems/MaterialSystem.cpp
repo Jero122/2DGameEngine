@@ -123,14 +123,44 @@ bool MaterialSystem::loadMaterial(MaterialConfig config, std::shared_ptr<Materia
 	//alphaTest
 	material->alphaTest = config.alphaTest;
 
-	material->albedoMap = TextureSystem::Accquire(config.albedo_map_name, true);
+	if (config.albedo_map_name.empty())
+	{
+		material->albedoMap = TextureSystem::AccquireDefaultAlbedo();
+	}
+	else
+	{
+		material->albedoMap = TextureSystem::Accquire(config.albedo_map_name, true);
+	}
 
-	material->aoRoughnessMetallicMap= TextureSystem::Accquire(config.ao_roughness_metallic_name, true);
+	if (config.ao_roughness_metallic_name.empty())
+	{
+		material->aoRoughnessMetallicMap = TextureSystem::AccquireDefaultAOMetallicRoughness();
+	}
+	else
+	{
+		material->aoRoughnessMetallicMap = TextureSystem::Accquire(config.ao_roughness_metallic_name, true);
+	}
 
-	material->normalMap = TextureSystem::Accquire(config.normal_map_name, true);
-
-	material->emissiveMap = TextureSystem::Accquire(config.emissive_map_name, true);
+	if (config.normal_map_name.empty())
+	{
+		
+		material->normalMap = TextureSystem::AccquireDefaulNormal();
 	
+	}
+	else
+	{
+		material->normalMap = TextureSystem::Accquire(config.normal_map_name, true);
+	}
+
+	if (config.emissive_map_name.empty())
+	{
+		material->emissiveMap = TextureSystem::AccquireDefaultEmissive();
+	}
+	else
+	{
+		material->emissiveMap = TextureSystem::Accquire(config.emissive_map_name, true);
+	}
+
 	return true;
 }
 

@@ -62,6 +62,7 @@ private:
 
 	std::vector<ModelTuple> m_Models;
 	std::vector<MeshTuple> m_Meshes;
+	std::shared_ptr<Texture> m_brdf;
 
 	std::vector<PointLight> m_pointLights;
 	DirectionalLight m_directional_light = {{0,0,0} , {0,0,0} ,{0,0,0} , {0,0,0} , false};

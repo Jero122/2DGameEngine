@@ -8,7 +8,7 @@ public:
 	GLTexture(GLenum type,const char* fileName);
 	GLTexture(GLenum type, const char* fileName, GLenum clamp);
 	GLTexture(GLenum type, int width, int height, GLenum internalFormat);
-	GLTexture(int width, int height, GLenum externalFormat, const void* image);
+	GLTexture(int width, int height, GLenum externalFormat, const uint8_t* image);
 
 	~GLTexture();
 

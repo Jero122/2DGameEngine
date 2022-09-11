@@ -60,7 +60,7 @@ GLTexture::GLTexture(GLenum type, const char* fileName, GLenum clamp)
 
 		int numMipmaps = 0;
 		stbi_set_flip_vertically_on_load(true);
-		uint8_t* img = stbi_load(fileName, &m_Width, &m_Height, nullptr, STBI_rgb_alpha);
+		uint8_t* img = stbi_load(fileName, &m_Width, &m_Height, nullptr, 4);
 		// If file is not found, a fallback texture is used
 		if (!img)
 		{
@@ -101,7 +101,7 @@ GLTexture::GLTexture(GLenum type, int width, int height, GLenum internalFormat)
 	glTextureStorage2D(id, getNumMipMapLevels2D(width, height), internalFormat, width, height);
 }
 
-GLTexture::GLTexture(int width, int height, GLenum externalFormat, const void* image)
+GLTexture::GLTexture(int width, int height, GLenum externalFormat, const uint8_t* image)
 	:m_Type(GL_TEXTURE_2D), m_Width(width), m_Height(height)
 {
 	glCreateTextures(GL_TEXTURE_2D, 1, &id);

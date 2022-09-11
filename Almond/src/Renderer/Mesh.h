@@ -45,7 +45,7 @@ public:
 		texIDs.push_back(material->normalMap->ID());
 		texIDs.push_back(material->emissiveMap->ID());
 
-		GLRenderCommand::BindTextures(1,texCount , texIDs.data());
+		GLRenderCommand::BindTextures(3,texCount , texIDs.data());
 		shader.setVec4("material.albedoColour", material->albedoColour);
 		shader.setVec4("material.emissiveColour", material->emissiveColour);
 		shader.setFloat("material.metallic", material->metallic);

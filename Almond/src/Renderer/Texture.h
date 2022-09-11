@@ -8,6 +8,8 @@ class Texture
 {
 public:
 	Texture(const std::string filePath);
+	Texture::Texture(int width, int height, int comp, uint8_t* data);
+
 	~Texture() = default;
 
 	int GetWidth() const

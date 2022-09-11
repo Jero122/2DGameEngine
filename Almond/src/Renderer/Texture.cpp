@@ -11,3 +11,8 @@ Texture::Texture(const std::string filePath)
 	m_Width = m_Texture->GetWidth();
 	m_Height = m_Texture->GetHeight();
 }
+
+Texture::Texture(int width, int height, int comp, uint8_t* data)
+{
+	m_Texture = std::make_shared<GLTexture>(width,height,comp, data);
+}

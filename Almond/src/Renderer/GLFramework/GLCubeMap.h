@@ -20,6 +20,9 @@ public:
 
 	int ID() const;
 	unsigned int id;
+	unsigned int irradiance;
+	unsigned int prefilterMap;
+	/*unsigned int brdfLUTTexture;*/
 
 private:
 	int m_Width;

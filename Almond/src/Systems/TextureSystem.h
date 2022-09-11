@@ -25,6 +25,11 @@ public:
 	void OnImGuiRender() override;
 	void OnLateUpdate() override;
 
+	static std::shared_ptr<Texture> AccquireDefaultAlbedo();
+	static std::shared_ptr<Texture> AccquireDefaultAOMetallicRoughness();
+	static std::shared_ptr<Texture> AccquireDefaultEmissive();
+	static std::shared_ptr<Texture> AccquireDefaulNormal();
+
 	static std::shared_ptr<Texture> Accquire(std::string filePath, bool autoRelease);
 	static void Release(std::string filePath);
 private:
@@ -35,6 +40,7 @@ private:
 		bool autoRelease = false;
 	};
 
+	static std::shared_ptr<Texture> AccquireDefaultTexture(const char* name, uint8_t r, uint8_t g, uint8_t b);
 	inline static std::vector<std::shared_ptr<Texture>> s_registeredTextures;
 	inline static std::unordered_map<std::string, TextureReference> s_registeredTextureTable;
 
