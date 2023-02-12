@@ -13,3 +13,6 @@
 [submodule "Almond/vendor/efsw"]
 	path = Almond/vendor/efsw
 	url = https://github.com/SpartanJ/efsw
+[submodule "Almond/vendor/yaml-cpp"]
+	path = Almond/vendor/yaml-cpp
+	url = https://github.com/TheCherno/yaml-cpp.git
