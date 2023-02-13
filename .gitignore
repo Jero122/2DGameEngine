@@ -1,18 +1,18 @@
 # Binaries
 **/bin/
 bin-int/
-**.obj
-**.FBX
-**.mtl
-**.png
-**.jpeg
-**.jpg
-**.bmp
-**.hdr
-**.exr
-**.gltf
-**.glb
-**.bin
+*.obj
+*.FBX
+*.mtl
+*.png
+*.jpeg
+*.jpg
+*.bmp
+*.hdr
+*.exr
+*.gltf
+*.glb
+*.bin
 
 #Custom Binaries
 **.mesh
@@ -24,3 +24,4 @@ bin-int/
 **.vcxproj.filters
 **.vcxproj.user
 
+!Resources/Branding/*
