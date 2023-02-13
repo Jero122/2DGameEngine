@@ -29,7 +29,7 @@ Almond is built using **Premake 5**, as such this project comes with the prebuil
 
 <ins>**3. Downloading the assets:**</ins>
 
-Some of the assets used to test the project can be very large, hence they are not included with the repo. Download the assets from this [dropbox link](https://www.dropbox.com/sh/hafq9ud29nb8j27/AACu-dJNOZ0OD6EloWcOhRqVa?dl=0), unzip the file and place the **assets folder** in the [AlmondNut directory](/AlmondNut/)
+Some of the assets used to test the project can be very large, hence they are not included with the repo. Download the assets from this [dropbox link](https://www.dropbox.com/sh/hafq9ud29nb8j27/AACu-dJNOZ0OD6EloWcOhRqVa?dl=0) or from the releases tab, unzip the file and place the **assets folder** in the [AlmondNut directory](/AlmondNut/)
 
 <ins>**4. Building the engine and editor:**</ins>
 
