@@ -3,7 +3,7 @@
 Almond is 2D and 3D interactive application, rendering and game engine primarily for Windows. It is heavily inspired by the Cherno's Hazel2D but branches off into it's own direction, for example it has a custom made ECS rather than using Entt, and has a 3D pipeline, which Hazel2D does not have yet.
 
 ***
-![Almond](/Resources/Branding/Editor3.png)
+![Almond](/Resources/Branding/Editor1.png)
 
 ## Getting Started
 Visual Studio 2019 or 2022 is highly recommended, Almond is untested on any other development environment while I focus on the windows build first.
