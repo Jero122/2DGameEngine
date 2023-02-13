@@ -187,8 +187,6 @@ The Render function is called each frame by the OnRuntimeUpdate/OnEditorUpdate f
     - Allows selection of enetities
 
 
-The plan for Hazel is two-fold: to create a powerful 3D engine, but also to serve as an education tool for teaching game engine design and architecture. Because of this the development inside this repository is rather slow, since everything has to be taught and implemented on-camera. There is a much more advanced version of the engine in a private repository called `Hazel-dev`, accessible to supporters on [Patreon](https://patreon.com/thecherno). The plan for this project is to mostly take already implemented code from the `Hazel-dev` repository and integrate it into this one, done within videos and supported by explanations.
-
 ## Short term goals:
 - High-fidelity Physically-Based 3D rendering (WIP)
     - Scene graph, Opaque sorting and frustum culling
