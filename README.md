@@ -25,7 +25,13 @@ $ git submodule update
 
 Almond is built using **Premake 5**, as such this project comes with the prebuilt binaries of premake in vendor/premake and there is no need to download Premake. Generating the project files is as simple as running the [GenerateProjects.bat](/GenerateProjects.bat) file found in the root folder. This will setup the visual studio environments and create debug/release build directories under 'bin' with all the required libraries and assets.
 
-<ins>**3. Building the engine and editor:**</ins>
+
+
+<ins>**3. Downloading the assets:**</ins>
+
+Some of the assets used to test the project can be very large, hence they are not included with the repo. Download the assets from this [dropbox link](https://www.dropbox.com/sh/hafq9ud29nb8j27/AACu-dJNOZ0OD6EloWcOhRqVa?dl=0), unzip the file and place the **assets folder** in the [AlmondNut directory](/AlmondNut/)
+
+<ins>**4. Building the engine and editor:**</ins>
 
 If the previous steps have followed, a Visual Studio Solution (.sln) file will be generated in the root directory. Simply open the Visual Studio Solution and build the engine as either debug or release mode.
 ***
