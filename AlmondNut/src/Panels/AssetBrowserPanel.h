@@ -21,8 +21,8 @@ private:
     std::filesystem::path m_SelectedDirectory;
 	float w = 200.0f;
 
-    std::shared_ptr<FileSystem::FileNode>& RootNode = FileSystem::RootNode;
-    std::shared_ptr<FileSystem::FileNode>& CurrentNode = FileSystem::CurrentNode;
+    std::shared_ptr<FileSystem::FileNode>& RootNode = FileSystem::s_RootNode;
+    std::shared_ptr<FileSystem::FileNode>& CurrentNode = FileSystem::s_CurrentNode;
 
     void DrawSplitter(int split_vertically, float thickness, float* size0, float* size1, float min_size0, float min_size1)
     {

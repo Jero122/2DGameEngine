@@ -21,8 +21,8 @@ void AssetBrowserPanel::OnStart()
 
 void AssetBrowserPanel::DrawFileNode(std::shared_ptr<FileSystem::FileNode> node, std::filesystem::path relativeDirectory)
 {
-	auto dir_entry = node->dir_entry;
-	auto fileName = node->fileName;
+	auto dir_entry = node->m_DirEntry;
+	auto fileName = node->m_FileName;
 	const auto path = dir_entry.path();
 
 	
@@ -36,7 +36,7 @@ void AssetBrowserPanel::DrawFileNode(std::shared_ptr<FileSystem::FileNode> node,
 
 		ImGui::PushID(fileName.c_str());
 
-        auto nodeName = node->icon + std::string(" ") + fileName;
+        auto nodeName = node->m_IconName + std::string(" ") + fileName;
 		bool node_open = ImGui::TreeNodeEx((void*)fileName.c_str(), node_flags, nodeName.c_str());
 
 
@@ -48,9 +48,9 @@ void AssetBrowserPanel::DrawFileNode(std::shared_ptr<FileSystem::FileNode> node,
 
 		if (node_open)
 		{
-			node->icon = std::string(ICON_FA_FOLDER_OPEN);
+			node->m_IconName = std::string(ICON_FA_FOLDER_OPEN);
 			//Recurse?
-			for (auto& rec_node : node->childNodes)
+			for (auto& rec_node : node->m_ChildNodes)
 			{
 				DrawFileNode(rec_node, path);
 			}
@@ -58,7 +58,7 @@ void AssetBrowserPanel::DrawFileNode(std::shared_ptr<FileSystem::FileNode> node,
 		}
 		else
 		{
-			node->icon = std::string(ICON_FA_FOLDER);
+			node->m_IconName = std::string(ICON_FA_FOLDER);
 		}
 		ImGui::PopID();
 	}
@@ -101,7 +101,7 @@ void AssetBrowserPanel::OnImGuiRender()
         {
 			//Assets parent node
 			ImGuiTreeNodeFlags base_flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanAvailWidth;
-			auto nodeName = RootNode->icon + std::string(" ") + s_AssetsDirectory.string();
+			auto nodeName = RootNode->m_IconName + std::string(" ") + s_AssetsDirectory.string();
 			ImGuiTreeNodeFlags node_flags = base_flags;
 			const bool is_selected = (m_CurrentDirectory == s_AssetsDirectory);
 			if (is_selected)
@@ -117,8 +117,8 @@ void AssetBrowserPanel::OnImGuiRender()
         	// If Parent open, expand Child nodes
 			if (node_open)
 			{
-				RootNode->icon = ICON_FA_FOLDER_OPEN;
-				for (auto& node : RootNode->childNodes)
+				RootNode->m_IconName = ICON_FA_FOLDER_OPEN;
+				for (auto& node : RootNode->m_ChildNodes)
 				{
 					DrawFileNode(node, s_AssetsDirectory);
 				}
@@ -126,7 +126,7 @@ void AssetBrowserPanel::OnImGuiRender()
 			}
 			else
 			{
-				RootNode->icon = ICON_FA_FOLDER;
+				RootNode->m_IconName = ICON_FA_FOLDER;
 			}
             ImGui::EndChild();
             ImGui::SameLine();
@@ -189,7 +189,7 @@ void AssetBrowserPanel::OnImGuiRender()
 			std::vector<std::shared_ptr<FileSystem::FileNode>> nodeList;
 			if (searchString.empty())
 			{
-				nodeList = CurrentNode->childNodes;
+				nodeList = CurrentNode->m_ChildNodes;
 			}
 			else
 			{
@@ -209,8 +209,8 @@ void AssetBrowserPanel::OnImGuiRender()
 				for (auto node : nodeList)
 				{
 					icon = ICON_FA_FOLDER;
-					auto dir_entry = node->dir_entry;
-					auto filename = node->fileName;
+					auto dir_entry = node->m_DirEntry;
+					auto filename = node->m_FileName;
 
 					if (!dir_entry.is_directory())
 					{
@@ -248,8 +248,8 @@ void AssetBrowserPanel::OnImGuiRender()
 			{
 				for (auto node : nodeList)
 				{
-					auto dir_entry = node->dir_entry;
-					auto filename = node->fileName;
+					auto dir_entry = node->m_DirEntry;
+					auto filename = node->m_FileName;
 
 					if (!dir_entry.is_directory())
 					{

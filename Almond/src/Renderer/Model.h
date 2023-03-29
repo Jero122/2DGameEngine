@@ -245,7 +245,7 @@ private:
 
 		/*if (textures.empty())
 		{
-			textures.push_back(TextureSystem::Accquire("assets/Models/Diffuse.jpg",true));
+			textures.push_back(TextureSystem::Acquire("assets/Models/Diffuse.jpg",true));
 		}
 		// return a mesh object created from the extracted mesh data*/
 		return Mesh(vertices, indices, material);

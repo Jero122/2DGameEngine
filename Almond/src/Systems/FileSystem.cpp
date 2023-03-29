@@ -34,42 +34,44 @@ void FileSystem::UpdateListener::handleFileAction(efsw::WatchID watchid, const s
 
 void FileSystem::ProcessAssets()
 {
-	//TEXTURE CONVERSION
-	std::vector<std::shared_ptr<FileNode>> textures = SearchSubStrings({ ".png", ".jpg", ".jpeg",  ".tga", ".bmp" }, RootNode);
+	//TODO parallelize texture and model conversions
+	//TODO TEXTURE CONVERSION
+	//TODO GENERATE META FILES FOR ASSETS
+	std::vector<std::shared_ptr<FileNode>> textures = SearchSubStrings({ ".png", ".jpg", ".jpeg",  ".tga", ".bmp" }, s_RootNode);
 	AL_ENGINE_INFO("FileSystem: Found {0} textures", textures.size());
 	//MODEL CONVERSION
-	std::vector<std::shared_ptr<FileNode>> models = SearchSubStrings({ ".obj", ".fbx" }, RootNode);
+	std::vector<std::shared_ptr<FileNode>> models = SearchSubStrings({ ".obj", ".fbx" }, s_RootNode);
 	AL_ENGINE_INFO("FileSystem: Found {0} models", models.size());
 
 	for (auto model : models)
 	{
-		std::string modelPath = model->dir_entry.path().generic_string();
-		std::string filename = model->dir_entry.path().filename().string();
+		std::string modelPath = model->m_DirEntry.path().generic_string();
+		std::string filename = model->m_DirEntry.path().filename().string();
 
 		auto meshName = filename.substr(0, filename.find_last_of(".")) + ".mesh";
 		auto meshPath = modelPath.substr(0, modelPath.find_last_of(".")) + ".mesh";
 
-		AL_ENGINE_TRACE("Searching for mesh: {0} in {1}", meshName, model->parentNode->dir_entry.path().string());
+		AL_ENGINE_TRACE("Searching for mesh: {0} in {1}", meshName, model->m_ParentNode->m_DirEntry.path().string());
 
 		//Check if mesh file exists or if the model file was modified
-		std::shared_ptr<FileNode> mesh = SearchString(meshName, model->parentNode);
+		std::shared_ptr<FileNode> mesh = SearchString(meshName, model->m_ParentNode);
 		bool modelModified = false;
 		if (mesh)
 		{
-			std::filesystem::file_time_type meshLastModified = mesh->dir_entry.last_write_time();
-			std::filesystem::file_time_type modelLastModified = model->dir_entry.last_write_time();
+			//Compares the last write times between mesh and model
+			std::filesystem::file_time_type meshLastModified = mesh->m_DirEntry.last_write_time();
+			std::filesystem::file_time_type modelLastModified = model->m_DirEntry.last_write_time();
 			if(modelLastModified > meshLastModified)
 			{
 				modelModified = true;
 			}
-
 		}
 
 		if (!mesh || modelModified)
 		{
 			!mesh ? AL_ENGINE_WARN("Mesh File: {0} Not Found, Generating...", meshName) : AL_ENGINE_WARN("Model File Modifed: {0}, Regenerating...", filename);
 
-			//LOAD OBJ AND GENERATE MESH
+			//Load model with assimp
 			const unsigned int flags = 0 |
 				aiProcess_JoinIdenticalVertices |
 				aiProcess_Triangulate |
@@ -81,15 +83,6 @@ void FileSystem::ProcessAssets()
 				aiProcess_FindDegenerates |
 				aiProcess_FindInvalidData |
 				aiProcess_GenUVCoords;
-
-			/*Assimp::Importer import;*/
-			/*const aiScene* scene = import.ReadFile(modelPath.c_str(), flags);
-
-			if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
-			{
-				AL_ENGINE_ERROR("ASSIMP{0}:", import.GetErrorString());
-				return;
-			}*/
 
 			const aiScene* scene = aiImportFile(modelPath.c_str(), flags);
 
@@ -188,8 +181,6 @@ MeshDescription FileSystem::ConvertAIMesh(MeshData& meshData, const aiMesh* m)
 			meshData.indexData.push_back(face.mIndices[j] + m_VertexOffset);
 	}
 
-
-
 	MeshDescription result = MeshDescription();
 
 	result.lodCount = 1;
@@ -201,7 +192,6 @@ MeshDescription FileSystem::ConvertAIMesh(MeshData& meshData, const aiMesh* m)
 	result.lodOffset[1] = (m_IndexOffset + numIndices) * sizeof(uint32_t);
 	result.streamOffset[0] = m_VertexOffset * streamElementSize;
 	result.streamElementSize[0] = streamElementSize;
-
 
 	m_IndexOffset += numIndices;
 	m_VertexOffset += m->mNumVertices;
@@ -219,27 +209,12 @@ void FileSystem::OnStart()
 	//Use std::filesystem to read assets into file tree
 	for (auto& dir_entry : std::filesystem::directory_iterator(s_AssetsDirectory))
 	{
-		AddNode(RootNode, dir_entry);
+		AddNode(s_RootNode, dir_entry);
 	}
-	CurrentNode = RootNode;
+	s_CurrentNode = s_RootNode;
 
 	//Asset conversion
 	ProcessAssets();
-}
-
-void FileSystem::OnEnd()
-{
-	
-}
-
-void FileSystem::OnUpdate(TimeStep timeStep)
-{
-
-}
-
-void FileSystem::OnImGuiRender()
-{
-	
 }
 
 void FileSystem::OnLateUpdate()
@@ -257,43 +232,45 @@ void FileSystem::OnLateUpdate()
 
 void FileSystem::ReconstructFileTree()
 {
-	//TODO deleting alot of files in debug mode can cause a crash
+	//TODO fix deleting a lot of files in debug mode can cause a crash
 
 	//Make sure the current node still exists
-	auto CurrentNodeCached = SearchString(CurrentNode->fileName, RootNode);
+	auto CurrentNodeCached = SearchString(s_CurrentNode->m_FileName, s_RootNode);
 	//If Current node doesn't exist, try to to find a parent
 	if (!CurrentNodeCached)
 	{
-		auto ParentPath = CurrentNode->dir_entry.path();
+		auto ParentPath = s_CurrentNode->m_DirEntry.path();
 		while (!CurrentNodeCached)
 		{
 			ParentPath = ParentPath.parent_path();
-			CurrentNodeCached = FileSystem::SearchString(ParentPath.filename().string(), RootNode);
+			CurrentNodeCached = FileSystem::SearchString(ParentPath.filename().string(), s_RootNode);
 		}
 	}
 
 	//Clear the file tree
-	RootNode->childNodes = {};
-	CurrentNode = nullptr;
+	s_RootNode->m_ChildNodes = {};
+	s_CurrentNode = nullptr;
 
 	//Regenerate tree
 	for (auto& dir_entry : std::filesystem::directory_iterator(s_AssetsDirectory))
 	{
-		AddNode(RootNode, dir_entry);
+		AddNode(s_RootNode, dir_entry);
 	}
 
 	//Restore current node
-	CurrentNode = CurrentNodeCached;
+	s_CurrentNode = CurrentNodeCached;
 }
 
 void FileSystem::AddNode(std::shared_ptr<FileNode> parentNode, std::filesystem::directory_entry const& dir_entry)
 {
 	auto node = std::make_shared<FileNode>(dir_entry);
 
+	//If the node to be added is a directory as well, add it's child nodes to the file tree as well
 	if (dir_entry.is_directory())
 	{
 		for (auto const& rec_dir_entry : std::filesystem::directory_iterator(dir_entry.path()))
 		{
+			//If the node to be added has a directory child node, recursively add that directory and it's child nodes aswell
 			if (rec_dir_entry.is_directory())
 			{
 				AddNode(node, rec_dir_entry);
@@ -301,13 +278,13 @@ void FileSystem::AddNode(std::shared_ptr<FileNode> parentNode, std::filesystem::
 			else
 			{
 				auto childNode = std::make_shared<FileNode>(rec_dir_entry);
-				childNode->parentNode = node;
-				node->childNodes.push_back(childNode);
+				childNode->m_ParentNode = node;
+				node->m_ChildNodes.push_back(childNode);
 			}
 		}
 	}
-	node->parentNode = parentNode;
-	parentNode->childNodes.push_back(node);
+	node->m_ParentNode = parentNode;
+	parentNode->m_ChildNodes.push_back(node);
 }
 
 std::vector<std::shared_ptr<FileSystem::FileNode>> FileSystem::SearchSubString(const std::string subString,
@@ -315,26 +292,26 @@ std::vector<std::shared_ptr<FileSystem::FileNode>> FileSystem::SearchSubString(c
 {
 	std::vector<std::shared_ptr<FileNode>> result;
 
-	for (auto child_node : searchRoot->childNodes)
+	for (auto child_node : searchRoot->m_ChildNodes)
 	{
 		auto search1 = std::search(
-			child_node->fileName.begin(), child_node->fileName.end(),
+			child_node->m_FileName.begin(), child_node->m_FileName.end(),
 			subString.begin(), subString.end(),
 			[](char ch1, char ch2) { return std::toupper(ch1) == std::toupper(ch2); }
 		);
 
 		auto search2 = std::search(
 			subString.begin(), subString.end(),
-			child_node->fileName.begin(), child_node->fileName.end(),
+			child_node->m_FileName.begin(), child_node->m_FileName.end(),
 			[](char ch1, char ch2) { return std::toupper(ch1) == std::toupper(ch2); }
 		);
 
-		if (search1 != child_node->fileName.end() || search2 != subString.end())
+		if (search1 != child_node->m_FileName.end() || search2 != subString.end())
 		{
 			result.push_back(child_node);
 		}
 
-		if (child_node->dir_entry.is_directory())
+		if (child_node->m_DirEntry.is_directory())
 		{
 			auto recursiveSearch = SearchSubString(subString, child_node);
 			result.insert(std::end(result), recursiveSearch.begin(), recursiveSearch.end());
@@ -349,6 +326,7 @@ std::vector<std::shared_ptr<FileSystem::FileNode>> FileSystem::SearchSubStrings(
 	const std::vector<std::string> subStrings, std::shared_ptr<FileNode> searchRoot)
 {
 	std::vector<std::shared_ptr<FileNode>> result;
+	//Search for each substring individually and append the results together
 	for (auto subString : subStrings)
 	{
 		std::vector<std::shared_ptr<FileNode>>subStringSearch = SearchSubString(subString, searchRoot);
@@ -360,14 +338,17 @@ std::vector<std::shared_ptr<FileSystem::FileNode>> FileSystem::SearchSubStrings(
 std::shared_ptr<FileSystem::FileNode> FileSystem::SearchString(const std::string string,
                                                                std::shared_ptr<FileNode> searchRoot)
 {
-	if (searchRoot->fileName == string)
+	//Return if search root is the node being searched for
+	if (searchRoot->m_FileName == string)
 	{
 		return searchRoot;
 	}
 
-	for (auto child_node : searchRoot->childNodes)
+	//Iterate through search node's children and recursively search them as well
+	for (auto child_node : searchRoot->m_ChildNodes)
 	{
-		if (child_node->dir_entry.is_directory())
+		//If the child node is a directory, search it as well
+		if (child_node->m_DirEntry.is_directory())
 		{
 			auto find = SearchString(string, child_node);
 			if (find)
@@ -375,7 +356,7 @@ std::shared_ptr<FileSystem::FileNode> FileSystem::SearchString(const std::string
 				return find;
 			}
 		}
-		else if (child_node->fileName == string)
+		else if (child_node->m_FileName == string)
 		{
 			return child_node;
 		}

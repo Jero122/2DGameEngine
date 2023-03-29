@@ -4,27 +4,6 @@
 #include "Core/Log.h"
 #include "stb/stb_image.h"
 
-void TextureSystem::OnStart()
-{
-}
-
-void TextureSystem::OnEnd()
-{
-}
-
-void TextureSystem::OnUpdate(TimeStep timeStep)
-{
-}
-
-void TextureSystem::OnImGuiRender()
-{
-
-}
-
-void TextureSystem::OnLateUpdate()
-{
-}
-
 std::shared_ptr<Texture> TextureSystem::AccquireDefaultAlbedo()
 {
 	auto name = "DefaultAlbedo";
@@ -77,7 +56,7 @@ std::shared_ptr<Texture> TextureSystem::AccquireDefaultTexture(const char* name,
 	if (find == s_registeredTextureTable.end())
 	{
 		//Texture not found
-		//create texture
+		//create default texture
 		const int w = 128;
 		const int h = 128;
 		uint8_t* imgData = (uint8_t*)malloc(w * h * 3); // stbi_load() uses malloc(), so this is safe
@@ -92,6 +71,8 @@ std::shared_ptr<Texture> TextureSystem::AccquireDefaultTexture(const char* name,
 		}
 
 		std::shared_ptr<Texture> texture = std::make_shared<Texture>(w, h, GL_RGB, imgData);
+
+		//Free the imgData
 		stbi_image_free((void*)imgData);
 
 		TextureReference textureReference;
@@ -126,7 +107,7 @@ std::shared_ptr<Texture> TextureSystem::AccquireDefaultTexture(const char* name,
 	return nullptr;
 }
 
-std::shared_ptr<Texture> TextureSystem::Accquire(std::string filePath, bool autoRelease)
+std::shared_ptr<Texture> TextureSystem::Acquire(std::string filePath, bool autoRelease)
 {
 	auto find = s_registeredTextureTable.find(filePath);
 	if (find == s_registeredTextureTable.end())

@@ -62,7 +62,7 @@ void EditorSystem::OnStart()
 
     m_AssetBrowserPanel.OnStart();
 
-    auto texture = TextureSystem::Accquire("assets/textures/UpArrow.png", false);
+    auto texture = TextureSystem::Acquire("assets/textures/UpArrow.png", false);
     TextureSystem::Release("assets/textures/UpArrow.png");
 
     /*

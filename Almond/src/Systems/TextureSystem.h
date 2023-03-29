@@ -19,18 +19,39 @@ public:
 
 	~TextureSystem();
 
-	void OnStart() override;
-	void OnEnd() override;
-	void OnUpdate(TimeStep timeStep) override;
-	void OnImGuiRender() override;
-	void OnLateUpdate() override;
-
+	/**
+	 * \brief Returns a default 128x128 white texture
+	 * \return 
+	 */
 	static std::shared_ptr<Texture> AccquireDefaultAlbedo();
+	/**
+	 * \brief Returns a default 128x128 black AO/MetallicRoughness texture
+	 * \return 
+	 */
 	static std::shared_ptr<Texture> AccquireDefaultAOMetallicRoughness();
+	/**
+	 * \brief Returns a default 128x128 black emissive texture
+	 * \return 
+	 */
 	static std::shared_ptr<Texture> AccquireDefaultEmissive();
+	/**
+	 * \brief Returns a default 128x128 Flat (#8080FF) normal texture
+	 * \return 
+	 */
 	static std::shared_ptr<Texture> AccquireDefaulNormal();
 
-	static std::shared_ptr<Texture> Accquire(std::string filePath, bool autoRelease);
+	/**
+	 * \brief Acquires a texture from file 
+	 * \param filePath 
+	 * \param autoRelease whether to release this texture automatically upon 0 references
+	 * \return shared pointer to the Texture asset
+	 */
+	static std::shared_ptr<Texture> Acquire(std::string filePath, bool autoRelease);
+
+	/**
+	 * \brief Releases this texture by filePath (name)
+	 * \param filePath 
+	 */
 	static void Release(std::string filePath);
 private:
 	struct TextureReference

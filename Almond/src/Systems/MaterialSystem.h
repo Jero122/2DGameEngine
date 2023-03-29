@@ -38,12 +38,6 @@ public:
 
 	~MaterialSystem() = default;
 
-	void OnStart() override;
-	void OnEnd() override;
-	void OnUpdate(TimeStep timeStep) override;
-	void OnImGuiRender() override;
-	void OnLateUpdate() override;
-
 	/*
 	 * Accquires a material from file
 	 * @param name The name of the material file to load the material from, can look like "Assets/Models/RubberDuck/DuckMaterial.amt"

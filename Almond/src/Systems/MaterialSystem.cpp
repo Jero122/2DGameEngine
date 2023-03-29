@@ -3,30 +3,6 @@
 #include "TextureSystem.h"
 #include "Core/Log.h"
 
-void MaterialSystem::OnStart()
-{
-
-}
-
-void MaterialSystem::OnEnd()
-{
-
-}
-
-void MaterialSystem::OnUpdate(TimeStep timeStep)
-{
-
-}
-
-void MaterialSystem::OnImGuiRender()
-{
-
-}
-
-void MaterialSystem::OnLateUpdate()
-{
-
-}
 
 std::shared_ptr<Material> MaterialSystem::Accquire(std::string name)
 {
@@ -108,7 +84,7 @@ void MaterialSystem::Release(std::string name)
 
 bool MaterialSystem::loadMaterial(MaterialConfig config, std::shared_ptr<Material> material)
 {
-	//Accquire appropriate textures
+	//Acquire appropriate textures
 
 	//albedo colour
 	material->albedoColour = config.albedoColour;
@@ -123,13 +99,14 @@ bool MaterialSystem::loadMaterial(MaterialConfig config, std::shared_ptr<Materia
 	//alphaTest
 	material->alphaTest = config.alphaTest;
 
+	//Acquire relevant textures from the Texture System
 	if (config.albedo_map_name.empty())
 	{
 		material->albedoMap = TextureSystem::AccquireDefaultAlbedo();
 	}
 	else
 	{
-		material->albedoMap = TextureSystem::Accquire(config.albedo_map_name, true);
+		material->albedoMap = TextureSystem::Acquire(config.albedo_map_name, true);
 	}
 
 	if (config.ao_roughness_metallic_name.empty())
@@ -138,7 +115,7 @@ bool MaterialSystem::loadMaterial(MaterialConfig config, std::shared_ptr<Materia
 	}
 	else
 	{
-		material->aoRoughnessMetallicMap = TextureSystem::Accquire(config.ao_roughness_metallic_name, true);
+		material->aoRoughnessMetallicMap = TextureSystem::Acquire(config.ao_roughness_metallic_name, true);
 	}
 
 	if (config.normal_map_name.empty())
@@ -149,7 +126,7 @@ bool MaterialSystem::loadMaterial(MaterialConfig config, std::shared_ptr<Materia
 	}
 	else
 	{
-		material->normalMap = TextureSystem::Accquire(config.normal_map_name, true);
+		material->normalMap = TextureSystem::Acquire(config.normal_map_name, true);
 	}
 
 	if (config.emissive_map_name.empty())
@@ -158,7 +135,7 @@ bool MaterialSystem::loadMaterial(MaterialConfig config, std::shared_ptr<Materia
 	}
 	else
 	{
-		material->emissiveMap = TextureSystem::Accquire(config.emissive_map_name, true);
+		material->emissiveMap = TextureSystem::Acquire(config.emissive_map_name, true);
 	}
 
 	return true;
