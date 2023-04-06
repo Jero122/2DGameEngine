@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "GLBuffer.h"
+#include "GLBuffer.h"
 #include "GLRenderCommand.h"
 #include "GLVertexArray.h"
 #include "Renderer/Shader.h"
@@ -13,22 +14,24 @@ class GLMesh
 public:
 	GLMesh(uint32_t* indices, uint32_t indicesSizeBytes, float* vertexData, uint32_t verticesSizeBytes)
 		:m_NumIndices(indicesSizeBytes / sizeof(uint32_t)),
-		m_VertexBuffer(vertexData, verticesSizeBytes),
 		m_IndexBuffer(indices, indicesSizeBytes),
 		texture("assets/Models/Diffuse.jpg")
 
 	{
 		//GL Objects Init
 		m_VertexArray.Bind();
+		GLVertexBuffer::BufferData data{ vertexData, verticesSizeBytes };
+		m_VertexBuffer = std::make_unique<GLVertexBuffer>(data);
+
 		BufferLayout layout;
 		layout.AddAttribute({"aPos", BufferAttribType::Float3, false});
 		layout.AddAttribute({ "aNormal", BufferAttribType::Float3, true });
 		layout.AddAttribute({ "aTexCoord", BufferAttribType::Float2, false });
-		m_VertexBuffer.SetLayout(layout);
+		m_VertexBuffer->SetLayout(layout);
 		m_IndexBuffer.Bind();
-		m_VertexBuffer.Bind();
+		m_VertexBuffer->Bind();
 		m_IndexBuffer.UnBind();
-		m_VertexBuffer.Unbind();
+		m_VertexBuffer->Unbind();
 	}
 
 	void Draw()
@@ -58,7 +61,7 @@ public:
 
 private:
 	GLVertexArray m_VertexArray;
-	GLVertexBuffer m_VertexBuffer;
+	std::unique_ptr<GLVertexBuffer>  m_VertexBuffer;
 	GLIndexBuffer m_IndexBuffer;
 
 	Texture texture;

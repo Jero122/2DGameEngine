@@ -34,7 +34,7 @@ Renderer3D::Renderer3D()
 	m_VertexArray = std::make_unique<GLVertexArray>();
 	m_VertexArray->Bind();
 
-	m_VertexBuffer = std::make_unique<GLVertexBuffer>(nullptr, 0);
+	m_VertexBuffer = std::make_unique<GLVertexBuffer>(GLVertexBuffer::BufferData{nullptr, 0});
 	BufferLayout layout;
 	layout.AddAttribute({ "aPos", BufferAttribType::Float3, false });
 	layout.AddAttribute({ "aNormal", BufferAttribType::Float3, false });

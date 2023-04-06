@@ -105,11 +105,53 @@ private:
 class GLVertexBuffer
 {
 public:
-	GLVertexBuffer::GLVertexBuffer(float* vertices, uint32_t size)
+	struct BufferData
+	{
+		float* data;
+		/**
+		 * \brief this is the size in bytes, not length
+		 */
+		uint32_t size;
+	};
+
+	std::vector<uint32_t> BufferDataSizes;
+
+	/**
+	 * \brief Sets up a Vertex Buffer for **Interleaved** vertex data
+	 * \param attributeData contains the pointer to data, and the size, in bytes, of the data
+	 */
+	GLVertexBuffer::GLVertexBuffer(BufferData attributeData)
 	{
 		glGenBuffers(1, &ID);
 		glBindBuffer(GL_ARRAY_BUFFER, ID);
-		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, attributeData.size, attributeData.data, GL_DYNAMIC_DRAW);
+
+		interleaved = true;
+		//Stores the size of the in a indexed vector. Useful for modifying certain data later
+		BufferDataSizes.push_back(attributeData.size);
+	}
+
+	/**
+	 * \brief Sets up a Vertex Buffer for Non-Interleaved vertex data
+	 * \param attributeData Vector of all AttributeData in required order. Buffer Data contains the pointer to data,
+	 * and the size , in bytes, of the data.
+	 */
+	GLVertexBuffer::GLVertexBuffer(const std::vector<BufferData>& attributeData)
+	{
+		glGenBuffers(1, &ID);
+		glBindBuffer(GL_ARRAY_BUFFER, ID);	
+		uint32_t offset = 0;
+		for (const auto& data : attributeData)
+		{
+			glBufferSubData(GL_ARRAY_BUFFER, offset, data.size, data.data);
+		
+			offset += data.size;
+			BufferDataSizes.push_back(data.size);
+			//Stores the size of the in a indexed vector. Useful for modifying certain data later
+			BufferDataSizes.push_back(data.size);
+		}
+
+		interleaved = false;
 	}
 
 	virtual ~GLVertexBuffer(){}
@@ -128,12 +170,29 @@ public:
 	{
 		int index = 0;
 		m_BufferLayout = bufferLayout;
-		for (auto attribute : m_BufferLayout)
+
+		if (interleaved)
 		{
-			glVertexAttribPointer(index, attribute.Count, attribute.TypeToOpenGLType(), attribute.Normalized ? GL_TRUE : GL_FALSE, m_BufferLayout.GetStride(), (const void*)attribute.Offset);
-			glEnableVertexAttribArray(index);
-			index++;
+			for (auto attribute : m_BufferLayout)
+			{
+				glVertexAttribPointer(index, attribute.Count, attribute.TypeToOpenGLType(), attribute.Normalized ? GL_TRUE : GL_FALSE, m_BufferLayout.GetStride(), (const void*)attribute.Offset);
+				glEnableVertexAttribArray(index);
+				index++;
+			}
 		}
+		else
+		{
+			uint32_t sizeOffset = 0;
+			for (auto attribute : m_BufferLayout)
+			{
+				glVertexAttribPointer(index, attribute.Count, attribute.TypeToOpenGLType(), attribute.Normalized ? GL_TRUE : GL_FALSE, m_BufferLayout.GetStride(), (const void*)sizeOffset);
+				glEnableVertexAttribArray(index);
+
+				sizeOffset += BufferDataSizes[index];
+				index++;
+			}
+		}
+	
 	}
 
 	BufferLayout GetLayout()
@@ -147,6 +206,7 @@ public:
 	}
 
 private:
+	bool interleaved;
 	BufferLayout m_BufferLayout;
 	unsigned int ID;
 

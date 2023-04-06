@@ -16,7 +16,9 @@ Renderer2D::Renderer2D()
 
 	m_VertexArray = std::make_unique<GLVertexArray>();
 	m_VertexArray->Bind();
-	m_VertexBuffer = std::make_unique<GLVertexBuffer>(nullptr, MAX_VERTEX_COUNT * sizeof(Quad::Vertex));
+
+	GLVertexBuffer::BufferData data = { nullptr, MAX_VERTEX_COUNT * sizeof(Quad::Vertex) };
+	m_VertexBuffer = std::make_unique<GLVertexBuffer>(data);
 
 	BufferLayout layout;
 	layout.AddAttribute({ "aPos", BufferAttribType::Float3, false });

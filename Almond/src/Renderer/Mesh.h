@@ -67,7 +67,10 @@ private:
 	{
 		m_VertexArray = std::make_unique<GLVertexArray>();
 		m_VertexArray->Bind();
-		m_VertexBuffer = std::make_unique<GLVertexBuffer>((float*)(&vertices[0]), vertices.size() * sizeof(Vertex));
+
+		GLVertexBuffer::BufferData data = { (float*)(&vertices[0]), (uint32_t)(vertices.size() * sizeof(Vertex))};
+		m_VertexBuffer = std::make_unique<GLVertexBuffer>(data);
+
 		BufferLayout layout;
 		layout.AddAttribute({ "aPos", BufferAttribType::Float3, false });
 		layout.AddAttribute({ "aNormal", BufferAttribType::Float3, true });
