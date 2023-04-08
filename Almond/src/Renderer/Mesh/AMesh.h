@@ -18,7 +18,7 @@ constexpr const uint32_t kMaxLODs = 8;
 constexpr const uint32_t kMaxStreams = 8;
 constexpr uint32_t numElementsToStore = 3 + 3 + 2;
 
-struct MeshDescription
+struct AMeshDescription
 {
 	//Number of LODs in this mesh, Strictly less than MAX_LODS, last LOD offset is used as a marker only
 	uint32_t lodCount = 1;
@@ -45,7 +45,7 @@ struct MeshDescription
 	uint32_t streamElementSize[kMaxStreams] = { 0 };
 };
 
-struct MeshFileHeader
+struct AMeshFileHeader
 {
 	//unique value to check integrity of this file
 	uint32_t magicValue;
@@ -63,9 +63,9 @@ struct MeshFileHeader
 	uint32_t vertexDataSize;
 };
 
-struct MeshData
+struct AMeshData
 {
-	std::vector<MeshDescription> meshDescriptions;
+	std::vector<AMeshDescription> meshDescriptions;
 	std::vector<uint32_t> indexData;
 	std::vector<float> vertexData;
 };
@@ -80,12 +80,12 @@ public:
 		Load(path);
 	}
 
-	MeshFileHeader GetMeshHeader() const
+	AMeshFileHeader GetMeshHeader() const
 	{
 		return m_Header;
 	}
 
-	MeshData GetMeshData() const
+	AMeshData GetMeshData() const
 	{
 		return m_MeshData;
 	}
@@ -95,8 +95,8 @@ private:
 
 	uint32_t m_IndexOffset = 0;
 	uint32_t m_VertexOffset = 0;
-	MeshFileHeader m_Header;
-	MeshData m_MeshData;
+	AMeshFileHeader m_Header;
+	AMeshData m_MeshData;
 
 	//Load FBX/ OBJ model
 	//Look for a .mesh file first, if exists, read

@@ -94,7 +94,7 @@ void FileSystem::ProcessAssets()
 
 			}
 
-			MeshData mesh_data;
+			AMeshData mesh_data;
 			//resize meshdata meshes array
 			mesh_data.meshDescriptions.reserve(scene->mNumMeshes);
 
@@ -120,24 +120,24 @@ void FileSystem::ProcessAssets()
 	}
 }
 
-void FileSystem::SaveMeshFile(MeshData meshData, const char* filename)
+void FileSystem::SaveMeshFile(AMeshData meshData, const char* filename)
 {
 	FILE* f = fopen(filename, "wb");
 
 	uint32_t magicValue = 0x12345678;
 	uint32_t meshCount = (uint32_t)meshData.meshDescriptions.size();
-	uint32_t dataBlockOffset = (uint32_t)(sizeof(MeshFileHeader) + meshCount * sizeof(MeshDescription));
+	uint32_t dataBlockOffset = (uint32_t)(sizeof(AMeshFileHeader) + meshCount * sizeof(AMeshDescription));
 	uint32_t indexDataSize = meshData.indexData.size() * sizeof(uint32_t);
 	uint32_t vertexDataSize = meshData.vertexData.size() * sizeof(float);
 
-	const MeshFileHeader header = {
+	const AMeshFileHeader header = {
 		magicValue, meshCount,dataBlockOffset,indexDataSize,vertexDataSize
 	};
 
 	//save header
 	fwrite(&header, 1, sizeof(header), f);
 	//save mesh descriptions
-	fwrite(meshData.meshDescriptions.data(), header.meshCount, sizeof(MeshDescription), f);
+	fwrite(meshData.meshDescriptions.data(), header.meshCount, sizeof(AMeshDescription), f);
 	//save index data
 	fwrite(meshData.indexData.data(), 1, header.indexDataSize, f);
 	//save vertex data
@@ -146,7 +146,7 @@ void FileSystem::SaveMeshFile(MeshData meshData, const char* filename)
 	fclose(f);
 }
 
-MeshDescription FileSystem::ConvertAIMesh(MeshData& meshData, const aiMesh* m)
+AMeshDescription FileSystem::ConvertAIMesh(AMeshData& meshData, const aiMesh* m)
 {
 	const bool hasTexCoords = m->HasTextureCoords(0);
 	const uint32_t numIndices = m->mNumFaces * 3;
@@ -181,7 +181,7 @@ MeshDescription FileSystem::ConvertAIMesh(MeshData& meshData, const aiMesh* m)
 			meshData.indexData.push_back(face.mIndices[j] + m_VertexOffset);
 	}
 
-	MeshDescription result = MeshDescription();
+	AMeshDescription result = AMeshDescription();
 
 	result.lodCount = 1;
 	result.streamCount = 1;

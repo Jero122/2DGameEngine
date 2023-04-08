@@ -85,7 +85,7 @@ private:
 	 * \param meshData The mesh data to save
 	 * \param filename the name and location of the file to save
 	 */
-	void SaveMeshFile(MeshData meshData, const char* filename);
+	void SaveMeshFile(AMeshData meshData, const char* filename);
 
 	/**
 	 * \brief Converts an Assimp Mesh into MeshData for serialisation
@@ -93,7 +93,7 @@ private:
 	 * \param m
 	 * \return 
 	 */
-	MeshDescription ConvertAIMesh(MeshData& meshData, const aiMesh* m);
+	AMeshDescription ConvertAIMesh(AMeshData& meshData, const aiMesh* m);
 
 	/**
 	 * \brief Reconstructs the file tree. Should only be used when the file tree is modified

@@ -45,7 +45,7 @@ void AMesh::LoadMeshFile(const char* filename)
 
 	m_MeshData.meshDescriptions.resize(m_Header.meshCount);
 
-	if (fread(m_MeshData.meshDescriptions.data(), sizeof(MeshDescription), m_Header.meshCount, f) != m_Header.meshCount)
+	if (fread(m_MeshData.meshDescriptions.data(), sizeof(AMeshDescription), m_Header.meshCount, f) != m_Header.meshCount)
 	{
 		AL_ENGINE_ERROR("Unable to read mesh descriptors");
 		exit(EXIT_FAILURE);
