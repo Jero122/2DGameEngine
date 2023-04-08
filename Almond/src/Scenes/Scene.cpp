@@ -7,6 +7,7 @@
 #include "ECS/Components/MeshRendererComponent.h"
 #include "ECS/Components/ModelRendererComponent.h"
 #include "ECS/Components/MovementComponent.h"
+#include "ECS/Components/ProceduralMeshComponent.h"
 #include "ECS/Components/RigidBody.h"
 #include "ECS/Components/SpriteRenderer.h"
 #include "ECS/Components/TagComponent.h"
@@ -26,6 +27,7 @@ Scene::Scene()
 	m_Ecs.CreateComponent<MovementComponent>();
 	m_Ecs.CreateComponent<ModelRendererComponent>();
 	m_Ecs.CreateComponent<MeshRendererComponent>();
+	m_Ecs.CreateComponent<ProceduralMeshComponent>();
 	m_Ecs.CreateComponent<LightComponent>();
 
 	m_Renderer3D = new Renderer3D();
@@ -156,6 +158,12 @@ void Scene::Render(EditorCamera& editorCamera)
 		m_Renderer3D->Submit(meshRenderer->glMesh, transform->position, transform->rotation, transform->scale, ent);
 	}
 
+	for (EntityID ent : SceneView<Transform, ProceduralMeshComponent>(m_Ecs))
+	{
+		auto transform = m_Ecs.GetComponent<Transform>(ent);
+		auto proceduralMeshRenderer = m_Ecs.GetComponent<ProceduralMeshComponent>(ent);
+		m_Renderer3D->Submit(proceduralMeshRenderer->mesh, transform->position, transform->rotation, transform->scale, ent);
+	}
 
 
 	for (EntityID entt : SceneView<Transform, LightComponent>(m_Ecs))

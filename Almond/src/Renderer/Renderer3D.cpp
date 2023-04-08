@@ -136,6 +136,33 @@ void Renderer3D::EndScene()
 		model_tuple.model->Draw(*m_Shader);
 	}
 
+	//Draw Procedural Meshes
+	for (auto proceduralMesh_tuple : m_ProceduralMeshes)
+	{
+		glm::mat4 modelMatrix{ 1.0f };
+		modelMatrix = glm::translate(glm::mat4(1.0f), proceduralMesh_tuple.position);
+
+		if (proceduralMesh_tuple.rotation.x != 0)
+		{
+			modelMatrix = modelMatrix * glm::rotate(glm::mat4(1.0f), glm::radians(proceduralMesh_tuple.rotation.x), { 1,0,0 });
+		}
+		if (proceduralMesh_tuple.rotation.y != 0)
+		{
+			modelMatrix = modelMatrix * glm::rotate(glm::mat4(1.0f), glm::radians(proceduralMesh_tuple.rotation.y), { 0,1,0 });
+		}
+		if (proceduralMesh_tuple.rotation.z != 0)
+		{
+			modelMatrix = modelMatrix * glm::rotate(glm::mat4(1.0f), glm::radians(proceduralMesh_tuple.rotation.z), { 0,0,1 });
+		}
+
+		modelMatrix = modelMatrix * glm::scale(glm::mat4(1.0f), proceduralMesh_tuple.scale);
+
+		m_Shader->setMat4("model", modelMatrix);
+		m_Shader->setInt("entityID", proceduralMesh_tuple.entityID);
+
+		proceduralMesh_tuple.proceduralMesh->Draw(*m_Shader);
+	}
+
 	//Draw Meshes
 	for (auto mesh_tuple : m_Meshes)
 	{
@@ -200,12 +227,13 @@ void Renderer3D::EndScene()
 
 	m_Models.clear();
 	m_Meshes.clear();
+	m_ProceduralMeshes.clear();
 	m_pointLights.clear();
 }
 
 void Renderer3D::Submit(std::shared_ptr<Model> model, const glm::vec3 position, glm::vec3 rotation, glm::vec3 scale, int entityID)
 {
-	m_Models.push_back({model,position,rotation,scale,entityID});
+	m_Models.push_back({position,rotation,scale,entityID, model});
 }
 
 void Renderer3D::Submit(std::shared_ptr<Model> model, const glm::vec3 position, const glm::vec3 rotation,
@@ -216,7 +244,7 @@ void Renderer3D::Submit(std::shared_ptr<Model> model, const glm::vec3 position, 
 void Renderer3D::Submit(std::shared_ptr<GLMesh> mesh, const glm::vec3 position, const glm::vec3 rotation,
 	const glm::vec3 scale, int entityID)
 {
-	m_Meshes.push_back({ mesh,position,rotation,scale, entityID });
+	m_Meshes.push_back({position,rotation,scale, entityID, mesh});
 }
 
 void Renderer3D::Submit(std::shared_ptr<GLMesh> mesh, const glm::vec3 position, const glm::vec3 rotation,
@@ -224,6 +252,15 @@ void Renderer3D::Submit(std::shared_ptr<GLMesh> mesh, const glm::vec3 position, 
 {
 }
 
+void Renderer3D::Submit(std::shared_ptr<ProceduralMesh> proceduralMesh, const glm::vec3 position, const glm::vec3 rotation,
+	const glm::vec3 scale, int entityID)
+{
+	m_ProceduralMeshes.push_back({position, rotation, scale, entityID, proceduralMesh });
+}
+void Renderer3D::Submit(std::shared_ptr<ProceduralMesh> proceduralMesh, const glm::vec3 position, const glm::vec3 rotation,
+	const glm::vec3 scale)
+{
+}
 
 
 void Renderer3D::SubmitPointLight(glm::vec3 position, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular,

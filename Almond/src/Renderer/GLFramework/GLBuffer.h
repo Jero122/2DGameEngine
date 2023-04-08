@@ -136,18 +136,25 @@ public:
 	 * \param attributeData Vector of all AttributeData in required order. Buffer Data contains the pointer to data,
 	 * and the size , in bytes, of the data.
 	 */
-	GLVertexBuffer::GLVertexBuffer(const std::vector<BufferData>& attributeData)
+	GLVertexBuffer::GLVertexBuffer(const std::vector<BufferData> attributeData)
 	{
 		glGenBuffers(1, &ID);
-		glBindBuffer(GL_ARRAY_BUFFER, ID);	
+		glBindBuffer(GL_ARRAY_BUFFER, ID);
+
+		int totalSize = 0;
+		for (auto data : attributeData)
+		{
+			totalSize += data.size;
+		}
+
+		glBufferData(GL_ARRAY_BUFFER, totalSize, nullptr, GL_DYNAMIC_DRAW);
+
 		uint32_t offset = 0;
-		for (const auto& data : attributeData)
+		for (const auto data : attributeData)
 		{
 			glBufferSubData(GL_ARRAY_BUFFER, offset, data.size, data.data);
 		
 			offset += data.size;
-			BufferDataSizes.push_back(data.size);
-			//Stores the size of the in a indexed vector. Useful for modifying certain data later
 			BufferDataSizes.push_back(data.size);
 		}
 
@@ -185,9 +192,8 @@ public:
 			uint32_t sizeOffset = 0;
 			for (auto attribute : m_BufferLayout)
 			{
-				glVertexAttribPointer(index, attribute.Count, attribute.TypeToOpenGLType(), attribute.Normalized ? GL_TRUE : GL_FALSE, m_BufferLayout.GetStride(), (const void*)sizeOffset);
+				glVertexAttribPointer(index, attribute.Count, attribute.TypeToOpenGLType(), attribute.Normalized ? GL_TRUE : GL_FALSE, attribute.Size, (const void*)sizeOffset);
 				glEnableVertexAttribArray(index);
-
 				sizeOffset += BufferDataSizes[index];
 				index++;
 			}

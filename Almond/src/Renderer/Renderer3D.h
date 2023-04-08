@@ -2,14 +2,15 @@
 #include "GLFramework/GLCubeMap.h"
 #include "GLFramework/GLMesh.h"
 #include "Mesh/AMesh.h"
+#include "Mesh/ProceduralMesh.h"
 #include "Renderer/Renderer.h"
+
 
 class Renderer3D : public Renderer
 {
 private:
-	struct ModelTuple
+	struct RenderObject
 	{
-		std::shared_ptr<Model> model;
 		glm::vec3 position;
 		glm::vec3 rotation;
 		glm::vec3 scale;
@@ -18,15 +19,19 @@ private:
 		int entityID;
 	};
 
-	struct MeshTuple
+	struct ModelTuple: RenderObject
+	{
+		std::shared_ptr<Model> model;
+	};
+
+	struct StaticMeshTuple: RenderObject
 	{
 		std::shared_ptr<GLMesh> mesh;
-		glm::vec3 position;
-		glm::vec3 rotation;
-		glm::vec3 scale;
+	};
 
-		//editor only
-		int entityID;
+	struct ProceduralMeshTuple: RenderObject
+	{
+		std::shared_ptr<ProceduralMesh> proceduralMesh;
 	};
 
 	struct PointLight
@@ -61,7 +66,8 @@ private:
 	};
 
 	std::vector<ModelTuple> m_Models;
-	std::vector<MeshTuple> m_Meshes;
+	std::vector<StaticMeshTuple> m_Meshes;
+	std::vector<ProceduralMeshTuple> m_ProceduralMeshes;
 	std::shared_ptr<Texture> m_brdf;
 
 	std::vector<PointLight> m_pointLights;
@@ -91,6 +97,12 @@ public:
 	void Submit(std::shared_ptr<GLMesh> mesh, const glm::vec3 position, const glm::vec3 rotation,
 		const glm::vec3 scale);
 	void Submit(std::shared_ptr<GLMesh> mesh, const glm::vec3 position, const glm::vec3 rotation,
+		const glm::vec3 scale, int entityID);
+
+	//Procedural Mesh
+	void Submit(std::shared_ptr<ProceduralMesh> model, const glm::vec3 position, const glm::vec3 rotation,
+		const glm::vec3 scale);
+	void Submit(std::shared_ptr<ProceduralMesh> model, const glm::vec3 position, const glm::vec3 rotation,
 		const glm::vec3 scale, int entityID);
 
 	void SubmitPointLight(glm::vec3 position, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, float constant, float linear, float quadratic);
