@@ -131,6 +131,14 @@ void ProceduralMesh::Draw(Shader& shader)
 
 	// draw mesh
 	m_VertexArray->Bind();
+	//Draw wireframe
+	shader.setFloat("isWireframe", 1.0f);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	GLRenderCommand::DrawElementsTriangle(m_Indices.size(), 0);
+
+	//Draw mesh
+	shader.setFloat("isWireframe", 0.0f);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	GLRenderCommand::DrawElementsTriangle(m_Indices.size(), 0);
 	m_VertexArray->UnBind();
 

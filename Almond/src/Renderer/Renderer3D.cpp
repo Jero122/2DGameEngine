@@ -23,7 +23,7 @@ Renderer3D::Renderer3D()
 	m_Shader = std::make_unique<Shader>();
 	m_Shader->init(shaderPath);
 	m_Shader->use();
-
+	m_Shader ->setVec4("wireframeColor", glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
 
 	m_SkyboxShader = std::make_unique<Shader>();
 	m_SkyboxShader->init(std::string("assets/shaders/SkyBox.glsl"));

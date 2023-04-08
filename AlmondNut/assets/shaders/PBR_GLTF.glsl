@@ -74,7 +74,10 @@ uniform Material material;
 uniform DirLight dirLight;
 uniform vec3 viewPos;
 
+//Editor
 uniform int entityID;
+uniform float isWireframe;
+uniform vec4 wireframeColor;
 
 // IBL
 uniform samplerCube irradianceMap;
@@ -339,7 +342,9 @@ void main()
 	// emissive
 	color = pow( Ke.rgb + color, vec3(1.0/2.2) );
 
-	Colour1 = vec4(color, 1.0);
+	vec4 shadedColor = vec4(color, 1.0);
+
+	Colour1 = mix(shadedColor, wireframeColor, isWireframe);
 
     int id =-1;
     if (Colour1.a >= 0.5)
