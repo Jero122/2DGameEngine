@@ -24,40 +24,38 @@ ProceduralMesh::ProceduralMesh(const std::vector<glm::vec3>& vertices, const std
 	setupMesh();
 }
 
-void ProceduralMesh::GenerateNormals(const std::vector<glm::vec3>& positions, std::vector<glm::vec3>& normals,
-	const std::vector<unsigned>& indices)
+void ProceduralMesh::GenerateNormals()
 
 {
 	// Initialize normal vectors
-	normals.resize(positions.size(), glm::vec3(0.0f));
+	m_Normals.resize(m_Vertices.size(), glm::vec3(0.0f));
 
 	// Calculate normal for each face
-	for (unsigned int i = 0; i < indices.size(); i += 3)
+	for (unsigned int i = 0; i < m_Indices.size(); i += 3)
 	{
-		glm::vec3 v1 = positions[indices[i]];
-		glm::vec3 v2 = positions[indices[i + 1]];
-		glm::vec3 v3 = positions[indices[i + 2]];
+		glm::vec3 v1 = m_Vertices[m_Indices[i]];
+		glm::vec3 v2 = m_Vertices[m_Indices[i + 1]];
+		glm::vec3 v3 = m_Vertices[m_Indices[i + 2]];
 
 		glm::vec3 normal = glm::cross(v2 - v1, v3 - v1);
 		normal *= -1;
 
-		normals[indices[i]] += normal;
-		normals[indices[i + 1]] += normal;
-		normals[indices[i + 2]] += normal;
+		m_Normals[m_Indices[i]] += normal;
+		m_Normals[m_Indices[i + 1]] += normal;
+		m_Normals[m_Indices[i + 2]] += normal;
 	}
 
 	// Normalize normal vectors
-	for (unsigned int i = 0; i < normals.size(); i++)
-		normals[i] = glm::normalize(normals[i]);
+	for (unsigned int i = 0; i < m_Normals.size(); i++)
+		m_Normals[i] = glm::normalize(m_Normals[i]);
 }
 
-void ProceduralMesh::GenerateUVs(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& normals,
-	std::vector<glm::vec2>& uvs, const std::vector<unsigned>& indices)
+void ProceduralMesh::GenerateUVs()
 {
-	uvs.resize(positions.size());
-	for (unsigned int i = 0; i < positions.size(); i++)
+	m_UVs.resize(m_Vertices.size());
+	for (unsigned int i = 0; i < m_Vertices.size(); i++)
 	{
-		glm::vec3 position = positions[i];
+		glm::vec3 position = m_Vertices[i];
 
 		float u, v;
 		if (fabs(position.x) > fabs(position.y) && fabs(position.x) > fabs(position.z))
@@ -106,7 +104,7 @@ void ProceduralMesh::GenerateUVs(const std::vector<glm::vec3>& positions, const 
 		u /= 2.0f;
 		v /= 2.0f;
 
-		uvs[i] = glm::vec2(u, v);
+		m_UVs[i] = glm::vec2(u, v);
 	}
 }
 
@@ -138,8 +136,12 @@ void ProceduralMesh::Draw(Shader& shader)
 
 	//Draw mesh
 	shader.setFloat("isWireframe", 0.0f);
+	// Draw mesh with polygon offset
+	glEnable(GL_POLYGON_OFFSET_FILL);
+	glPolygonOffset(1.0f, 1.0f);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	GLRenderCommand::DrawElementsTriangle(m_Indices.size(), 0);
+	glDisable(GL_POLYGON_OFFSET_FILL);
 	m_VertexArray->UnBind();
 
 	GLRenderCommand::BindTextures(1, texCount, 0);

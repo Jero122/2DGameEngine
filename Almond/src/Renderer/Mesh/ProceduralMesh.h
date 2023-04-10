@@ -21,10 +21,9 @@ public:
 		const std::vector<glm::vec3>& normals, const std::vector<glm::vec2>& uv,
 		const std::shared_ptr<Material>& material);
 
-	void GenerateNormals(const std::vector<glm::vec3>& positions, std::vector<glm::vec3>& normals, const std::vector<unsigned int>& indices);
+	void GenerateNormals();
 
-	void GenerateUVs(const std::vector<glm::vec3>& positions, const std::vector<glm::vec3>& normals,
-		std::vector<glm::vec2>& uvs,const std::vector<unsigned int>& indices);
+	void GenerateUVs();
 
 	void Draw(Shader& shader);
 private:
