@@ -15,6 +15,8 @@ class MeshGenerator
 {
 
 public:
-	static MeshData GeneratePlane(float width, float height, unsigned int segmentWidth, unsigned int segmentHeight);
+	static MeshData GeneratePlane(int width, int height, unsigned int segmentWidth, unsigned int segmentHeight);
+
+	static std::vector<std::vector<float>> GenerateNoise(int width, int height, float frequency);
 };
 
