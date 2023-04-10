@@ -27,6 +27,7 @@ IncludeDir["assimp"] = "%{wks.location}/Almond/dependencies/include/assimp"
 IncludeDir["IconFontCppHeaders"] = "%{wks.location}/Almond/vendor/IconFontCppHeaders"
 IncludeDir["spdlog"] = "%{wks.location}/Almond/vendor/spdlog/include"
 IncludeDir["efsw"] = "%{wks.location}/Almond/vendor/efsw/include"
+IncludeDir["FastNoiseLite"] = "%{wks.location}/Almond/vendor/FastNoiseLite"
 
 include "Almond/vendor/imgui"
 include "Almond/vendor/yaml-cpp"
@@ -51,7 +52,9 @@ project "Almond"
 		"Almond/vendor/stb/**.h",
 		"Almond/vendor/stb/**.cpp",
 		"Almond/vendor/ImGuizmo/ImGuizmo.h",
-		"Almond/vendor/ImGuizmo/ImGuizmo.cpp"
+		"Almond/vendor/ImGuizmo/ImGuizmo.cpp",
+		"Almond/vendor/FastNoiseLite/**.h",
+		"Almond/vendor/FastNoiseLite/**.cpp"
 	}
 
 	includedirs
@@ -70,7 +73,8 @@ project "Almond"
 		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.IconFontCppHeaders}",
 		"%{IncludeDir.spdlog}",
-		"%{IncludeDir.efsw}"
+		"%{IncludeDir.efsw}",
+		"%{IncludeDir.FastNoiseLite}"
 	}
 
 	links

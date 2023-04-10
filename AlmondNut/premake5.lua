@@ -16,7 +16,9 @@ project "AlmondNut"
 		"src/**.cpp",
         
 		"vendor/stb/**.h",
-		"vendor/stb/**.cpp"
+		"vendor/stb/**.cpp",
+		"vendor/FastNoiseLite/**.h",
+		"vendor/FastNoiseLite/**.cpp"
 	}
 
 	includedirs
@@ -33,7 +35,8 @@ project "AlmondNut"
 		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.IconFontCppHeaders}",
 		"%{IncludeDir.spdlog}",
-		"%{IncludeDir.efsw}"
+		"%{IncludeDir.efsw}",
+		"%{IncludeDir.FastNoiseLite}",
 	}
 
 	links
