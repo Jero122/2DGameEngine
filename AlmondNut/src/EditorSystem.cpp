@@ -16,7 +16,10 @@
 #include "iostream"
 #include "Core/Log.h"
 #include "ECS/Components/MeshRendererComponent.h"
+#include "ECS/Components/ProceduralMeshComponent.h"
+#include "ProceduralMesh/MeshGenerator.h"
 #include "Renderer/Mesh/AMesh.h"
+#include "Renderer/Mesh/ProceduralMesh.h"
 #include "Systems/TextureSystem.h"
 
 
@@ -63,66 +66,22 @@ void EditorSystem::OnStart()
     m_AssetBrowserPanel.OnStart();
 
     auto texture = TextureSystem::Acquire("assets/textures/UpArrow.png", false);
-    TextureSystem::Release("assets/textures/UpArrow.png");
 
-    /*
-    //Custom Mesh Format
-    Entity sponza = m_CurrentScene->CreateEntity("sponza");
+
+    Entity proceduralMeshObject = m_CurrentScene->CreateEntity("Procedural Mesh");
     {
-        auto transformComponent = sponza.GetComponent<Transform>();
-        *transformComponent = Transform{ glm::vec3(0,-5,0), glm::vec3(0,0,0),glm::vec3(0.1,0.1,0.1) };
+        auto transformComponent = proceduralMeshObject.GetComponent<Transform>();
+        *transformComponent = Transform{ glm::vec3(3,0,0), glm::vec3(0,0,0),glm::vec3(1.5f,1.5f,1.5f) };
 
-        auto sponzaMesh = std::make_shared<AMesh>("assets/Models/Sponza/sponza.obj");
+        MeshData meshData = MeshGenerator::GeneratePlane(100, 100, 100, 100);
 
-        sponza.AddComponent(MeshRendererComponent{sponzaMesh});
+        MaterialConfig config{ "default", true, {1,1,1,1}, {0,0,0,0}, 0.5f, 0.5f, 1, 0.5f, "", "", "", "" };
+		auto mat = MaterialSystem::Accquire(config);
+        auto proceduralMesh = std::make_shared<ProceduralMesh>(meshData.positions,meshData.indices, meshData.normals, meshData.uvs, mat);
+        proceduralMesh->GenerateNormals();
+
+        proceduralMeshObject.AddComponent(ProceduralMeshComponent{ proceduralMesh});
     }
-    */
-
-    /*
-    //Model Format
-    Entity sponza = m_CurrentScene->CreateEntity("sponza");
-    {
-        auto transformComponent = sponza.GetComponent<Transform>();
-        *transformComponent = Transform{ glm::vec3(0,-5,0), glm::vec3(0,0,0),glm::vec3(0.1,0.1,0.1) };
-
-        auto sponzaMesh = std::make_shared<Model>("assets/Models/Sponza/sponza.obj");
-
-        sponza.AddComponent(ModelRendererComponent{ sponzaMesh });
-    }
-    */
-
-    Entity damagedHelmet = m_CurrentScene->CreateEntity("damaged helmet");
-    {
-        auto transformComponent = damagedHelmet.GetComponent<Transform>();
-        *transformComponent = Transform{ glm::vec3(3,0,0), glm::vec3(90,0,0),glm::vec3(1.5f,1.5f,1.5f) };
-
-        auto hetlmetMesh = std::make_shared<Model>("assets/Models/DamagedHelmet/DamagedHelmet.gltf");
-
-        damagedHelmet.AddComponent(ModelRendererComponent{ hetlmetMesh });
-    }
-
-    Entity suzanne = m_CurrentScene->CreateEntity("suzanne");
-    {
-        auto transformComponent = suzanne.GetComponent<Transform>();
-        *transformComponent = Transform{ glm::vec3(0,0,0), glm::vec3(0,0,0),glm::vec3(1,1,1) };
-
-        auto suzanneMesh = std::make_shared<Model>("assets/Models/Suzanne/Suzanne.gltf");
-
-        suzanne.AddComponent(ModelRendererComponent{ suzanneMesh });
-    }
-
-
-    Entity backpack = m_CurrentScene->CreateEntity("backpack");
-    {
-        auto transformComponent = backpack.GetComponent<Transform>();
-        *transformComponent = Transform{ glm::vec3(-3,0,0), glm::vec3(0,0,0),glm::vec3(0.1f,0.1f,0.1f) };
-
-        auto backpackMesh = std::make_shared<Model>("assets/Models/backpack/scene.gltf");
-
-        backpack.AddComponent(ModelRendererComponent{ backpackMesh });
-    }
-
- 
 
     Entity pointlight1 = m_CurrentScene->CreateEntity("direction light");
     {
